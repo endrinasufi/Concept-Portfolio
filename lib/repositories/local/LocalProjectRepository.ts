@@ -60,6 +60,7 @@ export class LocalProjectRepository implements ProjectRepository {
       typography: project.typography ?? [],
       sections: project.sections ?? [],
       gallery: project.gallery ?? [],
+      galleryRows: project.galleryRows ?? [],
       services: project.services ?? [],
       createdAt: stamp,
       updatedAt: stamp,
@@ -105,6 +106,11 @@ export class LocalProjectRepository implements ProjectRepository {
       typography: existing.typography.map((t) => ({ ...t, id: createId() })),
       sections: existing.sections.map((s) => ({ ...s, id: createId() })),
       gallery: existing.gallery.map((g) => ({ ...g, id: createId() })),
+      galleryRows: (existing.galleryRows ?? []).map((row) => ({
+        ...row,
+        id: createId(),
+        items: row.items.map((g) => ({ ...g, id: createId() })),
+      })),
     };
     const db = getDb();
     const all = await db.projects.toArray();

@@ -20,7 +20,7 @@ export default function HomePage() {
               "radial-gradient(80% 60% at 70% 0%, rgba(212,165,116,0.18), transparent 55%), radial-gradient(60% 50% at 10% 80%, rgba(80,100,120,0.12), transparent 50%), #0a0a0b",
           }}
         />
-        <div className="mx-auto flex min-h-[calc(100vh-var(--header-h))] max-w-7xl flex-col justify-end px-5 pb-16 pt-24 md:px-8 md:pb-24">
+        <div className="mx-auto flex min-h-[calc(100vh-var(--header-offset))] max-w-7xl flex-col justify-end px-5 pb-16 pt-[var(--header-offset)] md:px-8 md:pb-24">
           <FadeIn>
             <p className="text-xs uppercase tracking-[0.35em] text-accent">Concept Marketing Albania</p>
             <h1 className="font-display mt-4 max-w-4xl text-5xl leading-[0.95] tracking-tight md:text-7xl lg:text-8xl">

@@ -24,7 +24,7 @@ export function ColorPills({
     <div
       className={`flex shrink-0 bg-transparent ${
         isVertical
-          ? "h-full min-h-0 w-[3.75rem] flex-col gap-2.5 self-stretch md:w-[4.25rem]"
+          ? "h-full min-h-0 w-[3.125rem] flex-col gap-2.5 self-stretch md:w-[3.5rem]"
           : "h-auto w-full min-h-[4.5rem] flex-row gap-2.5"
       } ${className}`}
       role="list"

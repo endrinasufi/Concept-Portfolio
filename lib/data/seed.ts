@@ -1,26 +1,8 @@
-import type { BrandingProject, BrandingSection, BrandColor, TypographyItem } from "@/types/branding";
+import type { BrandingProject, BrandColor } from "@/types/branding";
 import { createId, nowIso } from "@/lib/utils/id";
 
 function color(hex: string, order: number): BrandColor {
   return { id: createId(), hex, order };
-}
-
-function typo(
-  role: TypographyItem["role"],
-  fontName: string,
-  fontWeight: string,
-  sampleText: string,
-): TypographyItem {
-  return { id: createId(), role, fontName, fontWeight, sampleText };
-}
-
-function section(
-  type: BrandingSection["type"],
-  order: number,
-  content: Record<string, unknown> = {},
-  settings: Record<string, unknown> = {},
-): BrandingSection {
-  return { id: createId(), type, order, content, settings };
 }
 
 /** External placeholder images used only for seed projects (resolved at render via URL in content). */
@@ -71,29 +53,13 @@ export function createSeedProjects(): BrandingProject[] {
       services: ["Brand Strategy", "Logo", "Packaging"],
       primaryBackgroundColor: "#0f1412",
       brandColors: [color("#C4A574", 0), color("#1A2E28", 1)],
-      typography: [
-        typo("primary", "Fraunces", "600", "Nordic Brew"),
-        typo("secondary", "Outfit", "400", "Specialty coffee, slow mornings."),
-      ],
+      typography: [],
       status: "published",
       featured: true,
       order: 0,
       metaTitle: "Nordic Brew — Branding | CMA",
       metaDescription: "Identitet vizual minimal për Nordic Brew.",
-      sections: [
-        section("text", 0, {
-          heading: "Qetësi nordike",
-          body: "Dy ngjyra, një ritëm. Identiteti përqendrohet në hapësirë negative dhe materialitet të ngrohtë.",
-        }),
-        section("image", 1, { imageUrl: SEED_IMAGE.nordic2, caption: "Mood board" }),
-        section("imageGrid2", 2, {
-          imageUrlA: SEED_IMAGE.nordic1,
-          imageUrlB: SEED_IMAGE.nordic3,
-        }),
-        section("typography", 3, {}),
-        section("colorPalette", 4, {}),
-        section("fullWidthImage", 5, { imageUrl: SEED_IMAGE.nordic1 }),
-      ],
+      sections: [],
       gallery: [],
       logoMediaId: undefined,
     }),
@@ -115,35 +81,13 @@ export function createSeedProjects(): BrandingProject[] {
         color("#2EC4B6", 2),
         color("#1B1B2F", 3),
       ],
-      typography: [
-        typo("primary", "Syne", "700", "Citrus"),
-        typo("secondary", "Outfit", "500", "Design that zings."),
-        typo("custom", "JetBrains Mono", "400", "AA / 01"),
-      ],
+      typography: [],
       status: "published",
       featured: true,
       order: 1,
       metaTitle: "Citrus Studio — Branding | CMA",
       metaDescription: "Identitet energjik me katër ngjyra për Citrus Studio.",
-      sections: [
-        section("text", 0, {
-          heading: "Energji e matur",
-          body: "Katër ngjyra që flasin me ritëm — portokalli si impuls, verdha si dritë, teal si ekuilibër.",
-        }),
-        section("brandApplication", 1, {
-          imageUrl: SEED_IMAGE.citrus2,
-          caption: "Aplikim në media",
-        }),
-        section("imageGrid3", 2, {
-          imageUrlA: SEED_IMAGE.citrus1,
-          imageUrlB: SEED_IMAGE.citrus3,
-          imageUrlC: SEED_IMAGE.citrus4,
-        }),
-        section("mockup", 3, { imageUrl: SEED_IMAGE.citrus2 }),
-        section("typography", 4, {}),
-        section("colorPalette", 5, {}),
-        section("spacer", 6, {}, { height: 48 }),
-      ],
+      sections: [],
       gallery: [],
     }),
 
@@ -165,33 +109,13 @@ export function createSeedProjects(): BrandingProject[] {
         color("#C9A227", 3),
         color("#1A1A1A", 4),
       ],
-      typography: [
-        typo("primary", "Cormorant Garamond", "600", "Atelier Luce"),
-        typo("secondary", "Outfit", "300", "Light as craft."),
-      ],
+      typography: [],
       status: "draft",
       featured: false,
       order: 2,
       metaTitle: "Atelier Luce — Branding | CMA",
       metaDescription: "Rebrand luksoz me pesë ngjyra për Atelier Luce.",
-      sections: [
-        section("text", 0, {
-          heading: "Dritë e kontrolluar",
-          body: "Pesë nuanca që ndërtojnë një botë luksoze — krem, bordeaux, indigo i thellë, ari dhe e zeza.",
-        }),
-        section("image", 1, { imageUrl: SEED_IMAGE.atelier2 }),
-        section("imageGrid2", 2, {
-          imageUrlA: SEED_IMAGE.atelier3,
-          imageUrlB: SEED_IMAGE.atelier4,
-        }),
-        section("fullWidthImage", 3, { imageUrl: SEED_IMAGE.atelier1 }),
-        section("typography", 4, {}),
-        section("colorPalette", 5, {}),
-        section("video", 6, {
-          url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-          caption: "Motion teaser (placeholder)",
-        }),
-      ],
+      sections: [],
       gallery: [],
     }),
   ];

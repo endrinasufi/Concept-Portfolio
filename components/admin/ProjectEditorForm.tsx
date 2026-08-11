@@ -3,16 +3,14 @@
 import type {
   BrandingProject,
   BrandColor,
-  BrandingSection,
-  GalleryItem,
-  TypographyItem,
+  GalleryRow,
 } from "@/types/branding";
 import { ColorManager } from "./ColorManager";
-import { TypographyManager } from "./TypographyManager";
-import { SectionManager } from "./SectionManager";
 import { GalleryManager } from "./GalleryManager";
 import { BentoMediaEditor } from "./BentoMediaEditor";
+import { ProjectVideoEditor } from "./ProjectVideoEditor";
 import { slugify } from "@/lib/utils/id";
+import { flattenGalleryRows, getGalleryRows } from "@/lib/utils/galleryRows";
 import Link from "next/link";
 import { ExternalLink, Save } from "lucide-react";
 import { useState } from "react";
@@ -30,6 +28,7 @@ export function emptyProjectForm(): ProjectFormValue {
     slug: "",
     title: "",
     shortDescription: "",
+    brandAbout: "",
     client: "",
     industry: "",
     year: new Date().getFullYear(),
@@ -44,24 +43,19 @@ export function emptyProjectForm(): ProjectFormValue {
     coverStat1Label: "VITI",
     coverStat2Value: "",
     coverStat2Label: "",
+    aboutPuzzleMediaIds: ["", "", ""],
     brandColors: [
       { id: crypto.randomUUID(), hex: "#D4A574", order: 0 },
       { id: crypto.randomUUID(), hex: "#1A1A1A", order: 1 },
     ],
-    typography: [
-      {
-        id: crypto.randomUUID(),
-        role: "primary",
-        fontName: "Fraunces",
-        fontWeight: "600",
-        sampleText: "Brand Name",
-      },
-    ],
+    typography: [],
     status: "draft",
     featured: false,
     order: 0,
     sections: [],
     gallery: [],
+    galleryRows: [],
+    videoMediaId: undefined,
     metaTitle: "",
     metaDescription: "",
   };
@@ -76,7 +70,10 @@ export function ProjectEditorForm({
   onSave: (value: ProjectFormValue) => Promise<void>;
   saving?: boolean;
 }) {
-  const [form, setForm] = useState<ProjectFormValue>(initial);
+  const [form, setForm] = useState<ProjectFormValue>(() => ({
+    ...initial,
+    galleryRows: getGalleryRows(initial),
+  }));
   const [servicesRaw, setServicesRaw] = useState(initial.services.join(", "));
   const [message, setMessage] = useState<string | null>(null);
 
@@ -96,8 +93,14 @@ export function ProjectEditorForm({
       services,
       slug: form.slug || slugify(form.title),
       brandColors: form.brandColors.map((c, i) => ({ ...c, order: i })),
-      sections: form.sections.map((s, i) => ({ ...s, order: i })),
-      gallery: form.gallery.map((g, i) => ({ ...g, order: i })),
+      sections: [],
+      typography: form.typography ?? [],
+      galleryRows: (form.galleryRows ?? []).map((row, i) => ({
+        ...row,
+        order: i,
+        items: row.items.map((g, j) => ({ ...g, order: j })),
+      })),
+      gallery: flattenGalleryRows(form.galleryRows ?? []),
     };
     if (payload.brandColors.length < 2 || payload.brandColors.length > 5) {
       setMessage("Paleta duhet të ketë 2–5 ngjyra.");
@@ -112,7 +115,7 @@ export function ProjectEditorForm({
   }
 
   return (
-    <form onSubmit={(e) => void handleSubmit(e)} className="space-y-10 max-w-4xl">
+    <form onSubmit={(e) => void handleSubmit(e)} className="space-y-10 max-w-6xl">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl">
@@ -205,7 +208,26 @@ export function ProjectEditorForm({
               rows={2}
               value={form.shortDescription}
               onChange={(e) => patch({ shortDescription: e.target.value })}
+              placeholder="Identitet vizual me ** fokusë bold** për theks…"
             />
+            <span className="mt-1 block text-[11px] text-muted/80">
+              Për bold në mosaik: vendos fjalët mes dy yjesh, p.sh.{" "}
+              <code className="text-foreground/70">**fjalë**</code> ose{" "}
+              <code className="text-foreground/70">**disa fjalë bashkë**</code>
+            </span>
+          </label>
+          <label className="block text-xs text-muted sm:col-span-2">
+            Tekst shpjegues i brandit
+            <textarea
+              className={`${inputClass} mt-1`}
+              rows={5}
+              value={form.brandAbout ?? ""}
+              onChange={(e) => patch({ brandAbout: e.target.value })}
+              placeholder="Shpjegim më i gjatë për markën — shfaqet poshtë fotove…"
+            />
+            <span className="mt-1 block text-[11px] text-muted/80">
+              Shfaqet poshtë përshkrimit të shkurtër, majtas, gjerësi e plotë.
+            </span>
           </label>
           <label className="block text-xs text-muted sm:col-span-2">
             Shërbimet (ndara me presje)
@@ -333,23 +355,21 @@ export function ProjectEditorForm({
       </section>
 
       <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
-        <TypographyManager
-          items={form.typography}
-          onChange={(typography: TypographyItem[]) => patch({ typography })}
-        />
-      </section>
-
-      <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
-        <SectionManager
-          sections={form.sections}
-          onChange={(sections: BrandingSection[]) => patch({ sections })}
-        />
-      </section>
-
-      <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
         <GalleryManager
-          items={form.gallery}
-          onChange={(gallery: GalleryItem[]) => patch({ gallery })}
+          rows={form.galleryRows ?? []}
+          onChange={(galleryRows: GalleryRow[]) =>
+            patch({
+              galleryRows,
+              gallery: flattenGalleryRows(galleryRows),
+            })
+          }
+        />
+      </section>
+
+      <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+        <ProjectVideoEditor
+          videoMediaId={form.videoMediaId}
+          onChange={(videoMediaId) => patch({ videoMediaId })}
         />
       </section>
 

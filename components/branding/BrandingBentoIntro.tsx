@@ -106,31 +106,6 @@ export function BrandingBentoIntro({ project }: { project: BrandingProject }) {
           className="min-h-20 w-full lg:hidden"
         />
       </div>
-
-      {project.shortDescription ? (
-        <div
-          id="projekt"
-          className="mt-10 scroll-mt-28 border-t border-white/10 pt-8 md:mt-14 md:pt-10"
-        >
-          <div className="grid items-start gap-5 md:grid-cols-12 md:gap-10">
-            <div className="md:col-span-3 lg:col-span-2">
-              <p className="text-[11px] uppercase tracking-[0.28em] text-muted">
-                Rreth projektit
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-foreground/55">
-                {project.client}
-                {project.client && project.year ? " · " : ""}
-                {project.year || ""}
-              </p>
-            </div>
-            <p className="font-display text-2xl leading-[1.25] text-foreground/90 md:col-span-9 md:text-3xl lg:col-span-9 lg:text-[2.15rem] lg:leading-[1.3]">
-              {project.shortDescription}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div id="projekt" className="scroll-mt-28" />
-      )}
     </Reveal>
   );
 }

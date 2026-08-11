@@ -5,6 +5,14 @@ import { MediaImage } from "./MediaImage";
 import { ColorPills } from "./ColorPills";
 import { Reveal } from "@/components/motion/Reveal";
 import { sortByOrder } from "@/lib/utils/id";
+import {
+  flattenGalleryRows,
+  getGalleryRows,
+  gridColsClass,
+  GALLERY_GAP_CLASS,
+} from "@/lib/utils/galleryRows";
+import { GalleryLightbox } from "./GalleryLightbox";
+import { useState } from "react";
 
 function asString(v: unknown, fallback = ""): string {
   return typeof v === "string" ? v : fallback;
@@ -210,27 +218,56 @@ export function ProjectSectionRenderer({
 }
 
 export function EditorialGallery({ project }: { project: BrandingProject }) {
-  const items = sortByOrder(project.gallery);
-  if (!items.length) return null;
+  const rows = getGalleryRows(project).filter((row) => row.items.length > 0);
+  const flatItems = flattenGalleryRows(rows);
+  const flatIds = flatItems.map((g) => g.mediaId);
+  const indexByItemId = new Map(flatItems.map((g, i) => [g.id, i]));
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  if (!rows.length) return null;
+
   return (
-    <section className="mt-16 md:mt-24">
+    <section className="mt-16 w-full md:mt-24">
       <Reveal>
-        <h2 className="font-display mb-8 text-3xl">Galeria</h2>
-        <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
-          {items.map((item) => (
+        <div className={`flex flex-col ${GALLERY_GAP_CLASS}`}>
+          {rows.map((row) => (
             <div
-              key={item.id}
-              className="mb-4 break-inside-avoid overflow-hidden rounded-[var(--radius-lg)]"
+              key={row.id}
+              className={`grid ${GALLERY_GAP_CLASS} ${gridColsClass(row.columns)}`}
             >
-              <MediaImage
-                mediaId={item.mediaId}
-                alt="Gallery"
-                className="w-full object-cover transition duration-500 hover:scale-[1.02]"
-              />
+              {sortByOrder(row.items).map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() =>
+                    setLightboxIndex(indexByItemId.get(item.id) ?? 0)
+                  }
+                  className="group relative aspect-[4/3] overflow-hidden rounded-[1.35rem] bg-surface text-left md:rounded-[1.6rem]"
+                  aria-label="Hap foton në lightbox"
+                >
+                  <MediaImage
+                    mediaId={item.mediaId}
+                    alt="Gallery"
+                    fit="cover"
+                    className="h-full w-full transition duration-500 group-hover:scale-[1.02]"
+                  />
+                  <span className="pointer-events-none absolute inset-0 bg-black/0 transition group-hover:bg-black/10" />
+                </button>
+              ))}
             </div>
           ))}
         </div>
       </Reveal>
+
+      {lightboxIndex !== null ? (
+        <GalleryLightbox
+          project={project}
+          mediaIds={flatIds}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onIndexChange={setLightboxIndex}
+        />
+      ) : null}
     </section>
   );
 }
