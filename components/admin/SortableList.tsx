@@ -47,12 +47,12 @@ export function SortableItem({
       {handle ? (
         <button
           type="button"
-          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 cursor-grab touch-none rounded p-1 text-muted hover:text-foreground active:cursor-grabbing"
-          aria-label="Zvarrite"
+          className="absolute left-1.5 top-1.5 z-10 cursor-grab touch-none rounded-md border border-border/60 bg-background/90 p-1 text-muted shadow-sm hover:text-foreground active:cursor-grabbing"
+          aria-label="Zvarrite për të rirenditur"
           {...attributes}
           {...listeners}
         >
-          <GripVertical size={16} />
+          <GripVertical size={14} />
         </button>
       ) : (
         <div className="absolute inset-0 cursor-grab touch-none" {...attributes} {...listeners} />

@@ -2,18 +2,25 @@
 
 import Link from "next/link";
 import { useProjects } from "@/lib/hooks/useProjects";
+import { useSocialMediaProjects } from "@/lib/hooks/useSocialMediaProjects";
 
 export default function AdminDashboardPage() {
   const { projects, loading } = useProjects({ service: "branding", includeDrafts: true });
+  const { projects: socialProjects, loading: socialLoading } = useSocialMediaProjects({
+    includeDrafts: true,
+  });
   const published = projects.filter((p) => p.status === "published").length;
   const drafts = projects.filter((p) => p.status === "draft").length;
+  const socialPublished = socialProjects.filter((p) => p.status === "published").length;
+  const socialDrafts = socialProjects.filter((p) => p.status === "draft").length;
 
   return (
     <div>
       <h1 className="font-display text-3xl">Dashboard</h1>
-      <p className="mt-2 text-muted">Menaxho projektet branding lokalisht (IndexedDB).</p>
+      <p className="mt-2 text-muted">Menaxho projektet lokalisht (IndexedDB).</p>
 
-      <div className="mt-10 grid gap-4 sm:grid-cols-3">
+      <h2 className="mt-10 text-xs uppercase tracking-[0.2em] text-muted">Branding</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
         {[
           { label: "Projekte", value: loading ? "…" : projects.length },
           { label: "Publikuar", value: loading ? "…" : published },
@@ -21,6 +28,23 @@ export default function AdminDashboardPage() {
         ].map((stat) => (
           <div
             key={stat.label}
+            className="rounded-[var(--radius-lg)] border border-border bg-surface/50 p-5"
+          >
+            <p className="text-xs uppercase tracking-[0.2em] text-muted">{stat.label}</p>
+            <p className="font-display mt-2 text-4xl">{stat.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 className="mt-10 text-xs uppercase tracking-[0.2em] text-muted">Social Media</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        {[
+          { label: "Projekte", value: socialLoading ? "…" : socialProjects.length },
+          { label: "Publikuar", value: socialLoading ? "…" : socialPublished },
+          { label: "Draft", value: socialLoading ? "…" : socialDrafts },
+        ].map((stat) => (
+          <div
+            key={`sm-${stat.label}`}
             className="rounded-[var(--radius-lg)] border border-border bg-surface/50 p-5"
           >
             <p className="text-xs uppercase tracking-[0.2em] text-muted">{stat.label}</p>
@@ -37,10 +61,16 @@ export default function AdminDashboardPage() {
           Menaxho branding
         </Link>
         <Link
-          href="/admin/branding/new"
+          href="/admin/social-media"
           className="rounded-full border border-border px-5 py-2.5 text-sm"
         >
-          Projekt i ri
+          Menaxho social media
+        </Link>
+        <Link
+          href="/admin/social-media/new"
+          className="rounded-full border border-border px-5 py-2.5 text-sm"
+        >
+          Projekt social i ri
         </Link>
       </div>
     </div>
