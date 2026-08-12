@@ -106,7 +106,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`pointer-events-none absolute inset-x-0 top-0 z-[99] w-full bg-transparent ${inter.className}`}
+      className={`pointer-events-none fixed inset-x-0 top-0 z-[9999] w-full bg-transparent ${inter.className}`}
     >
       <div className="pointer-events-auto mx-auto box-border flex w-full max-w-7xl items-center justify-between px-5 pt-[var(--header-top)] pb-3 md:px-8">
         <SiteLogo />

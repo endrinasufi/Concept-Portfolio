@@ -1,5 +1,6 @@
 "use client";
 
+import { ClientLogosEditor } from "@/components/admin/ClientLogosEditor";
 import { SiteLogoSettings } from "@/components/admin/SiteLogoSettings";
 
 export default function AdminSettingsPage() {
@@ -13,6 +14,7 @@ export default function AdminSettingsPage() {
       </div>
 
       <SiteLogoSettings />
+      <ClientLogosEditor />
 
       <ul className="space-y-2 text-sm text-muted">
         <li>· Storage: IndexedDB (Dexie)</li>
