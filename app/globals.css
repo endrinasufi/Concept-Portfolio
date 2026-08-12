@@ -20,8 +20,6 @@
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-sans: var(--font-outfit), system-ui, sans-serif;
   --font-hero-caps: var(--font-six-caps), sans-serif;
-  --font-portfolio: var(--font-portfolio-script), cursive;
-  --portfolio-orange: #f19a2a;
 }
 
 @theme inline {
@@ -81,8 +79,8 @@ img {
   font-family: var(--font-hero-caps);
 }
 
-.font-portfolio {
-  font-family: var(--font-portfolio);
+.scroll-card-hover {
+  z-index: 1000 !important;
 }
 
 .editorial-grain {

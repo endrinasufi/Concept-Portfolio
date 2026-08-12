@@ -16,10 +16,11 @@ const inter = Inter({
 const SITE = "https://conceptmarketing.al";
 
 const navLinks = [
-  { href: "/", label: "Kreu" },
   { href: "/branding", label: "Branding" },
   { href: "/social-media", label: "Social Media" },
-  { href: "/admin", label: "Admin" },
+  { href: "/web-design", label: "Web Design" },
+  { href: "/video-production", label: "Video" },
+  { href: "/photoshooting", label: "Photoshooting" },
 ] as const;
 
 const PILL_STROKE: CSSProperties = {
@@ -58,19 +59,19 @@ function PortfolioArrow() {
 export function SiteHeader() {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
-  const isSocial = Boolean(pathname?.startsWith("/social-media"));
+  const isSocialProject = Boolean(pathname?.startsWith("/social-media/"));
 
   if (isAdmin) return null;
 
-  const stroke: CSSProperties = isSocial
+  const stroke: CSSProperties = isSocialProject
     ? {
         ...PILL_STROKE,
         borderColor: "rgba(0, 0, 0, 0.18)",
       }
     : PILL_STROKE;
 
-  const linkTone = isSocial ? "text-neutral-900" : "text-white";
-  const activeTone = isSocial ? "bg-black/5" : "bg-black/40";
+  const linkTone = isSocialProject ? "text-neutral-900" : "text-white";
+  const activeTone = isSocialProject ? "bg-black/5" : "bg-black/40";
 
   return (
     <header
@@ -85,7 +86,7 @@ export function SiteHeader() {
             paddingLeft: 17.5,
             paddingRight: 17.5,
             lineHeight: 0,
-            background: isSocial ? "rgba(255,255,255,0.72)" : "transparent",
+            background: isSocialProject ? "rgba(255,255,255,0.72)" : "transparent",
           }}
         >
           <Link
@@ -93,7 +94,7 @@ export function SiteHeader() {
             style={{ display: "inline-block", lineHeight: 0 }}
             aria-label="Concept Marketing Albania"
           >
-            <SiteLogoImg dark={isSocial} />
+            <SiteLogoImg dark={isSocialProject} />
           </Link>
         </div>
 
@@ -105,7 +106,7 @@ export function SiteHeader() {
               height: PILL_HEIGHT,
               paddingLeft: 7.5,
               paddingRight: 7.5,
-              background: isSocial ? "rgba(255,255,255,0.72)" : "transparent",
+              background: isSocialProject ? "rgba(255,255,255,0.72)" : "transparent",
             }}
             aria-label="Main"
           >
@@ -147,7 +148,7 @@ export function SiteHeader() {
             target="_blank"
             rel="noopener noreferrer"
             className={`inline-flex items-center rounded-full px-5 py-[7px] text-[14px] font-medium transition ${
-              isSocial
+              isSocialProject
                 ? "bg-neutral-900 text-white hover:bg-neutral-800"
                 : "bg-white text-black hover:bg-white/90"
             }`}

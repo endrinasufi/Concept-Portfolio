@@ -68,14 +68,21 @@ export function SocialMediaProjectList() {
       >
         <div className="space-y-3">
           {projects.map((project) => {
-            const cover = project.block1.feedPosts[0];
+            const coverMediaId =
+              project.coverMediaId ??
+              project.block1.feedPosts[0]?.mediaId ??
+              project.block1.mockupImage1MediaId;
+            const coverImageUrl =
+              project.coverImageUrl ??
+              project.block1.feedPosts[0]?.imageUrl ??
+              project.block1.mockupImage1Url;
             return (
               <SortableItem key={project.id} id={project.id} className="pl-9">
                 <div className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface/50 p-3 sm:flex-row sm:items-center">
                   <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-surface-elevated">
                     <MediaImage
-                      mediaId={cover?.mediaId ?? project.block1.mockupImage1MediaId}
-                      imageUrl={cover?.imageUrl ?? project.block1.mockupImage1Url}
+                      mediaId={coverMediaId}
+                      imageUrl={coverImageUrl}
                       alt=""
                       fit="cover"
                     />

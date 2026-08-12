@@ -16,6 +16,10 @@ export function isMobileHome(vw: number): boolean {
 }
 
 export function homeCardCount(vw: number): number {
+  return isMobileHome(vw) ? 5 : 9;
+}
+
+export function homeEarlyCardCount(vw: number): number {
   return isMobileHome(vw) ? 5 : 7;
 }
 
@@ -34,12 +38,13 @@ function scene2Scale(vw: number): number {
 }
 
 export function cardWidth(vw: number): number {
-  if (isMobileHome(vw)) return Math.round(Math.min(92, vw * 0.24));
+  if (isMobileHome(vw)) return Math.round(Math.min(vw * 0.74, 300));
   if (vw < 1024) return 250;
   return 307;
 }
 
 export function cardHeight(vw: number): number {
+  if (isMobileHome(vw)) return Math.round(cardWidth(vw) * 1.3);
   return Math.round(cardWidth(vw) * CARD_ASPECT);
 }
 
@@ -131,6 +136,251 @@ function deckSpreadMobile(total: number, vw: number): CardPose[] {
   });
 }
 
+/** Skena 3a — kartat mblidhen plotësisht mbi tekst (një grumbull) */
+export function deckTextStack(total: number, vw: number): CardPose[] {
+  const s = isMobileHome(vw) ? 0.9 : 1.05;
+  return Array.from({ length: total }, (_, i) => ({
+    x: 0,
+    y: i * -0.4,
+    rotate: 0,
+    scale: s,
+    zIndex: total - i,
+  }));
+}
+
+/** Skena 3b — hapje si tifoz, pivot poshtë në qendër, drejt majtas */
+export function deckTextFan(total: number, vw: number): CardPose[] {
+  const mobile = isMobileHome(vw);
+  const s = mobile ? 0.9 : 1.05;
+  const hy = (cardHeight(vw) * s) / 2;
+  const front = mobile ? 10 : 14;
+  const step = mobile ? 9.5 : 11.2;
+
+  return Array.from({ length: total }, (_, i) => {
+    const rotate = front - i * step;
+    const θ = (rotate * Math.PI) / 180;
+    return {
+      x: hy * Math.sin(θ),
+      y: hy * (1 - Math.cos(θ)),
+      rotate,
+      scale: s * (1 - i * 0.01),
+      zIndex: total - i,
+    };
+  });
+}
+
+/** Qendron vertikalisht bllokun tekst + karta */
+export function scene3Center(
+  vw: number,
+  viewportHeight: number,
+  wrapHeight: number,
+) {
+  const mobile = isMobileHome(vw);
+  const header = mobile ? 56 : 80;
+  const gap = mobile ? 12 : 16;
+  const baseScale = mobile ? 0.88 : vw < 1024 ? 0.74 : 0.8;
+  const peakScale = mobile ? 1.14 : vw < 1024 ? 0.98 : 1.14;
+  const cardH = cardHeight(vw) * peakScale;
+  const amplitude = mobile ? 32 : 48;
+  const groupH = wrapHeight + gap + cardH + amplitude * 0.35;
+  const groupTop = Math.max(header, (viewportHeight - groupH) / 2);
+
+  return {
+    wrapY: groupTop + wrapHeight / 2 - viewportHeight / 2,
+    yBias: groupTop + wrapHeight + gap + cardH / 2 - viewportHeight / 2,
+    baseScale,
+    peakScale,
+    amplitude,
+  };
+}
+
+/** Skena 3 — valë / lum kartash, jo grid: S-curve me mbivendosje */
+export function deckWave(
+  total: number,
+  vw: number,
+  viewportHeight: number,
+  wrapHeight: number,
+): CardPose[] {
+  const mobile = isMobileHome(vw);
+  const sidePad = mobile ? 20 : 64;
+  const availW = Math.max(280, vw - sidePad * 2);
+  const { yBias, baseScale, peakScale, amplitude } = scene3Center(
+    vw,
+    viewportHeight,
+    wrapHeight,
+  );
+
+  const radiusX = availW * 0.42;
+
+  const order: number[] = [];
+  for (let d = total - 1; d >= 1; d -= 2) order.push(d);
+  order.push(0);
+  for (let d = 1; d < total; d += 2) order.push(d);
+
+  const pos = new Array<CardPose>(total);
+
+  order.forEach((cardIndex, k) => {
+    const t = total === 1 ? 0.5 : k / (total - 1);
+    const wave = Math.sin(t * Math.PI * 2);
+    const slope = Math.cos(t * Math.PI * 2);
+    const depth = Math.abs(t - 0.5) * 2;
+    const isFront = cardIndex === 0;
+
+    pos[cardIndex] = {
+      x: (t - 0.5) * 2 * radiusX,
+      y: -wave * amplitude + yBias,
+      rotate: slope * (mobile ? 9 : 14),
+      scale: isFront ? peakScale : baseScale * (1 - depth * 0.12),
+      zIndex: isFront ? 40 : Math.round(8 + (1 - depth) * 18),
+    };
+  });
+
+  return pos.map(
+    (p, i) =>
+      p ?? {
+        x: 0,
+        y: yBias,
+        rotate: 0,
+        scale: baseScale,
+        zIndex: total - i,
+      },
+  );
+}
+
+/** @deprecated alias — përdor deckWave */
+export function deckIrregularGrid(
+  total: number,
+  vw: number,
+  viewportHeight: number,
+  topReserve: number,
+): CardPose[] {
+  return deckWave(total, vw, viewportHeight, topReserve);
+}
+
+export function stageGridOffset(
+  viewportHeight: number,
+  topReserve: number,
+): { x: number; y: number } {
+  const bottomPad = 32;
+  const availH = Math.max(260, viewportHeight - topReserve - bottomPad);
+  const gridCenter = topReserve + availH / 2;
+  return { x: 0, y: gridCenter - viewportHeight / 2 };
+}
+
+export function wrapHeadlineToTop(
+  vw: number,
+  viewportHeight: number,
+  wrapHeight: number,
+): number {
+  return scene3Center(vw, viewportHeight, wrapHeight).wrapY;
+}
+
+export function gridTopReserve(
+  wrapHeight: number,
+  mobile: boolean,
+): number {
+  const top = mobile ? 56 : 80;
+  return top + wrapHeight + (mobile ? 8 : 10);
+}
+
+export type MobileDeckStyle = "branding" | "social" | "web";
+
+/** Celular — vendosje krejt e ndryshme për çdo kategori */
+export function deckMobileStack(
+  total: number,
+  vw: number,
+  style: MobileDeckStyle = "branding",
+): CardPose[] {
+  const h = cardHeight(vw);
+  const w = cardWidth(vw);
+
+  if (style === "social") {
+    // Tifoz: karta 0 në qendër, të tjerat majtas/djathtas
+    const spread = Math.min(34, vw * 0.085);
+    const arc = 14;
+    return Array.from({ length: total }, (_, i) => {
+      const side = fanSideOffset(i, total);
+      const depth = Math.abs(side);
+      return {
+        x: side * spread,
+        y: depth * arc,
+        rotate: side * 7.5,
+        scale: 1 - depth * 0.03,
+        zIndex: total - depth,
+      };
+    });
+  }
+
+  if (style === "web") {
+    // Shkallë: karta kryesore në qendër, të tjerat mbrapa poshtë-djathtas
+    const stepX = Math.min(20, w * 0.075);
+    const stepY = Math.min(34, h * 0.11);
+    return Array.from({ length: total }, (_, i) => ({
+      x: i * stepX,
+      y: i * stepY,
+      rotate: i * 1.6,
+      scale: 1 - i * 0.018,
+      zIndex: total - i,
+    }));
+  }
+
+  // Branding — tufë vertikale e mbivendosur, e çrregullt, e qendruar
+  const xs = [4, -26, 20, -12, 28, -6, 14];
+  const rots = [-3.6, 5.2, -2.2, 4.2, -4.6, 2.4, -1.4];
+  const peek = Math.round(Math.min(48, h * 0.125));
+  const stackH = h + Math.max(0, total - 1) * peek;
+  const y0 = -stackH / 2 + h / 2;
+  return Array.from({ length: total }, (_, i) => ({
+    x: xs[i % xs.length],
+    y: y0 + i * peek,
+    rotate: rots[i % rots.length],
+    scale: 1,
+    zIndex: total - i,
+  }));
+}
+
+/** Celular — dalje e kartës, stil i ndryshëm për çdo kategori */
+export function deckMobileExit(
+  index: number,
+  vw: number,
+  from: CardPose,
+  style: MobileDeckStyle = "branding",
+): CardPose {
+  if (style === "social") {
+    // Të gjitha fluturojnë lart me rrotullim
+    const sway = index % 2 === 0 ? -0.18 : 0.18;
+    return {
+      x: from.x + vw * sway,
+      y: from.y - vw * 0.85,
+      rotate: from.rotate + (index % 2 === 0 ? -25 : 25),
+      scale: 0.82,
+      zIndex: from.zIndex + 24,
+    };
+  }
+
+  if (style === "web") {
+    // Bien poshtë + zvogëlohen
+    const dir = index % 2 === 0 ? -1 : 1;
+    return {
+      x: from.x + dir * vw * 0.2,
+      y: from.y + vw * 0.9,
+      rotate: from.rotate + dir * 18,
+      scale: 0.72,
+      zIndex: from.zIndex + 24,
+    };
+  }
+
+  // Branding — ikin anash majtas/djathtas
+  const dir = index % 2 === 0 ? -1 : 1;
+  return {
+    x: dir * (vw * 0.95),
+    y: from.y - 18,
+    rotate: dir * (18 + (index % 3) * 5),
+    scale: 0.96,
+    zIndex: from.zIndex + 24,
+  };
+}
+
 /** Scroll faza 2 — desktop: hapje poshtë-djathtas */
 export function deckSpreadBR(total: number, vw: number): CardPose[] {
   if (isMobileHome(vw)) return deckSpreadMobile(total, vw);
@@ -213,10 +463,6 @@ export function stageOffset(
         y: mobile ? -12 : -28,
       };
   }
-}
-
-export function portfolioRotation(vw: number): number {
-  return isMobileHome(vw) ? -3 : -7;
 }
 
 export { cardWidth as cardSize };
