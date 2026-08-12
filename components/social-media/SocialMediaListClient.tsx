@@ -1,71 +1,127 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useSocialMediaProjects } from "@/lib/hooks/useSocialMediaProjects";
-import { socialMediaContentClass } from "@/lib/social-media/layout";
 import { MediaImage } from "@/components/branding/MediaImage";
+import { FadeIn, Reveal } from "@/components/motion/Reveal";
+import type { SocialMediaProject } from "@/types/social-media";
+
+function coverOf(project: SocialMediaProject) {
+  return {
+    mediaId:
+      project.coverMediaId ??
+      project.block1.feedPosts[0]?.mediaId ??
+      project.block1.mockupImage1MediaId,
+    imageUrl:
+      project.coverImageUrl ??
+      project.block1.feedPosts[0]?.imageUrl ??
+      project.block1.mockupImage1Url,
+  };
+}
+
+function SocialMediaProjectCard({
+  project,
+  index,
+}: {
+  project: SocialMediaProject;
+  index: number;
+}) {
+  const cover = coverOf(project);
+  const meta = [
+    String(index + 1).padStart(2, "0"),
+    project.serviceLabel,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  return (
+    <Link href={`/social-media/${project.slug}`} className="group flex flex-col">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.15rem] bg-white/[0.04] md:rounded-[1.35rem]">
+        {cover.mediaId || cover.imageUrl ? (
+          <MediaImage
+            mediaId={cover.mediaId}
+            imageUrl={cover.imageUrl}
+            alt={project.clientName || project.title}
+            fit="cover"
+            className="transition duration-700 ease-out group-hover:scale-[1.05]"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-white/[0.06]" />
+        )}
+        <div className="pointer-events-none absolute inset-0 bg-black/10 transition duration-500 group-hover:bg-transparent" />
+      </div>
+
+      <div className="mt-3.5 md:mt-4">
+        <p className="text-[10px] uppercase tracking-[0.22em] text-white/40">
+          {meta}
+        </p>
+
+        <h2 className="mt-2 text-lg font-semibold leading-[1.15] tracking-tight text-white transition duration-300 group-hover:text-white/75 md:text-xl">
+          {project.clientName || project.title}
+        </h2>
+
+        {project.title && project.clientName && project.title !== project.clientName ? (
+          <p className="mt-2 line-clamp-2 text-sm font-normal leading-relaxed text-white/50">
+            {project.title}
+          </p>
+        ) : null}
+      </div>
+    </Link>
+  );
+}
 
 export function SocialMediaListClient() {
   const { projects, loading, error } = useSocialMediaProjects();
 
-  if (loading) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center bg-[#EAEAEA] pt-[var(--header-offset)] text-neutral-500">
-        Duke ngarkuar…
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <p className="bg-[#EAEAEA] px-5 py-20 text-center text-red-600">{error}</p>
-    );
-  }
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--project-bg", "#0E0F11");
+    return () => {
+      root.style.removeProperty("--project-bg");
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#EAEAEA] pb-20 pt-[calc(var(--header-offset))] text-neutral-900">
-      <div className={socialMediaContentClass}>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-neutral-600 md:text-xs">
-          Portfolio
-        </p>
-        <h1 className="mt-3 text-[clamp(2.25rem,5vw,4.5rem)] font-extrabold uppercase tracking-[-0.02em] text-neutral-950 [font-family:var(--font-sm-display)]">
-          Social Media
-        </h1>
+    <div className="relative min-h-screen" style={{ backgroundColor: "#0E0F11" }}>
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[70vh] opacity-80"
+        style={{
+          background:
+            "radial-gradient(70% 50% at 50% -10%, rgba(212,165,116,0.14), transparent 60%)",
+        }}
+        aria-hidden
+      />
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => {
-            const cover = project.block1.feedPosts[0];
-            return (
-              <Link
-                key={project.id}
-                href={`/social-media/${project.slug}`}
-                className="group block overflow-hidden rounded-[1.25rem] border border-black/[0.07] bg-white shadow-[0_16px_48px_rgba(0,0,0,0.07)] transition hover:shadow-[0_24px_64px_rgba(0,0,0,0.1)]"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden bg-neutral-200">
-                  <MediaImage
-                    mediaId={cover?.mediaId ?? project.block1.mockupImage1MediaId}
-                    imageUrl={cover?.imageUrl ?? project.block1.mockupImage1Url}
-                    alt={project.clientName}
-                    fit="cover"
-                    className="transition duration-700 group-hover:scale-[1.03]"
-                  />
-                </div>
-                <div className="p-5">
-                  <h2 className="text-xl font-bold uppercase tracking-[-0.02em] [font-family:var(--font-sm-display)]">
-                    {project.clientName}
-                  </h2>
-                  <p className="mt-1 text-sm text-neutral-500">
-                    {project.serviceLabel}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+      <div className="relative z-[1] mx-auto max-w-7xl px-5 pb-24 pt-[var(--header-offset)] md:px-8">
+        <FadeIn>
+          <div className="max-w-3xl border-b border-white/[0.08] pb-12 md:pb-16">
+            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">
+              Social Media
+            </p>
+            <h1 className="font-display mt-4 text-5xl leading-[0.92] tracking-tight md:text-6xl lg:text-7xl">
+              Projektet
+            </h1>
+          </div>
+        </FadeIn>
 
-        {!projects.length ? (
-          <p className="mt-10 text-neutral-500">Nuk ka projekte publike ende.</p>
-        ) : null}
+        {loading ? (
+          <p className="mt-16 text-white/45">Duke ngarkuar projektet…</p>
+        ) : error ? (
+          <p className="mt-16 text-red-400">{error}</p>
+        ) : projects.length === 0 ? (
+          <p className="mt-16 text-white/45">Nuk ka projekte ende.</p>
+        ) : (
+          <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 sm:gap-x-6 sm:gap-y-12 md:mt-14 md:grid-cols-3 md:gap-x-8 md:gap-y-14 lg:gap-x-10 lg:gap-y-16">
+            {projects.map((project, i) => (
+              <Reveal key={project.id} delay={Math.min(i * 0.05, 0.2)}>
+                <div className="h-full border-b border-white/[0.08] pb-6 md:pb-8">
+                  <SocialMediaProjectCard project={project} index={i} />
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

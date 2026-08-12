@@ -80,6 +80,9 @@ export interface SocialMediaProject {
   usernames: SocialMediaUsername[];
   status: SocialMediaProjectStatus;
   order: number;
+  /** Cover për listën /social-media */
+  coverMediaId?: string;
+  coverImageUrl?: string;
   pageAppearance: SocialMediaPageAppearance;
   block1: SocialMediaBlock1;
   block2: SocialMediaBlock2;
@@ -95,6 +98,13 @@ export function defaultPageAppearance(): SocialMediaPageAppearance {
     lineColor: "#1a1a1a",
   };
 }
+
+/** Cover i rekomanduar për kartën në /social-media (portrait). */
+export const SOCIAL_MEDIA_COVER_FRAME = {
+  width: 1080,
+  height: 1350,
+  ratioLabel: "4:5",
+} as const;
 
 export function defaultBlock2(): SocialMediaBlock2 {
   return {
@@ -121,6 +131,8 @@ export function emptySocialMediaProjectDraft(): Omit<
     usernames: [],
     status: "draft",
     order: 0,
+    coverMediaId: undefined,
+    coverImageUrl: undefined,
     pageAppearance: defaultPageAppearance(),
     block1: { feedPosts: [] },
     block2: defaultBlock2(),

@@ -3,17 +3,20 @@ import type { MediaRepository } from "./media-types";
 import type { SocialMediaProjectRepository } from "./social-media-types";
 import type { VideoProductionRepository } from "./video-production-types";
 import type { PhotoshootingRepository } from "./photoshooting-types";
+import type { WebDesignProjectRepository } from "./web-design-types";
 import { LocalProjectRepository } from "./local/LocalProjectRepository";
 import { LocalMediaRepository } from "./local/LocalMediaRepository";
 import { LocalSocialMediaProjectRepository } from "./local/LocalSocialMediaProjectRepository";
 import { LocalVideoProductionRepository } from "./local/LocalVideoProductionRepository";
 import { LocalPhotoshootingRepository } from "./local/LocalPhotoshootingRepository";
+import { LocalWebDesignProjectRepository } from "./local/LocalWebDesignProjectRepository";
 
 let projectRepo: ProjectRepository | null = null;
 let mediaRepo: MediaRepository | null = null;
 let socialMediaRepo: SocialMediaProjectRepository | null = null;
 let videoProductionRepo: VideoProductionRepository | null = null;
 let photoshootingRepo: PhotoshootingRepository | null = null;
+let webDesignRepo: WebDesignProjectRepository | null = null;
 
 export function getProjectRepository(): ProjectRepository {
   if (typeof window === "undefined") {
@@ -63,4 +66,14 @@ export function getPhotoshootingRepository(): PhotoshootingRepository {
     photoshootingRepo = new LocalPhotoshootingRepository();
   }
   return photoshootingRepo;
+}
+
+export function getWebDesignProjectRepository(): WebDesignProjectRepository {
+  if (typeof window === "undefined") {
+    throw new Error("Web design repository requires browser environment");
+  }
+  if (!webDesignRepo) {
+    webDesignRepo = new LocalWebDesignProjectRepository();
+  }
+  return webDesignRepo;
 }

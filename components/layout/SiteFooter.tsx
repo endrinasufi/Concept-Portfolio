@@ -7,14 +7,25 @@ export function SiteFooter() {
   const pathname = usePathname();
   if (pathname?.startsWith("/admin")) return null;
 
-  const isSocial = Boolean(pathname?.startsWith("/social-media"));
+  const isSocialProject = Boolean(pathname?.startsWith("/social-media/"));
+  const isSocialList = pathname === "/social-media";
+  const isWeb = Boolean(pathname?.startsWith("/web-design"));
+  const isDarkList = isSocialList || isWeb;
+
+  const linkClass = isSocialProject
+    ? "transition hover:text-neutral-900"
+    : isDarkList
+      ? "transition hover:text-white"
+      : "transition hover:text-foreground";
 
   return (
     <footer
       className={`mt-auto border-t ${
-        isSocial
+        isSocialProject
           ? "border-black/10 bg-[#EAEAEA] text-neutral-900"
-          : "border-border"
+          : isDarkList
+            ? "border-white/10 bg-[#0B0B0C] text-white"
+            : "border-border"
       }`}
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-10 md:flex-row md:items-end md:justify-between md:px-8">
@@ -22,65 +33,38 @@ export function SiteFooter() {
           <p className="font-display text-lg">Concept Marketing Albania</p>
           <p
             className={`mt-1 max-w-sm text-sm ${
-              isSocial ? "text-neutral-500" : "text-muted"
+              isSocialProject
+                ? "text-neutral-500"
+                : isDarkList
+                  ? "text-white/45"
+                  : "text-muted"
             }`}
           >
-            Branding, social media, video dhe drejtim artistik.
+            Branding, social media, web design, video dhe photoshooting.
           </p>
         </div>
         <div
-          className={`flex gap-6 text-sm ${
-            isSocial ? "text-neutral-500" : "text-muted"
+          className={`flex flex-wrap gap-6 text-sm ${
+            isSocialProject
+              ? "text-neutral-500"
+              : isDarkList
+                ? "text-white/45"
+                : "text-muted"
           }`}
         >
-          <Link
-            href="/branding"
-            className={
-              isSocial
-                ? "transition hover:text-neutral-900"
-                : "transition hover:text-foreground"
-            }
-          >
+          <Link href="/branding" className={linkClass}>
             Branding
           </Link>
-          <Link
-            href="/social-media"
-            className={
-              isSocial
-                ? "transition hover:text-neutral-900"
-                : "transition hover:text-foreground"
-            }
-          >
+          <Link href="/social-media" className={linkClass}>
             Social Media
           </Link>
-          <Link
-            href="/web-design"
-            className={
-              isSocial
-                ? "transition hover:text-neutral-900"
-                : "transition hover:text-foreground"
-            }
-          >
+          <Link href="/web-design" className={linkClass}>
             Web Design
           </Link>
-          <Link
-            href="/video-production"
-            className={
-              isSocial
-                ? "transition hover:text-neutral-900"
-                : "transition hover:text-foreground"
-            }
-          >
+          <Link href="/video-production" className={linkClass}>
             Video
           </Link>
-          <Link
-            href="/photoshooting"
-            className={
-              isSocial
-                ? "transition hover:text-neutral-900"
-                : "transition hover:text-foreground"
-            }
-          >
+          <Link href="/photoshooting" className={linkClass}>
             Photoshooting
           </Link>
         </div>
