@@ -18,6 +18,7 @@ const SITE = "https://conceptmarketing.al";
 const navLinks = [
   { href: "/", label: "Kreu" },
   { href: "/branding", label: "Branding" },
+  { href: "/social-media", label: "Social Media" },
   { href: "/admin", label: "Admin" },
 ] as const;
 
@@ -30,6 +31,11 @@ const PILL_STROKE: CSSProperties = {
 };
 
 const PILL_HEIGHT = 44;
+
+function isActive(pathname: string | null, href: string) {
+  if (href === "/") return pathname === "/";
+  return Boolean(pathname?.startsWith(href));
+}
 
 function PortfolioArrow() {
   return (
@@ -49,77 +55,57 @@ function PortfolioArrow() {
   );
 }
 
-function SiteLogo() {
-  const { settings, loading } = useSiteSettings();
-  const uploaded = useMediaUrl(settings.logoMediaId);
-  const src = !loading && uploaded ? uploaded : "/brand/logo-light.svg";
-
-  return (
-    <div
-      className="box-border flex w-max shrink-0 grow-0 items-center"
-      style={{
-        ...PILL_STROKE,
-        height: PILL_HEIGHT,
-        paddingLeft: 17.5,
-        paddingRight: 17.5,
-        lineHeight: 0,
-        background: "transparent",
-      }}
-    >
-      <Link
-        href="/"
-        style={{ display: "inline-block", lineHeight: 0 }}
-        aria-label="Concept Marketing Albania"
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={src}
-          alt="Logo"
-          width={239}
-          height={20}
-          decoding="async"
-          loading="eager"
-          className="logo1"
-          style={{
-            display: "block",
-            height: 20,
-            width: "auto",
-            maxWidth: "none",
-            border: 0,
-          }}
-        />
-      </Link>
-    </div>
-  );
-}
-
-function isActive(pathname: string | null, href: string) {
-  if (href === "/") return pathname === "/";
-  return Boolean(pathname?.startsWith(href));
-}
-
 export function SiteHeader() {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isSocial = Boolean(pathname?.startsWith("/social-media"));
 
   if (isAdmin) return null;
+
+  const stroke: CSSProperties = isSocial
+    ? {
+        ...PILL_STROKE,
+        borderColor: "rgba(0, 0, 0, 0.18)",
+      }
+    : PILL_STROKE;
+
+  const linkTone = isSocial ? "text-neutral-900" : "text-white";
+  const activeTone = isSocial ? "bg-black/5" : "bg-black/40";
 
   return (
     <header
       className={`pointer-events-none absolute inset-x-0 top-0 z-[99] w-full bg-transparent ${inter.className}`}
     >
       <div className="pointer-events-auto mx-auto box-border flex w-full max-w-7xl items-center justify-between px-5 pt-[var(--header-top)] pb-3 md:px-8">
-        <SiteLogo />
+        <div
+          className="box-border flex w-max shrink-0 grow-0 items-center"
+          style={{
+            ...stroke,
+            height: PILL_HEIGHT,
+            paddingLeft: 17.5,
+            paddingRight: 17.5,
+            lineHeight: 0,
+            background: isSocial ? "rgba(255,255,255,0.72)" : "transparent",
+          }}
+        >
+          <Link
+            href="/"
+            style={{ display: "inline-block", lineHeight: 0 }}
+            aria-label="Concept Marketing Albania"
+          >
+            <SiteLogoImg dark={isSocial} />
+          </Link>
+        </div>
 
         <div className="hidden min-w-0 flex-1 items-stretch md:flex">
           <nav
-            className="ml-[15px] inline-flex items-center bg-transparent"
+            className="ml-[15px] inline-flex items-center"
             style={{
-              ...PILL_STROKE,
+              ...stroke,
               height: PILL_HEIGHT,
               paddingLeft: 7.5,
               paddingRight: 7.5,
-              background: "transparent",
+              background: isSocial ? "rgba(255,255,255,0.72)" : "transparent",
             }}
             aria-label="Main"
           >
@@ -129,8 +115,8 @@ export function SiteHeader() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`rounded-[30px] bg-transparent px-5 py-[5px] text-[14px] font-normal leading-7 tracking-[0] text-white ${
-                    active ? "bg-black/40" : ""
+                  className={`rounded-[30px] bg-transparent px-5 py-[5px] text-[14px] font-normal leading-7 tracking-[0] ${linkTone} ${
+                    active ? activeTone : ""
                   }`}
                 >
                   {link.label}
@@ -143,7 +129,7 @@ export function SiteHeader() {
         <div className="ml-auto flex shrink-0 items-center justify-end gap-3 md:gap-4">
           <a
             href={`${SITE}/sq/`}
-            className="inline-flex items-center gap-1.5 text-[14px] font-normal text-white"
+            className={`inline-flex items-center gap-1.5 text-[14px] font-normal ${linkTone}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -160,15 +146,46 @@ export function SiteHeader() {
             href={SITE}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center rounded-full bg-white px-5 py-[7px] text-[14px] font-medium text-black transition hover:bg-white/90"
+            className={`inline-flex items-center rounded-full px-5 py-[7px] text-[14px] font-medium transition ${
+              isSocial
+                ? "bg-neutral-900 text-white hover:bg-neutral-800"
+                : "bg-white text-black hover:bg-white/90"
+            }`}
           >
-            <span className="text-black">Visit Website</span>
-            <span className="ml-[5px] inline-block text-black">
+            <span>Visit Website</span>
+            <span className="ml-[5px] inline-block">
               <PortfolioArrow />
             </span>
           </a>
         </div>
       </div>
     </header>
+  );
+}
+
+function SiteLogoImg({ dark }: { dark?: boolean }) {
+  const { settings, loading } = useSiteSettings();
+  const uploaded = useMediaUrl(settings.logoMediaId);
+  const src = !loading && uploaded ? uploaded : "/brand/logo-light.svg";
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt="Logo"
+      width={239}
+      height={20}
+      decoding="async"
+      loading="eager"
+      className="logo1"
+      style={{
+        display: "block",
+        height: 20,
+        width: "auto",
+        maxWidth: "none",
+        border: 0,
+        filter: dark && !uploaded ? "invert(1)" : undefined,
+      }}
+    />
   );
 }
