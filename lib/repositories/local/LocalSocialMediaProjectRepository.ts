@@ -29,6 +29,8 @@ function normalizeProject(raw: SocialMediaProject): SocialMediaProject {
   return {
     ...raw,
     usernames: raw.usernames ?? [],
+    coverMediaId: raw.coverMediaId,
+    coverImageUrl: raw.coverImageUrl,
     pageAppearance: raw.pageAppearance ?? defaultPageAppearance(),
     block1: {
       ...raw.block1,

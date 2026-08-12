@@ -18,6 +18,8 @@ function toFormValue(project: SocialMediaProject): SocialMediaProjectFormValue {
     usernames: project.usernames,
     status: project.status,
     order: project.order,
+    coverMediaId: project.coverMediaId,
+    coverImageUrl: project.coverImageUrl,
     pageAppearance: project.pageAppearance,
     block1: project.block1,
     block2: project.block2,

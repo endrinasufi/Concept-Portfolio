@@ -3,16 +3,22 @@
 import Link from "next/link";
 import { useProjects } from "@/lib/hooks/useProjects";
 import { useSocialMediaProjects } from "@/lib/hooks/useSocialMediaProjects";
+import { useWebDesignProjects } from "@/lib/hooks/useWebDesignProjects";
 
 export default function AdminDashboardPage() {
   const { projects, loading } = useProjects({ service: "branding", includeDrafts: true });
   const { projects: socialProjects, loading: socialLoading } = useSocialMediaProjects({
     includeDrafts: true,
   });
+  const { projects: webProjects, loading: webLoading } = useWebDesignProjects({
+    includeDrafts: true,
+  });
   const published = projects.filter((p) => p.status === "published").length;
   const drafts = projects.filter((p) => p.status === "draft").length;
   const socialPublished = socialProjects.filter((p) => p.status === "published").length;
   const socialDrafts = socialProjects.filter((p) => p.status === "draft").length;
+  const webPublished = webProjects.filter((p) => p.status === "published").length;
+  const webDrafts = webProjects.filter((p) => p.status === "draft").length;
 
   return (
     <div>
@@ -53,6 +59,23 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
+      <h2 className="mt-10 text-xs uppercase tracking-[0.2em] text-muted">Web Design</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        {[
+          { label: "Projekte", value: webLoading ? "…" : webProjects.length },
+          { label: "Publikuar", value: webLoading ? "…" : webPublished },
+          { label: "Draft", value: webLoading ? "…" : webDrafts },
+        ].map((stat) => (
+          <div
+            key={`wd-${stat.label}`}
+            className="rounded-[var(--radius-lg)] border border-border bg-surface/50 p-5"
+          >
+            <p className="text-xs uppercase tracking-[0.2em] text-muted">{stat.label}</p>
+            <p className="font-display mt-2 text-4xl">{stat.value}</p>
+          </div>
+        ))}
+      </div>
+
       <div className="mt-10 flex flex-wrap gap-3">
         <Link
           href="/admin/branding"
@@ -67,10 +90,10 @@ export default function AdminDashboardPage() {
           Menaxho social media
         </Link>
         <Link
-          href="/admin/social-media/new"
+          href="/admin/web-design"
           className="rounded-full border border-border px-5 py-2.5 text-sm"
         >
-          Projekt social i ri
+          Menaxho web design
         </Link>
       </div>
     </div>

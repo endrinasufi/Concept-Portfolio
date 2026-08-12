@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Palette,
   Share2,
+  Monitor,
   ImageIcon,
   Settings,
   ExternalLink,
@@ -16,6 +17,7 @@ const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/branding", label: "Branding", icon: Palette },
   { href: "/admin/social-media", label: "Social Media", icon: Share2 },
+  { href: "/admin/web-design", label: "Web Design", icon: Monitor },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];

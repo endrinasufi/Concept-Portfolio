@@ -3,7 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { SocialMediaProject } from "@/types/social-media";
-import { emptySocialMediaProjectDraft } from "@/types/social-media";
+import {
+  emptySocialMediaProjectDraft,
+  SOCIAL_MEDIA_COVER_FRAME,
+} from "@/types/social-media";
 import { slugify } from "@/lib/utils/id";
 import { uploadSocialMediaAsset } from "@/lib/social-media/media";
 import { MediaImage } from "@/components/branding/MediaImage";
@@ -11,7 +14,7 @@ import { SocialMediaFeedEditor } from "./SocialMediaFeedEditor";
 import { SocialMediaStoriesEditor } from "./SocialMediaStoriesEditor";
 import { SocialMediaReelsEditor } from "./SocialMediaReelsEditor";
 import { SocialMediaUsernamesEditor } from "./SocialMediaUsernamesEditor";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Trash2 } from "lucide-react";
 
 export type SocialMediaProjectFormValue = Omit<
   SocialMediaProject,
@@ -28,6 +31,8 @@ export function emptySocialMediaProjectForm(): SocialMediaProjectFormValue {
     usernames: d.usernames,
     status: d.status,
     order: d.order,
+    coverMediaId: d.coverMediaId,
+    coverImageUrl: d.coverImageUrl,
     pageAppearance: d.pageAppearance,
     block1: d.block1,
     block2: d.block2,
@@ -249,6 +254,59 @@ export function SocialMediaProjectEditorForm({
             />
           </div>
         </label>
+      </section>
+
+      <section className="space-y-4 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+        <h2 className="font-display text-xl">Cover (lista /social-media)</h2>
+        <p className="text-xs text-muted">
+          Fotoja që shfaqet te karta e projektit në faqen e listës.
+        </p>
+        <div className="flex flex-wrap items-start gap-4">
+          <div className="relative h-28 w-24 overflow-hidden rounded-lg bg-surface-elevated">
+            <MediaImage
+              mediaId={value.coverMediaId}
+              imageUrl={value.coverImageUrl}
+              alt="Cover"
+              fit="cover"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="inline-flex cursor-pointer items-center rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface-elevated">
+              Upload cover
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  void uploadSocialMediaAsset(file).then((asset) => {
+                    patch({
+                      coverMediaId: asset.id,
+                      coverImageUrl: undefined,
+                    });
+                  });
+                }}
+              />
+            </label>
+            {(value.coverMediaId || value.coverImageUrl) && (
+              <button
+                type="button"
+                onClick={() =>
+                  patch({ coverMediaId: undefined, coverImageUrl: undefined })
+                }
+                className="inline-flex items-center gap-1 rounded-full border border-red-500/30 px-3 py-1.5 text-xs text-red-400"
+              >
+                <Trash2 size={12} /> Hiq
+              </button>
+            )}
+            <p className="text-[11px] text-muted">
+              Përmasa: {SOCIAL_MEDIA_COVER_FRAME.width} ×{" "}
+              {SOCIAL_MEDIA_COVER_FRAME.height} px ·{" "}
+              {SOCIAL_MEDIA_COVER_FRAME.ratioLabel}
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="space-y-5 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
