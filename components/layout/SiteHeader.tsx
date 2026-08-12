@@ -16,10 +16,11 @@ const inter = Inter({
 const SITE = "https://conceptmarketing.al";
 
 const navLinks = [
-  { href: "/", label: "Kreu" },
   { href: "/branding", label: "Branding" },
   { href: "/social-media", label: "Social Media" },
-  { href: "/admin", label: "Admin" },
+  { href: "/web-design", label: "Web Design" },
+  { href: "/video-production", label: "Video" },
+  { href: "/photoshooting", label: "Photoshooting" },
 ] as const;
 
 const PILL_STROKE: CSSProperties = {

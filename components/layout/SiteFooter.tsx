@@ -25,7 +25,7 @@ export function SiteFooter() {
               isSocial ? "text-neutral-500" : "text-muted"
             }`}
           >
-            Branding, social media dhe drejtim artistik.
+            Branding, social media, video dhe drejtim artistik.
           </p>
         </div>
         <div
@@ -54,14 +54,34 @@ export function SiteFooter() {
             Social Media
           </Link>
           <Link
-            href="/admin"
+            href="/web-design"
             className={
               isSocial
                 ? "transition hover:text-neutral-900"
                 : "transition hover:text-foreground"
             }
           >
-            Admin
+            Web Design
+          </Link>
+          <Link
+            href="/video-production"
+            className={
+              isSocial
+                ? "transition hover:text-neutral-900"
+                : "transition hover:text-foreground"
+            }
+          >
+            Video
+          </Link>
+          <Link
+            href="/photoshooting"
+            className={
+              isSocial
+                ? "transition hover:text-neutral-900"
+                : "transition hover:text-foreground"
+            }
+          >
+            Photoshooting
           </Link>
         </div>
       </div>

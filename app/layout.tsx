@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Allura, Fraunces, Outfit, Six_Caps } from "next/font/google";
+import { Fraunces, Outfit, Six_Caps } from "next/font/google";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import "./globals.css";
@@ -18,13 +18,6 @@ const outfit = Outfit({
 
 const sixCaps = Six_Caps({
   variable: "--font-six-caps",
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const portfolioScript = Allura({
-  variable: "--font-portfolio-script",
   weight: "400",
   subsets: ["latin"],
   display: "swap",
@@ -49,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="sq"
-      className={`${fraunces.variable} ${outfit.variable} ${sixCaps.variable} ${portfolioScript.variable} h-full`}
+      className={`${fraunces.variable} ${outfit.variable} ${sixCaps.variable} h-full`}
     >
       <body className="min-h-full flex flex-col antialiased">
         <main className="relative z-0 flex-1">{children}</main>

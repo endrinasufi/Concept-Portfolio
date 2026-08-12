@@ -6,6 +6,8 @@ import {
   LayoutDashboard,
   Palette,
   Share2,
+  Film,
+  Camera,
   ImageIcon,
   Settings,
   ExternalLink,
@@ -16,6 +18,8 @@ const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/branding", label: "Branding", icon: Palette },
   { href: "/admin/social-media", label: "Social Media", icon: Share2 },
+  { href: "/admin/video-production", label: "Video Production", icon: Film },
+  { href: "/admin/photoshooting", label: "Photoshooting", icon: Camera },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];

@@ -3,16 +3,20 @@
 import Link from "next/link";
 import { useProjects } from "@/lib/hooks/useProjects";
 import { useSocialMediaProjects } from "@/lib/hooks/useSocialMediaProjects";
+import { useVideoProduction } from "@/lib/hooks/useVideoProduction";
 
 export default function AdminDashboardPage() {
   const { projects, loading } = useProjects({ service: "branding", includeDrafts: true });
   const { projects: socialProjects, loading: socialLoading } = useSocialMediaProjects({
     includeDrafts: true,
   });
+  const { videos, loading: videoLoading } = useVideoProduction({ includeDrafts: true });
   const published = projects.filter((p) => p.status === "published").length;
   const drafts = projects.filter((p) => p.status === "draft").length;
   const socialPublished = socialProjects.filter((p) => p.status === "published").length;
   const socialDrafts = socialProjects.filter((p) => p.status === "draft").length;
+  const videoPublished = videos.filter((v) => v.status === "published").length;
+  const videoDrafts = videos.filter((v) => v.status === "draft").length;
 
   return (
     <div>
@@ -53,6 +57,23 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
+      <h2 className="mt-10 text-xs uppercase tracking-[0.2em] text-muted">Video Production</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        {[
+          { label: "Video", value: videoLoading ? "…" : videos.length },
+          { label: "Publikuar", value: videoLoading ? "…" : videoPublished },
+          { label: "Draft", value: videoLoading ? "…" : videoDrafts },
+        ].map((stat) => (
+          <div
+            key={`vp-${stat.label}`}
+            className="rounded-[var(--radius-lg)] border border-border bg-surface/50 p-5"
+          >
+            <p className="text-xs uppercase tracking-[0.2em] text-muted">{stat.label}</p>
+            <p className="font-display mt-2 text-4xl">{stat.value}</p>
+          </div>
+        ))}
+      </div>
+
       <div className="mt-10 flex flex-wrap gap-3">
         <Link
           href="/admin/branding"
@@ -67,10 +88,16 @@ export default function AdminDashboardPage() {
           Menaxho social media
         </Link>
         <Link
-          href="/admin/social-media/new"
+          href="/admin/video-production"
           className="rounded-full border border-border px-5 py-2.5 text-sm"
         >
-          Projekt social i ri
+          Menaxho video
+        </Link>
+        <Link
+          href="/admin/video-production/new"
+          className="rounded-full border border-border px-5 py-2.5 text-sm"
+        >
+          Video e re
         </Link>
       </div>
     </div>
