@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Palette,
+  Share2,
   ImageIcon,
   Settings,
   ExternalLink,
@@ -14,6 +15,7 @@ import {
 const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/branding", label: "Branding", icon: Palette },
+  { href: "/admin/social-media", label: "Social Media", icon: Share2 },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
@@ -25,7 +27,7 @@ export function AdminSidebar() {
     <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-surface/40">
       <div className="border-b border-border px-5 py-5">
         <p className="font-display text-lg leading-tight">CMA Admin</p>
-        <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-muted">Branding V1</p>
+        <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-muted">Portfolio CMS</p>
       </div>
       <nav className="flex flex-1 flex-col gap-1 p-3">
         {nav.map((item) => {

@@ -1,5 +1,6 @@
 import Dexie, { type EntityTable } from "dexie";
 import type { Project } from "@/types/branding";
+import type { SocialMediaProject } from "@/types/social-media";
 import type { MediaAsset } from "@/types/media";
 import type { SiteSettings } from "@/types/settings";
 
@@ -10,6 +11,7 @@ export interface MediaBlobRecord {
 
 export class CmaDatabase extends Dexie {
   projects!: EntityTable<Project, "id">;
+  socialMediaProjects!: EntityTable<SocialMediaProject, "id">;
   media!: EntityTable<MediaAsset, "id">;
   mediaBlobs!: EntityTable<MediaBlobRecord, "id">;
   settings!: EntityTable<SiteSettings, "id">;
@@ -23,6 +25,14 @@ export class CmaDatabase extends Dexie {
     });
     this.version(2).stores({
       projects: "id, slug, service, status, order, featured",
+      media: "id, createdAt",
+      mediaBlobs: "id",
+      settings: "id",
+    });
+    // Social Media — tabela e ndarë; nuk prek projekte branding
+    this.version(3).stores({
+      projects: "id, slug, service, status, order, featured",
+      socialMediaProjects: "id, slug, status, order, featured",
       media: "id, createdAt",
       mediaBlobs: "id",
       settings: "id",
