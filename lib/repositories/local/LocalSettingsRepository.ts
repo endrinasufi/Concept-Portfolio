@@ -9,7 +9,14 @@ export class LocalSettingsRepository {
   async get(): Promise<SiteSettings> {
     const db = getDb();
     const row = await db.settings.get("site");
-    return row ?? { ...DEFAULT_SITE_SETTINGS, updatedAt: nowIso() };
+    if (!row) {
+      return { ...DEFAULT_SITE_SETTINGS, updatedAt: nowIso() };
+    }
+    return {
+      ...DEFAULT_SITE_SETTINGS,
+      ...row,
+      clientLogos: row.clientLogos ?? [],
+    };
   }
 
   async update(patch: Partial<Omit<SiteSettings, "id">>): Promise<SiteSettings> {
@@ -19,6 +26,7 @@ export class LocalSettingsRepository {
       ...current,
       ...patch,
       id: "site",
+      clientLogos: patch.clientLogos ?? current.clientLogos,
       updatedAt: nowIso(),
     };
     if ("logoMediaId" in patch && !patch.logoMediaId) {
