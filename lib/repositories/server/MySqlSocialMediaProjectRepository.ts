@@ -43,7 +43,7 @@ async function upsert(project: SocialMediaProject): Promise<SocialMediaProject> 
       content_json, meta_title, meta_description, created_at, updated_at
     ) VALUES (
       :id, :service, :slug, :title, :client_name, :status, :featured, :sort_order,
-      CAST(:content_json AS JSON), :meta_title, :meta_description, :created_at, :updated_at
+      :content_json, :meta_title, :meta_description, :created_at, :updated_at
     )
     ON DUPLICATE KEY UPDATE
       slug = VALUES(slug),

@@ -45,7 +45,7 @@ export class MySqlSettingsRepository {
     }
     await execute(
       `INSERT INTO site_settings (id, data_json, updated_at)
-       VALUES ('site', CAST(:data_json AS JSON), :updated_at)
+       VALUES ('site', :data_json, :updated_at)
        ON DUPLICATE KEY UPDATE
          data_json = VALUES(data_json),
          updated_at = VALUES(updated_at)`,
