@@ -7,6 +7,7 @@ import {
   fromMysqlDateTime,
   toMysqlDateTime,
 } from "./portfolioRow";
+import { sniffMimeType } from "@/lib/server/api";
 
 interface MediaRow extends RowDataPacket {
   id: string;
@@ -58,7 +59,7 @@ export class MySqlMediaRepository implements MediaRepository {
     const filename =
       meta?.filename ??
       (file instanceof File ? file.name : `upload-${id}`);
-    const mimeType = file.type || "application/octet-stream";
+    const mimeType = sniffMimeType(filename, file.type);
     const buffer = Buffer.from(await file.arrayBuffer());
     const stored = await getMediaStorageProvider().upload(buffer, {
       filename,

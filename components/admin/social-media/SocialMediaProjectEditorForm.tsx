@@ -474,8 +474,10 @@ export function SocialMediaProjectEditorForm({
       <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
         <h2 className="mb-4 font-display text-xl">Block 3 — Stories</h2>
         <SocialMediaStoriesEditor
-          stories={value.block3.stories}
-          onChange={(stories) => patch({ block3: { stories } })}
+          stories={value.block3?.stories ?? []}
+          onChange={(stories) =>
+            patch({ block3: { ...(value.block3 ?? { stories: [] }), stories } })
+          }
         />
       </section>
 

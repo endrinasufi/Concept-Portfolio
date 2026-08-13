@@ -24,7 +24,9 @@ function normalize(raw: SocialMediaProject): SocialMediaProject {
     pageAppearance: raw.pageAppearance ?? defaultPageAppearance(),
     block1: { ...raw.block1, feedPosts: raw.block1?.feedPosts ?? [] },
     block2: raw.block2 ?? defaultBlock2(),
-    block3: raw.block3 ?? { stories: [] },
+    block3: {
+      stories: Array.isArray(raw.block3?.stories) ? raw.block3.stories : [],
+    },
     seo: raw.seo ?? {},
   };
 }

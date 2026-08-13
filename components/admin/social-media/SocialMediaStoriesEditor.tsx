@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import type { SocialMediaStory } from "@/types/social-media";
 import { SortableList, SortableItem } from "@/components/admin/SortableList";
 import { MediaImage } from "@/components/branding/MediaImage";
@@ -7,29 +8,51 @@ import { uploadSocialMediaAsset } from "@/lib/social-media/media";
 import { createId } from "@/lib/utils/id";
 import { Plus, Trash2 } from "lucide-react";
 
+function previewUrl(asset: { id: string; publicUrl?: string }) {
+  return asset.publicUrl || `/api/media/${encodeURIComponent(asset.id)}`;
+}
+
 export function SocialMediaStoriesEditor({
   stories,
   onChange,
 }: {
-  stories: SocialMediaStory[];
+  stories: SocialMediaStory[] | undefined;
   onChange: (next: SocialMediaStory[]) => void;
 }) {
-  const ordered = [...stories].sort((a, b) => a.order - b.order);
+  const ordered = [...(stories ?? [])].sort((a, b) => a.order - b.order);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function upload(files: FileList | null) {
     if (!files?.length) return;
+    setBusy(true);
+    setError(null);
     const next = [...ordered];
-    for (const file of Array.from(files)) {
-      const asset = await uploadSocialMediaAsset(file);
-      next.push({
-        id: createId(),
-        mediaId: asset.id,
-        alt: file.name,
-        title: `Story ${next.length + 1}`,
-        order: next.length,
-      });
+    try {
+      for (const file of Array.from(files)) {
+        if (!file.type.startsWith("image/") && !/\.(jpe?g|png|webp|gif)$/i.test(file.name)) {
+          throw new Error(
+            `"${file.name}" nuk është imazh. Stories pranojnë JPG, PNG, WebP ose GIF (max 10MB).`,
+          );
+        }
+        const asset = await uploadSocialMediaAsset(file);
+        next.push({
+          id: createId(),
+          mediaId: asset.id,
+          imageUrl: previewUrl(asset),
+          alt: file.name,
+          title: `Story ${next.length + 1}`,
+          order: next.length,
+        });
+      }
+      onChange(next.map((s, i) => ({ ...s, order: i })));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Ngarkimi i story dështoi");
+    } finally {
+      setBusy(false);
+      if (inputRef.current) inputRef.current.value = "";
     }
-    onChange(next.map((s, i) => ({ ...s, order: i })));
   }
 
   function remove(id: string) {
@@ -53,20 +76,32 @@ export function SocialMediaStoriesEditor({
         <div>
           <h3 className="text-sm font-medium">Stories</h3>
           <p className="text-xs text-muted">
-            9:16 · zvarris me ikonën ≡ për të rirenditur
+            9:16 · JPG/PNG/WebP · max 10MB · zvarris me ≡ për të rirenditur
           </p>
         </div>
-        <label className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs">
-          <Plus size={12} /> Upload
+        <label
+          className={`inline-flex cursor-pointer items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs ${
+            busy ? "pointer-events-none opacity-60" : "hover:bg-surface-elevated"
+          }`}
+        >
+          <Plus size={12} /> {busy ? "Duke ngarkuar…" : "Upload"}
           <input
+            ref={inputRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif"
             multiple
+            disabled={busy}
             className="hidden"
             onChange={(e) => void upload(e.target.files)}
           />
         </label>
       </div>
+
+      {error ? (
+        <p className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+          {error}
+        </p>
+      ) : null}
 
       <SortableList ids={ordered.map((s) => s.id)} onReorder={reorder} strategy="grid">
         <div className="flex flex-wrap gap-3">

@@ -49,3 +49,27 @@ export const ALLOWED_MIME = new Set([
   "video/mp4",
   "video/webm",
 ]);
+
+/** When browsers send empty / octet-stream, infer from filename. */
+export function sniffMimeType(filename: string, declared?: string): string {
+  const declaredOk =
+    declared &&
+    declared !== "application/octet-stream" &&
+    declared !== "binary/octet-stream"
+      ? declared
+      : "";
+  if (declaredOk && ALLOWED_MIME.has(declaredOk)) return declaredOk;
+
+  const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+  const byExt: Record<string, string> = {
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    webp: "image/webp",
+    gif: "image/gif",
+    svg: "image/svg+xml",
+    mp4: "video/mp4",
+    webm: "video/webm",
+  };
+  return byExt[ext] || declaredOk || declared || "application/octet-stream";
+}

@@ -6,6 +6,7 @@ import {
   jsonError,
   requireApiSession,
   revalidatePublicPaths,
+  sniffMimeType,
 } from "@/lib/server/api";
 import { getServerMediaRepository } from "@/lib/repositories/server";
 import { query, type RowDataPacket } from "@/lib/server/db";
@@ -26,9 +27,11 @@ export async function POST(request: Request) {
     if (file.size > MAX_UPLOAD_BYTES) {
       return jsonError("File too large (max 10MB)", 413);
     }
-    const mime = file.type || "application/octet-stream";
+    const mime = sniffMimeType(file.name, file.type);
     if (!ALLOWED_MIME.has(mime)) {
-      return jsonError(`MIME not allowed: ${mime}`);
+      return jsonError(
+        `Formati nuk lejohet (${mime || file.type || "i panjohur"}). Përdor JPG, PNG, WebP ose GIF.`,
+      );
     }
     const id = String(form.get("id") || "") || undefined;
     const width = form.get("width") ? Number(form.get("width")) : undefined;
