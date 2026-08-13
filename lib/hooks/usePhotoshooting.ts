@@ -4,13 +4,21 @@ import { useCallback, useEffect, useState } from "react";
 import type { PhotoshootingProject } from "@/types/photoshooting";
 import { getPhotoshootingRepository } from "@/lib/repositories";
 
-export function usePhotoshootingProjects(options?: { includeDrafts?: boolean }) {
+export function usePhotoshootingProjects(options?: {
+  includeDrafts?: boolean;
+  initial?: PhotoshootingProject[];
+  enabled?: boolean;
+}) {
   const includeDrafts = options?.includeDrafts;
-  const [projects, setProjects] = useState<PhotoshootingProject[]>([]);
-  const [loading, setLoading] = useState(true);
+  const enabled = options?.enabled !== false;
+  const [projects, setProjects] = useState<PhotoshootingProject[]>(
+    options?.initial ?? [],
+  );
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    if (!enabled) return;
     try {
       const list = await getPhotoshootingRepository().list({ includeDrafts });
       setProjects(list);
@@ -20,9 +28,13 @@ export function usePhotoshootingProjects(options?: { includeDrafts?: boolean }) 
     } finally {
       setLoading(false);
     }
-  }, [includeDrafts]);
+  }, [includeDrafts, enabled]);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
@@ -41,23 +53,35 @@ export function usePhotoshootingProjects(options?: { includeDrafts?: boolean }) 
     return () => {
       cancelled = true;
     };
-  }, [includeDrafts]);
+  }, [includeDrafts, enabled]);
 
   return { projects, loading, error, refresh };
 }
 
-export function usePhotoshootingBySlug(slug: string, includeDrafts = false) {
-  const [project, setProject] = useState<PhotoshootingProject | null>(null);
-  const [loading, setLoading] = useState(true);
+export function usePhotoshootingBySlug(
+  slug: string,
+  includeDrafts = false,
+  initial?: PhotoshootingProject | null,
+) {
+  const skip = initial !== undefined;
+  const [project, setProject] = useState<PhotoshootingProject | null>(
+    initial ?? null,
+  );
+  const [loading, setLoading] = useState(!skip);
   const [error, setError] = useState<string | null>(null);
-  const [notFound, setNotFound] = useState(false);
+  const [notFound, setNotFound] = useState(skip ? !initial : false);
 
   useEffect(() => {
-    if (!slug) return;
+    if (skip || !slug) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
-        const result = await getPhotoshootingRepository().getBySlug(slug);
+        const result = await getPhotoshootingRepository().getBySlug(slug, {
+          includeDrafts,
+        });
         if (cancelled) return;
         if (!result || (!includeDrafts && result.status !== "published")) {
           setNotFound(true);
@@ -78,7 +102,7 @@ export function usePhotoshootingBySlug(slug: string, includeDrafts = false) {
     return () => {
       cancelled = true;
     };
-  }, [slug, includeDrafts]);
+  }, [slug, includeDrafts, skip]);
 
   return { project, loading, error, notFound };
 }

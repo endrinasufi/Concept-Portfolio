@@ -1,6 +1,7 @@
 import type { BrandingProject } from "@/types/branding";
 import type { SocialMediaProject } from "@/types/social-media";
 import type { VideoProductionItem } from "@/types/video-production";
+import type { WebDesignProject } from "@/types/web-design";
 import type { ClientLogo } from "@/types/settings";
 import type { SiteCategory } from "@/lib/data/categories";
 import { getProjectCover } from "@/lib/utils/projectCover";
@@ -134,11 +135,54 @@ function videoProductionCards(videos: VideoProductionItem[]): HomeCard[] {
   }));
 }
 
+function webDesignProjectCards(projects: WebDesignProject[]): HomeCard[] {
+  const sorted = [...projects].sort((a, b) => {
+    if (a.featured !== b.featured) return Number(b.featured) - Number(a.featured);
+    return a.order - b.order;
+  });
+
+  const cards: HomeCard[] = [];
+  for (const project of sorted) {
+    const fv = project.featuredVisual;
+    const galleryFirst = [...(project.gallery ?? [])].sort(
+      (a, b) => a.order - b.order,
+    )[0];
+    const mediaId =
+      project.coverMediaId ??
+      fv?.desktopMediaId ??
+      fv?.backgroundMediaId ??
+      fv?.mobileMediaId ??
+      galleryFirst?.mediaId;
+    const imageUrl =
+      project.coverImageUrl ??
+      fv?.desktopImageUrl ??
+      fv?.backgroundImageUrl ??
+      fv?.mobileImageUrl ??
+      galleryFirst?.imageUrl;
+    if (!mediaId && !imageUrl) continue;
+
+    cards.push({
+      id: `wd-cover-${project.id}`,
+      kind: "project",
+      title: project.title,
+      client: project.client?.trim() || undefined,
+      tagColors: [project.appearance?.accentColor].filter(
+        (c): c is string => Boolean(c?.trim()),
+      ),
+      mediaId,
+      imageUrl,
+      href: `/web-design/${project.slug}`,
+    });
+  }
+  return cards;
+}
+
 export function collectCategoryCards(opts: {
   category: SiteCategory;
   brandingProjects: BrandingProject[];
   socialProjects: SocialMediaProject[];
   videoItems?: VideoProductionItem[];
+  webDesignProjects?: WebDesignProject[];
   clientLogos: ClientLogo[];
   viewportWidth: number;
 }): HomeCard[] {
@@ -152,21 +196,28 @@ export function collectCategoryCards(opts: {
   };
 
   const videos = opts.videoItems ?? [];
+  const webProjects = opts.webDesignProjects ?? [];
   let pool: HomeCard[] = [];
   if (opts.category.id === "branding") {
     pool = brandingProjectCards(opts.brandingProjects);
   } else if (opts.category.id === "social-media") {
     pool = socialProjectCards(opts.socialProjects);
+  } else if (opts.category.id === "web-design") {
+    pool = webDesignProjectCards(webProjects);
   } else if (opts.category.id === "video-production") {
     pool = videoProductionCards(videos);
   }
 
-  const fallback = [
-    ...brandingProjectCards(opts.brandingProjects),
-    ...socialProjectCards(opts.socialProjects),
-    ...videoProductionCards(videos),
-  ];
-  if (!pool.length) pool = fallback;
+  // Fallback vetëm brenda kategoriës — mos përdor video te Web Design
+  if (!pool.length) {
+    if (opts.category.id === "web-design") {
+      pool = [];
+    } else if (opts.category.id === "social-media") {
+      pool = socialProjectCards(opts.socialProjects);
+    } else {
+      pool = brandingProjectCards(opts.brandingProjects);
+    }
+  }
 
   const rest = padRepeat(pool, Math.max(0, max - 1)).map((card) => ({
     ...card,
@@ -186,6 +237,7 @@ export function collectHomeCards(
     brandingProjects: projects,
     socialProjects: [],
     videoItems: [],
+    webDesignProjects: [],
     clientLogos,
     viewportWidth,
   });

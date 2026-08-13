@@ -7,12 +7,21 @@ import { WebDesignProjectRenderer } from "./WebDesignProjectRenderer";
 export function WebDesignProjectPageClient({
   slug,
   isPreview,
+  initialProject,
+  initialPublished,
 }: {
   slug: string;
   isPreview: boolean;
+  initialProject?: import("@/types/web-design").WebDesignProject | null;
+  initialPublished?: import("@/types/web-design").WebDesignProject[];
 }) {
   const { project, loading, error, notFound, totalPublished, publishedIndex } =
-    useWebDesignProjectBySlug(slug, isPreview);
+    useWebDesignProjectBySlug(
+      slug,
+      isPreview,
+      initialProject,
+      initialPublished,
+    );
 
   if (loading) {
     return (

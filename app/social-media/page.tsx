@@ -1,10 +1,15 @@
+import type { Metadata } from "next";
 import { SocialMediaListClient } from "@/components/social-media/SocialMediaListClient";
+import { loadPublishedSocial } from "@/lib/server/publicData";
 
-export const metadata = {
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
   title: "Social Media",
-  description: "Social Media Management portfolio — Concept Marketing Albania",
+  description: "Projekte Social Media — Concept Marketing Albania.",
 };
 
-export default function SocialMediaIndexPage() {
-  return <SocialMediaListClient />;
+export default async function SocialMediaPage() {
+  const projects = await loadPublishedSocial();
+  return <SocialMediaListClient initialProjects={projects} />;
 }

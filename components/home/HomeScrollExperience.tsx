@@ -27,6 +27,7 @@ import {
 import { useProjects } from "@/lib/hooks/useProjects";
 import { useSocialMediaProjects } from "@/lib/hooks/useSocialMediaProjects";
 import { useVideoProduction } from "@/lib/hooks/useVideoProduction";
+import { useWebDesignProjects } from "@/lib/hooks/useWebDesignProjects";
 import { useSiteSettings } from "@/lib/hooks/useSiteSettings";
 import { sortByOrder } from "@/lib/utils/id";
 import gsap from "gsap";
@@ -45,7 +46,27 @@ function applyPose(el: HTMLElement, pose: CardPose, visible = 1) {
   });
 }
 
-export function HomeScrollExperience() {
+import type { Project } from "@/types/branding";
+import type { SocialMediaProject } from "@/types/social-media";
+import type { VideoProductionItem } from "@/types/video-production";
+import type { WebDesignProject } from "@/types/web-design";
+import type { SiteSettings } from "@/types/settings";
+
+type HomeScrollExperienceProps = {
+  initialBrandingProjects?: Project[];
+  initialSocialProjects?: SocialMediaProject[];
+  initialVideoItems?: VideoProductionItem[];
+  initialWebDesignProjects?: WebDesignProject[];
+  initialSettings?: SiteSettings;
+};
+
+export function HomeScrollExperience({
+  initialBrandingProjects,
+  initialSocialProjects,
+  initialVideoItems,
+  initialWebDesignProjects,
+  initialSettings,
+}: HomeScrollExperienceProps = {}) {
   const scrollSectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const cardStageRef = useRef<HTMLDivElement>(null);
@@ -64,13 +85,51 @@ export function HomeScrollExperience() {
   const socialRefs = useRef<(HTMLDivElement | null)[]>([]);
   const webRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const { projects: brandingProjects, loading: brandingLoading } = useProjects({
+  const hasServerData = initialBrandingProjects !== undefined;
+
+  const hookBranding = useProjects({
     service: "branding",
+    enabled: !hasServerData,
+    initial: initialBrandingProjects,
   });
-  const { projects: socialProjects, loading: socialLoading } =
-    useSocialMediaProjects();
-  const { videos: videoItems, loading: videoLoading } = useVideoProduction();
-  const { settings, loading: settingsLoading } = useSiteSettings();
+  const hookSocial = useSocialMediaProjects({
+    enabled: !hasServerData,
+    initial: initialSocialProjects,
+  });
+  const hookVideo = useVideoProduction({
+    enabled: !hasServerData,
+    initial: initialVideoItems,
+  });
+  const hookWeb = useWebDesignProjects({
+    enabled: !hasServerData,
+    initial: initialWebDesignProjects,
+  });
+  const hookSettings = useSiteSettings({
+    enabled: !hasServerData,
+    initial: initialSettings,
+  });
+
+  const brandingProjects = hasServerData
+    ? (initialBrandingProjects ?? [])
+    : hookBranding.projects;
+  const socialProjects = hasServerData
+    ? (initialSocialProjects ?? [])
+    : hookSocial.projects;
+  const videoItems = hasServerData
+    ? (initialVideoItems ?? [])
+    : hookVideo.videos;
+  const webDesignProjects = hasServerData
+    ? (initialWebDesignProjects ?? [])
+    : hookWeb.projects;
+  const settings = hasServerData
+    ? (initialSettings as SiteSettings)
+    : hookSettings.settings;
+
+  const brandingLoading = hasServerData ? false : hookBranding.loading;
+  const socialLoading = hasServerData ? false : hookSocial.loading;
+  const videoLoading = hasServerData ? false : hookVideo.loading;
+  const webDesignLoading = hasServerData ? false : hookWeb.loading;
+  const settingsLoading = hasServerData ? false : hookSettings.loading;
   const [vw, setVw] = useState<number | null>(null);
 
   const brandingCards = useMemo(() => {
@@ -80,10 +139,18 @@ export function HomeScrollExperience() {
       brandingProjects,
       socialProjects,
       videoItems,
+      webDesignProjects,
       clientLogos: sortByOrder(settings.clientLogos ?? []),
       viewportWidth: vw,
     });
-  }, [brandingProjects, socialProjects, videoItems, settings.clientLogos, vw]);
+  }, [
+    brandingProjects,
+    socialProjects,
+    videoItems,
+    webDesignProjects,
+    settings.clientLogos,
+    vw,
+  ]);
 
   const socialCards = useMemo(() => {
     if (vw === null) return [];
@@ -92,10 +159,18 @@ export function HomeScrollExperience() {
       brandingProjects,
       socialProjects,
       videoItems,
+      webDesignProjects,
       clientLogos: sortByOrder(settings.clientLogos ?? []),
       viewportWidth: vw,
     });
-  }, [brandingProjects, socialProjects, videoItems, settings.clientLogos, vw]);
+  }, [
+    brandingProjects,
+    socialProjects,
+    videoItems,
+    webDesignProjects,
+    settings.clientLogos,
+    vw,
+  ]);
 
   const webCards = useMemo(() => {
     if (vw === null) return [];
@@ -104,10 +179,18 @@ export function HomeScrollExperience() {
       brandingProjects,
       socialProjects,
       videoItems,
+      webDesignProjects,
       clientLogos: sortByOrder(settings.clientLogos ?? []),
       viewportWidth: vw,
     });
-  }, [brandingProjects, socialProjects, videoItems, settings.clientLogos, vw]);
+  }, [
+    brandingProjects,
+    socialProjects,
+    videoItems,
+    webDesignProjects,
+    settings.clientLogos,
+    vw,
+  ]);
 
   useLayoutEffect(() => {
     const onResize = () => setVw(window.innerWidth);
@@ -117,7 +200,15 @@ export function HomeScrollExperience() {
   }, []);
 
   useLayoutEffect(() => {
-    if (brandingLoading || socialLoading || videoLoading || settingsLoading || !brandingCards.length) return;
+    if (
+      brandingLoading ||
+      socialLoading ||
+      videoLoading ||
+      webDesignLoading ||
+      settingsLoading ||
+      !brandingCards.length
+    )
+      return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     gsap.registerPlugin(ScrollTrigger);
@@ -833,9 +924,25 @@ export function HomeScrollExperience() {
     return () => {
       ctx.revert();
     };
-  }, [brandingCards, socialCards, webCards, brandingLoading, socialLoading, videoLoading, settingsLoading]);
+  }, [
+    brandingCards,
+    socialCards,
+    webCards,
+    brandingLoading,
+    socialLoading,
+    videoLoading,
+    webDesignLoading,
+    settingsLoading,
+  ]);
 
-  if (brandingLoading || socialLoading || videoLoading || settingsLoading || vw === null) {
+  if (
+    brandingLoading ||
+    socialLoading ||
+    videoLoading ||
+    webDesignLoading ||
+    settingsLoading ||
+    vw === null
+  ) {
     return (
       <div className="flex min-h-[100svh] items-center justify-center text-muted">
         Duke ngarkuar…

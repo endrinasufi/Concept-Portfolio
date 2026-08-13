@@ -4,13 +4,21 @@ import { useCallback, useEffect, useState } from "react";
 import type { SocialMediaProject } from "@/types/social-media";
 import { getSocialMediaProjectRepository } from "@/lib/repositories";
 
-export function useSocialMediaProjects(options?: { includeDrafts?: boolean }) {
+export function useSocialMediaProjects(options?: {
+  includeDrafts?: boolean;
+  initial?: SocialMediaProject[];
+  enabled?: boolean;
+}) {
   const includeDrafts = options?.includeDrafts;
-  const [projects, setProjects] = useState<SocialMediaProject[]>([]);
-  const [loading, setLoading] = useState(true);
+  const enabled = options?.enabled !== false;
+  const [projects, setProjects] = useState<SocialMediaProject[]>(
+    options?.initial ?? [],
+  );
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    if (!enabled) return;
     try {
       const list = await getSocialMediaProjectRepository().list({ includeDrafts });
       setProjects(list);
@@ -20,9 +28,13 @@ export function useSocialMediaProjects(options?: { includeDrafts?: boolean }) {
     } finally {
       setLoading(false);
     }
-  }, [includeDrafts]);
+  }, [includeDrafts, enabled]);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
@@ -41,19 +53,29 @@ export function useSocialMediaProjects(options?: { includeDrafts?: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, [includeDrafts]);
+  }, [includeDrafts, enabled]);
 
   return { projects, loading, error, refresh };
 }
 
-export function useSocialMediaProjectBySlug(slug: string, includeDrafts = false) {
-  const [project, setProject] = useState<SocialMediaProject | null>(null);
-  const [loading, setLoading] = useState(true);
+export function useSocialMediaProjectBySlug(
+  slug: string,
+  includeDrafts = false,
+  initial?: SocialMediaProject | null,
+) {
+  const skip = initial !== undefined;
+  const [project, setProject] = useState<SocialMediaProject | null>(
+    initial ?? null,
+  );
+  const [loading, setLoading] = useState(!skip);
   const [error, setError] = useState<string | null>(null);
-  const [notFound, setNotFound] = useState(false);
+  const [notFound, setNotFound] = useState(skip ? !initial : false);
 
   useEffect(() => {
-    if (!slug) return;
+    if (skip || !slug) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
@@ -80,7 +102,7 @@ export function useSocialMediaProjectBySlug(slug: string, includeDrafts = false)
     return () => {
       cancelled = true;
     };
-  }, [slug, includeDrafts]);
+  }, [slug, includeDrafts, skip]);
 
   return { project, loading, error, notFound };
 }

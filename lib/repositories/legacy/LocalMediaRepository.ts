@@ -9,11 +9,14 @@ export class LocalMediaRepository implements MediaRepository {
   async upload(
     file: File | Blob,
     meta?: Partial<
-      Pick<MediaAsset, "filename" | "width" | "height" | "objectPositionX" | "objectPositionY">
-    >,
+      Pick<
+        MediaAsset,
+        "filename" | "width" | "height" | "objectPositionX" | "objectPositionY"
+      >
+    > & { id?: string },
   ): Promise<MediaAsset> {
     const db = getDb();
-    const id = createId();
+    const id = meta?.id ?? createId();
     const filename =
       meta?.filename ??
       (file instanceof File ? file.name : `upload-${id}`);
@@ -25,6 +28,7 @@ export class LocalMediaRepository implements MediaRepository {
       height: meta?.height,
       objectPositionX: meta?.objectPositionX ?? 50,
       objectPositionY: meta?.objectPositionY ?? 50,
+      provider: "indexeddb",
       createdAt: nowIso(),
     };
     await db.transaction("rw", db.media, db.mediaBlobs, async () => {

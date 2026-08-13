@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Palette,
@@ -13,6 +13,8 @@ import {
   Settings,
   ExternalLink,
   ArrowLeft,
+  LogOut,
+  Database,
 } from "lucide-react";
 
 const nav = [
@@ -23,17 +25,33 @@ const nav = [
   { href: "/admin/video-production", label: "Video Production", icon: Film },
   { href: "/admin/photoshooting", label: "Photoshooting", icon: Camera },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
+  { href: "/admin/migration", label: "Migrim", icon: Database },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ userEmail }: { userEmail?: string }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function logout() {
+    await fetch("/api/admin/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+    router.replace("/admin/login");
+    router.refresh();
+  }
 
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-surface/40">
       <div className="border-b border-border px-5 py-5">
         <p className="font-display text-lg leading-tight">CMA Admin</p>
-        <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-muted">Portfolio CMS</p>
+        <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-muted">
+          Portfolio CMS
+        </p>
+        {userEmail ? (
+          <p className="mt-2 truncate text-xs text-muted">{userEmail}</p>
+        ) : null}
       </div>
       <nav className="flex flex-1 flex-col gap-1 p-3">
         {nav.map((item) => {
@@ -70,6 +88,13 @@ export function AdminSidebar() {
         >
           <ExternalLink size={14} /> Portfolio
         </Link>
+        <button
+          type="button"
+          onClick={() => void logout()}
+          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-muted hover:text-foreground"
+        >
+          <LogOut size={14} /> Dil
+        </button>
       </div>
     </aside>
   );

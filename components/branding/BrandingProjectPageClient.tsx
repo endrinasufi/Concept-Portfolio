@@ -3,15 +3,22 @@
 import Link from "next/link";
 import { useProjectBySlug } from "@/lib/hooks/useProjects";
 import { ServiceProjectRenderer } from "@/components/portfolio/ServiceProjectRenderer";
+import type { Project } from "@/types/branding";
 
 export function BrandingProjectPageClient({
   slug,
   isPreview,
+  initialProject,
 }: {
   slug: string;
   isPreview: boolean;
+  initialProject?: Project | null;
 }) {
-  const { project, loading, error, notFound } = useProjectBySlug(slug, isPreview);
+  const { project, loading, error, notFound } = useProjectBySlug(
+    slug,
+    isPreview,
+    initialProject,
+  );
 
   if (loading) {
     return (

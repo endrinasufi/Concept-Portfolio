@@ -6,6 +6,7 @@ import { usePhotoshootingBySlug } from "@/lib/hooks/usePhotoshooting";
 import { PhotoshootingBentoGrid } from "@/components/photoshooting/PhotoshootingBentoGrid";
 import { FadeIn } from "@/components/motion/Reveal";
 import { Inter } from "next/font/google";
+import type { PhotoshootingProject } from "@/types/photoshooting";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,10 +16,18 @@ const inter = Inter({
 
 export function PhotoshootingProjectPageClient({
   slug,
+  isPreview = false,
+  initialProject,
 }: {
   slug: string;
+  isPreview?: boolean;
+  initialProject?: PhotoshootingProject | null;
 }) {
-  const { project, loading, error, notFound } = usePhotoshootingBySlug(slug);
+  const { project, loading, error, notFound } = usePhotoshootingBySlug(
+    slug,
+    isPreview,
+    initialProject,
+  );
 
   useEffect(() => {
     const root = document.documentElement;

@@ -1,0 +1,29 @@
+/** Simple in-memory login rate limit (per process). */
+const hits = new Map<string, { count: number; resetAt: number }>();
+
+const WINDOW_MS = 15 * 60 * 1000;
+const MAX_ATTEMPTS = 5;
+
+export function checkLoginRateLimit(ip: string): {
+  ok: boolean;
+  retryAfterSec?: number;
+} {
+  const now = Date.now();
+  const entry = hits.get(ip);
+  if (!entry || entry.resetAt < now) {
+    hits.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    return { ok: true };
+  }
+  if (entry.count >= MAX_ATTEMPTS) {
+    return {
+      ok: false,
+      retryAfterSec: Math.ceil((entry.resetAt - now) / 1000),
+    };
+  }
+  entry.count += 1;
+  return { ok: true };
+}
+
+export function resetLoginRateLimit(ip: string): void {
+  hits.delete(ip);
+}

@@ -71,8 +71,15 @@ function SocialMediaProjectCard({
   );
 }
 
-export function SocialMediaListClient() {
-  const { projects, loading, error } = useSocialMediaProjects();
+export function SocialMediaListClient({
+  initialProjects,
+}: {
+  initialProjects?: SocialMediaProject[];
+}) {
+  const { projects, loading, error } = useSocialMediaProjects({
+    enabled: initialProjects === undefined,
+    initial: initialProjects,
+  });
 
   useEffect(() => {
     const root = document.documentElement;

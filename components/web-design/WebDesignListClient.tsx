@@ -141,8 +141,15 @@ function WebDesignProjectCard({
   );
 }
 
-export function WebDesignListClient() {
-  const { projects, loading, error } = useWebDesignProjects();
+export function WebDesignListClient({
+  initialProjects,
+}: {
+  initialProjects?: import("@/types/web-design").WebDesignProject[];
+}) {
+  const { projects, loading, error } = useWebDesignProjects({
+    enabled: initialProjects === undefined,
+    initial: initialProjects,
+  });
 
   useEffect(() => {
     const root = document.documentElement;

@@ -131,7 +131,6 @@ function makePhoto(partial?: Partial<PhotoshootingCell>): PhotoshootingCell {
     colSpan: 2,
     rowSpan: 3,
     ...partial,
-    type: "photo",
   };
 }
 

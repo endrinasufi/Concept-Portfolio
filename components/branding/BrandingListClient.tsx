@@ -7,7 +7,7 @@ import { collectProjectPhotos } from "@/lib/utils/projectPhotos";
 import { MediaImage } from "@/components/branding/MediaImage";
 import { FadeIn, Reveal } from "@/components/motion/Reveal";
 import { sortByOrder } from "@/lib/utils/id";
-import type { BrandColor, BrandingProject } from "@/types/branding";
+import type { BrandColor, BrandingProject, Project } from "@/types/branding";
 import { motion, useReducedMotion } from "motion/react";
 import { Inter } from "next/font/google";
 import { useEffect, useMemo, useState } from "react";
@@ -126,8 +126,16 @@ function ProjectCard({ project }: { project: BrandingProject }) {
   );
 }
 
-export function BrandingListClient() {
-  const { projects, loading, error } = useProjects({ service: "branding" });
+export function BrandingListClient({
+  initialProjects,
+}: {
+  initialProjects?: Project[];
+}) {
+  const { projects, loading, error } = useProjects({
+    service: "branding",
+    enabled: initialProjects === undefined,
+    initial: initialProjects,
+  });
 
   useEffect(() => {
     const root = document.documentElement;

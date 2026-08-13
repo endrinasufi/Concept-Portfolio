@@ -4,13 +4,21 @@ import { useCallback, useEffect, useState } from "react";
 import type { WebDesignProject } from "@/types/web-design";
 import { getWebDesignProjectRepository } from "@/lib/repositories";
 
-export function useWebDesignProjects(options?: { includeDrafts?: boolean }) {
+export function useWebDesignProjects(options?: {
+  includeDrafts?: boolean;
+  initial?: WebDesignProject[];
+  enabled?: boolean;
+}) {
   const includeDrafts = options?.includeDrafts;
-  const [projects, setProjects] = useState<WebDesignProject[]>([]);
-  const [loading, setLoading] = useState(true);
+  const enabled = options?.enabled !== false;
+  const [projects, setProjects] = useState<WebDesignProject[]>(
+    options?.initial ?? [],
+  );
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    if (!enabled) return;
     try {
       const list = await getWebDesignProjectRepository().list({ includeDrafts });
       setProjects(list);
@@ -20,9 +28,13 @@ export function useWebDesignProjects(options?: { includeDrafts?: boolean }) {
     } finally {
       setLoading(false);
     }
-  }, [includeDrafts]);
+  }, [includeDrafts, enabled]);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
@@ -41,21 +53,36 @@ export function useWebDesignProjects(options?: { includeDrafts?: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, [includeDrafts]);
+  }, [includeDrafts, enabled]);
 
   return { projects, loading, error, refresh };
 }
 
-export function useWebDesignProjectBySlug(slug: string, includeDrafts = false) {
-  const [project, setProject] = useState<WebDesignProject | null>(null);
-  const [loading, setLoading] = useState(true);
+export function useWebDesignProjectBySlug(
+  slug: string,
+  includeDrafts = false,
+  initial?: WebDesignProject | null,
+  initialPublished?: WebDesignProject[],
+) {
+  const skip = initial !== undefined;
+  const [project, setProject] = useState<WebDesignProject | null>(initial ?? null);
+  const [loading, setLoading] = useState(!skip);
   const [error, setError] = useState<string | null>(null);
-  const [notFound, setNotFound] = useState(false);
-  const [totalPublished, setTotalPublished] = useState(0);
-  const [publishedIndex, setPublishedIndex] = useState(1);
+  const [notFound, setNotFound] = useState(skip ? !initial : false);
+  const [totalPublished, setTotalPublished] = useState(
+    initialPublished?.length ?? 0,
+  );
+  const [publishedIndex, setPublishedIndex] = useState(() => {
+    if (!initial || !initialPublished) return 1;
+    const found = initialPublished.findIndex((p) => p.id === initial.id);
+    return found >= 0 ? found + 1 : initial.order + 1;
+  });
 
   useEffect(() => {
-    if (!slug) return;
+    if (skip || !slug) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
@@ -87,7 +114,7 @@ export function useWebDesignProjectBySlug(slug: string, includeDrafts = false) {
     return () => {
       cancelled = true;
     };
-  }, [slug, includeDrafts]);
+  }, [slug, includeDrafts, skip]);
 
   return { project, loading, error, notFound, totalPublished, publishedIndex };
 }

@@ -39,6 +39,7 @@ export class LocalSettingsRepository {
 
 let settingsRepo: LocalSettingsRepository | null = null;
 
+/** @deprecated Use getSettingsRepository from @/lib/repositories */
 export function getSettingsRepository(): LocalSettingsRepository {
   if (typeof window === "undefined") {
     throw new Error("Settings repository requires browser environment");

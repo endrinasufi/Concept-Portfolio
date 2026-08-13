@@ -46,8 +46,15 @@ function ProjectCard({ project }: { project: PhotoshootingProject }) {
   );
 }
 
-export function PhotoshootingListClient() {
-  const { projects, loading, error } = usePhotoshootingProjects();
+export function PhotoshootingListClient({
+  initialProjects,
+}: {
+  initialProjects?: PhotoshootingProject[];
+}) {
+  const { projects, loading, error } = usePhotoshootingProjects({
+    enabled: initialProjects === undefined,
+    initial: initialProjects,
+  });
 
   useEffect(() => {
     const root = document.documentElement;

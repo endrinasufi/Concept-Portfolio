@@ -4,13 +4,21 @@ import { useCallback, useEffect, useState } from "react";
 import type { VideoProductionItem } from "@/types/video-production";
 import { getVideoProductionRepository } from "@/lib/repositories";
 
-export function useVideoProduction(options?: { includeDrafts?: boolean }) {
+export function useVideoProduction(options?: {
+  includeDrafts?: boolean;
+  initial?: VideoProductionItem[];
+  enabled?: boolean;
+}) {
   const includeDrafts = options?.includeDrafts;
-  const [videos, setVideos] = useState<VideoProductionItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const enabled = options?.enabled !== false;
+  const [videos, setVideos] = useState<VideoProductionItem[]>(
+    options?.initial ?? [],
+  );
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    if (!enabled) return;
     try {
       const list = await getVideoProductionRepository().list({ includeDrafts });
       setVideos(list);
@@ -20,9 +28,13 @@ export function useVideoProduction(options?: { includeDrafts?: boolean }) {
     } finally {
       setLoading(false);
     }
-  }, [includeDrafts]);
+  }, [includeDrafts, enabled]);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
@@ -41,7 +53,7 @@ export function useVideoProduction(options?: { includeDrafts?: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, [includeDrafts]);
+  }, [includeDrafts, enabled]);
 
   return { videos, loading, error, refresh };
 }

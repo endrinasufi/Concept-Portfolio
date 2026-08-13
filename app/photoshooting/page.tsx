@@ -1,10 +1,15 @@
+import type { Metadata } from "next";
 import { PhotoshootingListClient } from "@/components/photoshooting/PhotoshootingListClient";
+import { loadPublishedPhotoshooting } from "@/lib/server/publicData";
 
-export const metadata = {
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
   title: "Photoshooting",
-  description: "Photoshooting portfolio — Concept Marketing Albania",
+  description: "Projekte Photoshooting — Concept Marketing Albania.",
 };
 
-export default function PhotoshootingPage() {
-  return <PhotoshootingListClient />;
+export default async function PhotoshootingPage() {
+  const projects = await loadPublishedPhotoshooting();
+  return <PhotoshootingListClient initialProjects={projects} />;
 }

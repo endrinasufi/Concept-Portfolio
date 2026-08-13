@@ -23,11 +23,16 @@ export class LocalPhotoshootingRepository implements PhotoshootingRepository {
     return items;
   }
 
-  async getBySlug(slug: string): Promise<PhotoshootingProject | null> {
+  async getBySlug(
+    slug: string,
+    options?: { includeDrafts?: boolean },
+  ): Promise<PhotoshootingProject | null> {
     await this.ensureSeeded();
-    return (
-      (await getDb().photoshooting.where("slug").equals(slug).first()) ?? null
-    );
+    const project =
+      (await getDb().photoshooting.where("slug").equals(slug).first()) ?? null;
+    if (!project) return null;
+    if (!options?.includeDrafts && project.status !== "published") return null;
+    return project;
   }
 
   async getById(id: string): Promise<PhotoshootingProject | null> {

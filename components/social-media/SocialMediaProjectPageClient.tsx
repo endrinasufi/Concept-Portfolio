@@ -7,13 +7,16 @@ import { SocialMediaProjectRenderer } from "./SocialMediaProjectRenderer";
 export function SocialMediaProjectPageClient({
   slug,
   isPreview,
+  initialProject,
 }: {
   slug: string;
   isPreview: boolean;
+  initialProject?: import("@/types/social-media").SocialMediaProject | null;
 }) {
   const { project, loading, error, notFound } = useSocialMediaProjectBySlug(
     slug,
     isPreview,
+    initialProject,
   );
 
   if (loading) {

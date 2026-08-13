@@ -1,10 +1,15 @@
+import type { Metadata } from "next";
 import { WebDesignListClient } from "@/components/web-design/WebDesignListClient";
+import { loadPublishedWebDesign } from "@/lib/server/publicData";
 
-export const metadata = {
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
   title: "Web Design",
-  description: "Web Design portfolio — Concept Marketing Albania",
+  description: "Projekte Web Design — Concept Marketing Albania.",
 };
 
-export default function WebDesignIndexPage() {
-  return <WebDesignListClient />;
+export default async function WebDesignPage() {
+  const projects = await loadPublishedWebDesign();
+  return <WebDesignListClient initialProjects={projects} />;
 }

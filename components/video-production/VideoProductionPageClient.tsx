@@ -139,8 +139,17 @@ function VideoLightbox({
   );
 }
 
-export function VideoProductionPageClient({ view }: { view: VideoPageView }) {
-  const { videos, loading } = useVideoProduction();
+export function VideoProductionPageClient({
+  view,
+  initialVideos,
+}: {
+  view: VideoPageView;
+  initialVideos?: VideoProductionItem[];
+}) {
+  const { videos, loading } = useVideoProduction({
+    enabled: initialVideos === undefined,
+    initial: initialVideos,
+  });
   const [playing, setPlaying] = useState<VideoProductionItem | null>(null);
   const [visibleCount, setVisibleCount] = useState(
     view === "social" ? INITIAL_SOCIAL : INITIAL_PRODUCTION,

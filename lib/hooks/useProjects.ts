@@ -4,14 +4,21 @@ import { useCallback, useEffect, useState } from "react";
 import type { Project } from "@/types/branding";
 import { getProjectRepository } from "@/lib/repositories";
 
-export function useProjects(options?: { service?: string; includeDrafts?: boolean }) {
+export function useProjects(options?: {
+  service?: string;
+  includeDrafts?: boolean;
+  initial?: Project[];
+  enabled?: boolean;
+}) {
   const service = options?.service;
   const includeDrafts = options?.includeDrafts;
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const enabled = options?.enabled !== false;
+  const [projects, setProjects] = useState<Project[]>(options?.initial ?? []);
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    if (!enabled) return;
     try {
       const repo = getProjectRepository();
       const list = await repo.list({ service, includeDrafts });
@@ -22,9 +29,13 @@ export function useProjects(options?: { service?: string; includeDrafts?: boolea
     } finally {
       setLoading(false);
     }
-  }, [service, includeDrafts]);
+  }, [service, includeDrafts, enabled]);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
@@ -44,19 +55,27 @@ export function useProjects(options?: { service?: string; includeDrafts?: boolea
     return () => {
       cancelled = true;
     };
-  }, [service, includeDrafts]);
+  }, [service, includeDrafts, enabled]);
 
   return { projects, loading, error, refresh };
 }
 
-export function useProjectBySlug(slug: string, includeDrafts = false) {
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
+export function useProjectBySlug(
+  slug: string,
+  includeDrafts = false,
+  initial?: Project | null,
+) {
+  const skip = initial !== undefined;
+  const [project, setProject] = useState<Project | null>(initial ?? null);
+  const [loading, setLoading] = useState(!skip);
   const [error, setError] = useState<string | null>(null);
-  const [notFound, setNotFound] = useState(false);
+  const [notFound, setNotFound] = useState(skip ? !initial : false);
 
   useEffect(() => {
-    if (!slug) return;
+    if (skip || !slug) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
@@ -82,7 +101,7 @@ export function useProjectBySlug(slug: string, includeDrafts = false) {
     return () => {
       cancelled = true;
     };
-  }, [slug, includeDrafts]);
+  }, [slug, includeDrafts, skip]);
 
   return { project, loading, error, notFound };
 }

@@ -2,7 +2,10 @@ import type { PhotoshootingProject } from "@/types/photoshooting";
 
 export interface PhotoshootingRepository {
   list(options?: { includeDrafts?: boolean }): Promise<PhotoshootingProject[]>;
-  getBySlug(slug: string): Promise<PhotoshootingProject | null>;
+  getBySlug(
+    slug: string,
+    options?: { includeDrafts?: boolean },
+  ): Promise<PhotoshootingProject | null>;
   getById(id: string): Promise<PhotoshootingProject | null>;
   create(
     item: Omit<PhotoshootingProject, "id" | "createdAt" | "updatedAt"> & {
