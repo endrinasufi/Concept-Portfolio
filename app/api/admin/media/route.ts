@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import {
   ALLOWED_MIME,
-  MAX_UPLOAD_BYTES,
   isErrorResponse,
   jsonError,
   requireApiSession,
@@ -24,9 +23,6 @@ export async function POST(request: Request) {
     const form = await request.formData();
     const file = form.get("file");
     if (!(file instanceof File)) return jsonError("file is required");
-    if (file.size > MAX_UPLOAD_BYTES) {
-      return jsonError("File too large (max 10MB)", 413);
-    }
     const mime = sniffMimeType(file.name, file.type);
     if (!ALLOWED_MIME.has(mime)) {
       return jsonError(

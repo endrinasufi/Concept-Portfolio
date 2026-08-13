@@ -5,11 +5,25 @@ import { getSession, type AdminUser } from "@/lib/server/auth";
 export async function requireApiSession(): Promise<
   AdminUser | NextResponse
 > {
-  const user = await getSession();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const user = await getSession();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    return user;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Auth/DB error";
+    if (/ECONNREFUSED|ENOTFOUND|ER_ACCESS/i.test(msg)) {
+      return NextResponse.json(
+        {
+          error:
+            "MySQL nuk është i lidhur. Nise MySQL nga XAMPP, pastaj rifresko faqen.",
+        },
+        { status: 503 },
+      );
+    }
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
-  return user;
 }
 
 export function isErrorResponse(
@@ -37,8 +51,6 @@ export function revalidatePublicPaths(paths: string[] = []) {
     revalidatePath(path);
   }
 }
-
-export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
 export const ALLOWED_MIME = new Set([
   "image/jpeg",

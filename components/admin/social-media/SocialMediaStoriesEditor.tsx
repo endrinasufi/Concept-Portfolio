@@ -33,7 +33,7 @@ export function SocialMediaStoriesEditor({
       for (const file of Array.from(files)) {
         if (!file.type.startsWith("image/") && !/\.(jpe?g|png|webp|gif)$/i.test(file.name)) {
           throw new Error(
-            `"${file.name}" nuk është imazh. Stories pranojnë JPG, PNG, WebP ose GIF (max 10MB).`,
+            `"${file.name}" nuk është imazh. Stories pranojnë JPG, PNG, WebP ose GIF.`,
           );
         }
         const asset = await uploadSocialMediaAsset(file);
@@ -76,7 +76,7 @@ export function SocialMediaStoriesEditor({
         <div>
           <h3 className="text-sm font-medium">Stories</h3>
           <p className="text-xs text-muted">
-            9:16 · JPG/PNG/WebP · max 10MB · zvarris me ≡ për të rirenditur
+            9:16 · JPG/PNG/WebP · zgjidh disa skedarë njëherësh · zvarris me ≡
           </p>
         </div>
         <label

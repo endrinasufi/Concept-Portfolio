@@ -32,11 +32,18 @@ export async function apiUpload<T>(
   path: string,
   form: FormData,
 ): Promise<T> {
-  const res = await fetch(path, {
-    method: "POST",
-    credentials: "include",
-    body: form,
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetch(path, {
+      method: "POST",
+      credentials: "include",
+      body: form,
+      cache: "no-store",
+    });
+  } catch {
+    throw new Error(
+      "Nuk u lidh me serverin (Failed to fetch). Kontrollo që MySQL/XAMPP është ndezur dhe që npm run dev po punon.",
+    );
+  }
   return parseJson<T>(res);
 }
