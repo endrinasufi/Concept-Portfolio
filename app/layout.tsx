@@ -3,6 +3,7 @@ import { Fraunces, Outfit, Six_Caps } from "next/font/google";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteFavicon } from "@/components/layout/SiteFavicon";
+import { AdminFrontDock } from "@/components/layout/AdminFrontDock";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import "./globals.css";
 
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteFooter />
         <SiteHeader />
         <SiteFavicon />
+        <AdminFrontDock />
         <PageViewTracker />
       </body>
     </html>

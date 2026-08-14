@@ -386,3 +386,21 @@ img {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Shenjë e lehtë kur je i loguar në CMS (frontend publik) */
+html[data-cms-logged-in] body::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: auto 0 0 0;
+  height: 3px;
+  z-index: 70;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #fdd85d 35%,
+    #1a1a1a 65%,
+    transparent 100%
+  );
+  opacity: 0.85;
+}
