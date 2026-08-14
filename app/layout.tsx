@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Outfit, Six_Caps } from "next/font/google";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -47,8 +48,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col antialiased">
         <main className="relative z-0 flex-1">{children}</main>
         <SiteFooter />
-        {/* Pas main — që GSAP pin të mos e mbulojë */}
         <SiteHeader />
+        <PageViewTracker />
       </body>
     </html>
   );

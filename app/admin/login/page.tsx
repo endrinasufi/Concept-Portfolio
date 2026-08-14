@@ -15,10 +15,13 @@ export default async function AdminLoginPage({
   const next = params.next && params.next.startsWith("/admin") ? params.next : "/admin";
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 text-foreground">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-surface/60 p-8 shadow-sm">
-        <p className="font-display text-2xl">CMA Admin</p>
-        <p className="mt-2 text-sm text-muted">Hyr për të menaxhuar portfolion.</p>
+    <div className="admin-light flex min-h-screen items-center justify-center px-4 text-foreground">
+      <div className="admin-card w-full max-w-md p-8">
+        <p className="inline-flex rounded-full border border-[#1a1a1a]/20 px-4 py-1.5 text-sm font-semibold">
+          CMA
+        </p>
+        <p className="admin-serif mt-5 text-3xl">Hyr në admin</p>
+        <p className="mt-2 text-sm text-muted">Menaxho portfolion.</p>
         <AdminLoginForm nextPath={next} />
       </div>
     </div>

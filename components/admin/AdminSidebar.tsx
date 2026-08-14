@@ -43,17 +43,16 @@ export function AdminSidebar({ userEmail }: { userEmail?: string }) {
   }
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-surface/40">
-      <div className="border-b border-border px-5 py-5">
-        <p className="font-display text-lg leading-tight">CMA Admin</p>
-        <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-muted">
-          Portfolio CMS
+    <aside className="flex w-60 shrink-0 flex-col">
+      <div className="px-5 py-6">
+        <p className="inline-flex rounded-full border border-[#1a1a1a]/20 px-4 py-1.5 text-sm font-semibold tracking-tight">
+          CMA
         </p>
         {userEmail ? (
-          <p className="mt-2 truncate text-xs text-muted">{userEmail}</p>
+          <p className="mt-3 truncate text-xs text-muted">{userEmail}</p>
         ) : null}
       </div>
-      <nav className="flex flex-1 flex-col gap-1 p-3">
+      <nav className="flex flex-1 flex-col gap-1 px-3">
         {nav.map((item) => {
           const active = item.exact
             ? pathname === item.href
@@ -63,35 +62,35 @@ export function AdminSidebar({ userEmail }: { userEmail?: string }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
+              className={`flex items-center gap-3 rounded-full px-3 py-2.5 text-sm transition ${
                 active
-                  ? "bg-accent-soft text-foreground"
-                  : "text-muted hover:bg-surface-elevated hover:text-foreground"
+                  ? "bg-[#1a1a1a] text-white"
+                  : "text-muted hover:bg-white/50 hover:text-foreground"
               }`}
             >
-              <Icon size={16} strokeWidth={1.75} />
+              <Icon size={16} strokeWidth={1.6} />
               {item.label}
             </Link>
           );
         })}
       </nav>
-      <div className="space-y-1 border-t border-border p-3">
+      <div className="space-y-1 p-3 pb-5">
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted hover:text-foreground"
+          className="flex items-center gap-2 rounded-full px-3 py-2 text-sm text-muted hover:bg-white/50 hover:text-foreground"
         >
           <ArrowLeft size={14} /> Faqja publike
         </Link>
         <Link
           href="/branding"
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted hover:text-foreground"
+          className="flex items-center gap-2 rounded-full px-3 py-2 text-sm text-muted hover:bg-white/50 hover:text-foreground"
         >
           <ExternalLink size={14} /> Portfolio
         </Link>
         <button
           type="button"
           onClick={() => void logout()}
-          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-muted hover:text-foreground"
+          className="flex w-full items-center gap-2 rounded-full px-3 py-2 text-left text-sm text-muted hover:bg-white/50 hover:text-foreground"
         >
           <LogOut size={14} /> Dil
         </button>
