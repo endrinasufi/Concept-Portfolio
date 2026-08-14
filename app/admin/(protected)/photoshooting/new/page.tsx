@@ -12,7 +12,7 @@ export default function AdminPhotoshootingNewPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl">Projekt i ri</h1>
+      <h1 className="text-3xl">Projekt i ri</h1>
       <p className="mt-2 text-sm text-muted">
         Krijo një photoshooting me grid bento.
       </p>

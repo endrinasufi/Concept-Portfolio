@@ -108,7 +108,7 @@ export function SocialMediaProjectEditorForm({
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl">
+          <h1 className="text-3xl">
             {initial.title ? "Edito projektin" : "Projekt Social Media i ri"}
           </h1>
           <p className="mt-1 text-sm text-muted">
@@ -136,7 +136,7 @@ export function SocialMediaProjectEditorForm({
       </div>
 
       <section className="grid gap-4 admin-card p-5 md:grid-cols-2">
-        <h2 className="font-display text-xl md:col-span-2">General</h2>
+        <h2 className="text-xl md:col-span-2">General</h2>
         <label className={label}>
           Title
           <input
@@ -257,7 +257,7 @@ export function SocialMediaProjectEditorForm({
       </section>
 
       <section className="space-y-4 admin-card p-5">
-        <h2 className="font-display text-xl">Cover (lista /social-media)</h2>
+        <h2 className="text-xl">Cover (lista /social-media)</h2>
         <p className="text-xs text-muted">
           Fotoja që shfaqet te karta e projektit në faqen e listës.
         </p>
@@ -310,7 +310,7 @@ export function SocialMediaProjectEditorForm({
       </section>
 
       <section className="space-y-5 admin-card p-5">
-        <h2 className="font-display text-xl">Block 1 — Hero</h2>
+        <h2 className="text-xl">Block 1 — Hero</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {([1, 2] as const).map((slot) => {
             const mediaId =
@@ -358,7 +358,7 @@ export function SocialMediaProjectEditorForm({
       </section>
 
       <section className="space-y-4 admin-card p-5">
-        <h2 className="font-display text-xl">Block 2 — Floating card</h2>
+        <h2 className="text-xl">Block 2 — Floating card</h2>
         <label className={label}>
           Section title
           <input
@@ -472,7 +472,7 @@ export function SocialMediaProjectEditorForm({
       </section>
 
       <section className="admin-card p-5">
-        <h2 className="mb-4 font-display text-xl">Block 3 — Stories</h2>
+        <h2 className="mb-4 text-xl">Block 3 — Stories</h2>
         <SocialMediaStoriesEditor
           stories={value.block3?.stories ?? []}
           onChange={(stories) =>
@@ -482,7 +482,7 @@ export function SocialMediaProjectEditorForm({
       </section>
 
       <section className="grid gap-4 admin-card p-5 md:grid-cols-2">
-        <h2 className="font-display text-xl md:col-span-2">SEO</h2>
+        <h2 className="text-xl md:col-span-2">SEO</h2>
         <label className={label}>
           Meta title
           <input

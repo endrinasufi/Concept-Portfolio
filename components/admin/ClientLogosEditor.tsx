@@ -72,23 +72,22 @@ export function ClientLogosEditor() {
   }
 
   return (
-    <section className="max-w-2xl space-y-4 admin-card p-5">
+    <section className="space-y-3 rounded-2xl bg-white/70 p-3">
       <div>
-        <h2 className="text-sm font-medium uppercase tracking-wider text-muted">
+        <h2 className="text-[11px] font-medium uppercase tracking-wider text-muted">
           Logo klientësh
         </h2>
-        <p className="mt-1 text-xs text-muted">
-          Logot shfaqen si katrorë në homepage grid. Shto disa; renditja është
-          sipas kohës së shtimit.
+        <p className="mt-0.5 text-[11px] text-muted">
+          Logot shfaqen si katrorë në homepage grid.
         </p>
       </div>
 
       {logos.length > 0 ? (
-        <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
+        <ul className="grid grid-cols-6 gap-2 sm:grid-cols-8 md:grid-cols-10">
           {logos.map((logo) => (
             <li
               key={logo.id}
-              className="group relative aspect-square overflow-hidden rounded-[var(--radius-md)] border border-border bg-background/60 p-3"
+              className="group relative aspect-square overflow-hidden rounded-lg border border-border bg-white p-1.5"
             >
               <MediaImage
                 mediaId={logo.mediaId}
@@ -100,16 +99,16 @@ export function ClientLogosEditor() {
                 type="button"
                 disabled={busy}
                 onClick={() => void removeLogo(logo)}
-                className="absolute right-1.5 top-1.5 inline-flex rounded-full border border-border bg-background/90 p-1.5 opacity-0 transition group-hover:opacity-100 disabled:opacity-50"
+                className="absolute right-0.5 top-0.5 inline-flex rounded-full bg-white/90 p-1 opacity-0 transition group-hover:opacity-100 disabled:opacity-50"
                 aria-label="Hiq logon"
               >
-                <Trash2 size={12} />
+                <Trash2 size={10} />
               </button>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-muted">Nuk ka logo klientësh ende.</p>
+        <p className="text-xs text-muted">Nuk ka logo klientësh ende.</p>
       )}
 
       <div
@@ -136,33 +135,30 @@ export function ClientLogosEditor() {
           setDragging(false);
           void applyFiles(e.dataTransfer.files);
         }}
-        className={`relative flex min-h-[7rem] cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-[var(--radius-lg)] border border-dashed px-4 py-5 transition ${
+        className={`relative flex min-h-[4.5rem] cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border border-dashed px-3 py-3 transition ${
           dragging
             ? "border-accent bg-accent-soft"
-            : "border-border bg-background/50 hover:border-white/25"
+            : "border-border bg-white/50 hover:border-[#1a1a1a]/25"
         } ${busy || loading ? "pointer-events-none opacity-60" : ""}`}
       >
-        <ImagePlus className="text-muted" size={24} />
-        <p className="text-center text-sm text-foreground/85">
-          Drop logo këtu ose kliko për të zgjedhur
+        <ImagePlus className="text-muted" size={18} />
+        <p className="text-center text-xs text-foreground/85">
+          Drop logo ose kliko
         </p>
-        <p className="text-center text-xs text-muted">PNG · SVG · WebP · JPG</p>
-        {busy ? <p className="text-xs text-muted">Duke ngarkuar…</p> : null}
+        {busy ? <p className="text-[11px] text-muted">Duke ngarkuar…</p> : null}
       </div>
 
       <button
         type="button"
         disabled={busy}
         onClick={() => inputRef.current?.click()}
-        className="rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background disabled:opacity-50"
+        className="rounded-full bg-foreground px-3 py-1 text-[11px] font-medium text-background disabled:opacity-50"
       >
         Shto logo
       </button>
 
       {message ? (
-        <p className="rounded-lg border border-border bg-surface px-3 py-2 text-sm">
-          {message}
-        </p>
+        <p className="text-[11px] text-muted">{message}</p>
       ) : null}
 
       <input

@@ -37,7 +37,7 @@ export default function AdminPhotoshootingEditPage({
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl">Ndrysho projektin</h1>
+          <h1 className="text-3xl">Ndrysho projektin</h1>
           <p className="mt-1 text-sm text-muted">{form.clientName}</p>
         </div>
         <Link

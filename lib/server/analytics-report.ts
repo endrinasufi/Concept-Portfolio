@@ -6,7 +6,7 @@ import {
 } from "@/lib/server/analytics";
 import { channelFromHost } from "@/lib/server/analytics-ua";
 import type {
-  AnalyticsRangeKey,
+  AnalyticsGrain,
   AnalyticsRankRow,
   AnalyticsReport,
 } from "@/types/analytics";
@@ -29,6 +29,7 @@ interface DayRow extends RowDataPacket {
 interface HourRow extends RowDataPacket {
   hour: number | string;
   views: number | string;
+  visitors: number | string;
 }
 
 interface DimRow extends RowDataPacket {
@@ -52,6 +53,20 @@ const MONTHS = [
   "nën",
   "dhj",
 ];
+const MONTHS_FULL = [
+  "Janar",
+  "Shkurt",
+  "Mars",
+  "Prill",
+  "Maj",
+  "Qershor",
+  "Korrik",
+  "Gusht",
+  "Shtator",
+  "Tetor",
+  "Nëntor",
+  "Dhjetor",
+];
 
 function utcDayStart(d = new Date()): Date {
   const x = new Date(d);
@@ -65,44 +80,164 @@ function addUtcDays(d: Date, days: number): Date {
   return x;
 }
 
-export function parseRangeKey(raw: string | null): AnalyticsRangeKey {
-  if (raw === "today" || raw === "7d" || raw === "28d" || raw === "90d") return raw;
-  return "7d";
+export function parseGrain(raw: string | null): AnalyticsGrain {
+  if (raw === "day" || raw === "week" || raw === "month" || raw === "year") {
+    return raw;
+  }
+  return "week";
 }
 
-function rangeWindow(key: AnalyticsRangeKey): {
-  from: Date;
-  to: Date;
-  prevFrom: Date;
-  prevTo: Date;
-  days: number;
-} {
+export function parseOffset(raw: string | null): number {
+  const value = Number(raw);
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(0, Math.max(-36, Math.trunc(value)));
+}
+
+function utcMonday(d: Date): Date {
+  const x = utcDayStart(d);
+  const day = x.getUTCDay();
+  return addUtcDays(x, day === 0 ? -6 : 1 - day);
+}
+
+function utcMonthStart(d: Date): Date {
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
+}
+
+function addUtcMonths(d: Date, months: number): Date {
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + months, 1));
+}
+
+function utcYearStart(d: Date): Date {
+  return new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+}
+
+function addUtcYears(d: Date, years: number): Date {
+  return new Date(Date.UTC(d.getUTCFullYear() + years, 0, 1));
+}
+
+function dayCount(from: Date, to: Date): number {
+  return Math.max(1, Math.round((to.getTime() - from.getTime()) / 86_400_000));
+}
+
+function periodWindow(grain: AnalyticsGrain, offset: number) {
   const today = utcDayStart();
-  const to = addUtcDays(today, 1);
-  if (key === "today") {
+  const cap = addUtcDays(today, 1);
+
+  if (grain === "day") {
+    const from = addUtcDays(today, offset);
+    const to = addUtcDays(from, 1);
     return {
-      from: today,
+      from,
       to,
-      prevFrom: addUtcDays(today, -1),
-      prevTo: today,
-      days: 1,
+      prevFrom: addUtcDays(from, -1),
+      prevTo: from,
     };
   }
-  const days = key === "90d" ? 90 : key === "28d" ? 28 : 7;
-  const from = addUtcDays(to, -days);
+
+  if (grain === "week") {
+    const from = addUtcDays(utcMonday(today), offset * 7);
+    const rawTo = addUtcDays(from, 7);
+    const to = rawTo > cap ? cap : rawTo;
+    const days = dayCount(from, to);
+    const prevFrom = addUtcDays(from, -7);
+    return {
+      from,
+      to,
+      prevFrom,
+      prevTo: addUtcDays(prevFrom, days),
+    };
+  }
+
+  if (grain === "month") {
+    const from = addUtcMonths(utcMonthStart(today), offset);
+    const rawTo = addUtcMonths(from, 1);
+    const to = rawTo > cap ? cap : rawTo;
+    const days = dayCount(from, to);
+    const prevFrom = addUtcMonths(from, -1);
+    return {
+      from,
+      to,
+      prevFrom,
+      prevTo: addUtcDays(prevFrom, days),
+    };
+  }
+
+  const from = addUtcYears(utcYearStart(today), offset);
+  const rawTo = addUtcYears(from, 1);
+  const to = rawTo > cap ? cap : rawTo;
+  const days = dayCount(from, to);
+  const prevFrom = addUtcYears(from, -1);
   return {
     from,
     to,
-    prevFrom: addUtcDays(from, -days),
-    prevTo: from,
-    days,
+    prevFrom,
+    prevTo: addUtcDays(prevFrom, days),
   };
 }
 
-function labelForDay(iso: string, days: number): string {
-  const d = new Date(`${iso}T00:00:00.000Z`);
-  if (days <= 7) return WEEKDAYS[d.getUTCDay()];
-  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
+function formatPeriodLabel(grain: AnalyticsGrain, from: Date, to: Date): string {
+  const last = addUtcDays(to, -1);
+  const today = utcDayStart();
+  if (grain === "day") {
+    if (from.getTime() === today.getTime()) return "Sot";
+    if (from.getTime() === addUtcDays(today, -1).getTime()) return "Dje";
+    return `${from.getUTCDate()} ${MONTHS[from.getUTCMonth()]} ${from.getUTCFullYear()}`;
+  }
+  if (grain === "week") {
+    const sameMonth = from.getUTCMonth() === last.getUTCMonth();
+    if (sameMonth) {
+      return `${from.getUTCDate()}–${last.getUTCDate()} ${MONTHS[last.getUTCMonth()]}`;
+    }
+    return `${from.getUTCDate()} ${MONTHS[from.getUTCMonth()]} – ${last.getUTCDate()} ${MONTHS[last.getUTCMonth()]}`;
+  }
+  if (grain === "year") {
+    return String(from.getUTCFullYear());
+  }
+  return `${MONTHS_FULL[from.getUTCMonth()]} ${from.getUTCFullYear()}`;
+}
+
+function hourQuery(from: Date, to: Date) {
+  return query<HourRow[]>(
+    `SELECT HOUR(created_at) AS hour,
+            COUNT(*) AS views,
+            COUNT(DISTINCT visitor_hash) AS visitors
+     FROM page_views
+     WHERE created_at >= :from AND created_at < :to
+     GROUP BY HOUR(created_at)`,
+    { from: fmtSqlDate(from), to: fmtSqlDate(to) },
+  );
+}
+
+function dayQuery(from: Date, to: Date) {
+  return query<DayRow[]>(
+    `SELECT DATE(created_at) AS day,
+            COUNT(*) AS views,
+            COUNT(DISTINCT visitor_hash) AS visitors
+     FROM page_views
+     WHERE created_at >= :from AND created_at < :to
+     GROUP BY DATE(created_at)
+     ORDER BY day ASC`,
+    { from: fmtSqlDate(from), to: fmtSqlDate(to) },
+  );
+}
+
+interface MonthRow extends RowDataPacket {
+  ym: string;
+  views: number | string;
+  visitors: number | string;
+}
+
+function monthQuery(from: Date, to: Date) {
+  return query<MonthRow[]>(
+    `SELECT DATE_FORMAT(created_at, '%Y-%m') AS ym,
+            COUNT(*) AS views,
+            COUNT(DISTINCT visitor_hash) AS visitors
+     FROM page_views
+     WHERE created_at >= :from AND created_at < :to
+     GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+     ORDER BY ym ASC`,
+    { from: fmtSqlDate(from), to: fmtSqlDate(to) },
+  );
 }
 
 function sqlDay(value: unknown): string {
@@ -202,10 +337,11 @@ const DEVICE_LABEL: Record<string, string> = {
 };
 
 export async function getAnalyticsReport(
-  rangeKey: AnalyticsRangeKey,
+  grain: AnalyticsGrain,
+  offset = 0,
 ): Promise<AnalyticsReport> {
   await ensureAnalyticsTable();
-  const { from, to, prevFrom, prevTo, days } = rangeWindow(rangeKey);
+  const { from, to, prevFrom, prevTo } = periodWindow(grain, offset);
   const bounds = { from: fmtSqlDate(from), to: fmtSqlDate(to) };
 
   const [
@@ -217,8 +353,13 @@ export async function getAnalyticsReport(
     prevSessions,
     newUsersRow,
     realtimeRow,
+    liveCountryRows,
     dayRows,
+    prevDayRows,
+    monthRows,
+    prevMonthRows,
     hourRows,
+    prevHourRows,
     countryRows,
     cityRows,
     pageRows,
@@ -246,23 +387,24 @@ export async function getAnalyticsReport(
       `SELECT COUNT(DISTINCT visitor_hash) AS n FROM page_views
        WHERE created_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 5 MINUTE)`,
     ),
-    query<DayRow[]>(
-      `SELECT DATE(created_at) AS day,
+    query<DimRow[]>(
+      `SELECT COALESCE(NULLIF(TRIM(country_code), ''), '') AS dim,
               COUNT(*) AS views,
               COUNT(DISTINCT visitor_hash) AS visitors
        FROM page_views
-       WHERE created_at >= :from AND created_at < :to
-       GROUP BY DATE(created_at)
-       ORDER BY day ASC`,
-      bounds,
+       WHERE created_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 5 MINUTE)
+       GROUP BY 1
+       ORDER BY visitors DESC, views DESC
+       LIMIT 40`,
     ),
-    query<HourRow[]>(
-      `SELECT HOUR(created_at) AS hour, COUNT(*) AS views
-       FROM page_views
-       WHERE created_at >= :from AND created_at < :to
-       GROUP BY HOUR(created_at)`,
-      bounds,
-    ),
+    dayQuery(from, to),
+    dayQuery(prevFrom, prevTo),
+    grain === "year" ? monthQuery(from, to) : Promise.resolve([] as MonthRow[]),
+    grain === "year"
+      ? monthQuery(prevFrom, prevTo)
+      : Promise.resolve([] as MonthRow[]),
+    hourQuery(from, to),
+    hourQuery(prevFrom, prevTo),
     dimQuery("country_code", from, to, 12),
     query<DimRow[]>(
       `SELECT CONCAT(COALESCE(NULLIF(TRIM(city), ''), 'E panjohur'), ' · ', COALESCE(NULLIF(TRIM(country_code), ''), '?')) AS dim,
@@ -303,23 +445,100 @@ export async function getAnalyticsReport(
       { views: n(row.views), visitors: n(row.visitors) },
     ]),
   );
-  const timeseries = [];
-  for (let i = 0; i < days; i++) {
-    const d = addUtcDays(from, i);
-    const key = d.toISOString().slice(0, 10);
-    const found = byDay.get(key) ?? { views: 0, visitors: 0 };
-    timeseries.push({
-      date: key,
-      label: labelForDay(key, days),
-      views: found.views,
-      visitors: found.visitors,
-    });
-  }
+  const byPrevDay = new Map(
+    prevDayRows.map((row) => [
+      sqlDay(row.day),
+      { views: n(row.views), visitors: n(row.visitors) },
+    ]),
+  );
+  const byMonth = new Map(
+    monthRows.map((row) => [
+      String(row.ym),
+      { views: n(row.views), visitors: n(row.visitors) },
+    ]),
+  );
+  const byPrevMonth = new Map(
+    prevMonthRows.map((row) => [
+      String(row.ym),
+      { views: n(row.views), visitors: n(row.visitors) },
+    ]),
+  );
+  const byHour = new Map(
+    hourRows.map((row) => [
+      n(row.hour),
+      { views: n(row.views), visitors: n(row.visitors) },
+    ]),
+  );
+  const byPrevHour = new Map(
+    prevHourRows.map((row) => [
+      n(row.hour),
+      { views: n(row.views), visitors: n(row.visitors) },
+    ]),
+  );
 
-  const hourMap = new Map(hourRows.map((row) => [n(row.hour), n(row.views)]));
+  const monthCount = () => {
+    const end = addUtcDays(to, -1);
+    return (
+      (end.getUTCFullYear() - from.getUTCFullYear()) * 12 +
+      (end.getUTCMonth() - from.getUTCMonth()) +
+      1
+    );
+  };
+
+  const timeseries =
+    grain === "day"
+      ? Array.from({ length: 24 }, (_, hour) => {
+          const cur = byHour.get(hour) ?? { views: 0, visitors: 0 };
+          const prev = byPrevHour.get(hour) ?? { views: 0, visitors: 0 };
+          return {
+            date: `${from.toISOString().slice(0, 10)}T${String(hour).padStart(2, "0")}:00:00.000Z`,
+            label: `${String(hour).padStart(2, "0")}:00`,
+            views: cur.views,
+            visitors: cur.visitors,
+            viewsPrev: prev.views,
+            visitorsPrev: prev.visitors,
+          };
+        })
+      : grain === "year"
+        ? Array.from({ length: Math.max(1, monthCount()) }, (_, i) => {
+            const d = addUtcMonths(from, i);
+            const prevD = addUtcMonths(prevFrom, i);
+            const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+            const prevKey = `${prevD.getUTCFullYear()}-${String(prevD.getUTCMonth() + 1).padStart(2, "0")}`;
+            const cur = byMonth.get(key) ?? { views: 0, visitors: 0 };
+            const prev = byPrevMonth.get(prevKey) ?? { views: 0, visitors: 0 };
+            return {
+              date: key,
+              label: MONTHS[d.getUTCMonth()],
+              views: cur.views,
+              visitors: cur.visitors,
+              viewsPrev: prev.views,
+              visitorsPrev: prev.visitors,
+            };
+          })
+        : Array.from({ length: dayCount(from, to) }, (_, i) => {
+            const d = addUtcDays(from, i);
+            const prevD = addUtcDays(prevFrom, i);
+            const key = d.toISOString().slice(0, 10);
+            const prevKey = prevD.toISOString().slice(0, 10);
+            const cur = byDay.get(key) ?? { views: 0, visitors: 0 };
+            const prev = byPrevDay.get(prevKey) ?? { views: 0, visitors: 0 };
+            return {
+              date: key,
+              label:
+                grain === "week"
+                  ? WEEKDAYS[d.getUTCDay()]
+                  : `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`,
+              views: cur.views,
+              visitors: cur.visitors,
+              viewsPrev: prev.views,
+              visitorsPrev: prev.visitors,
+            };
+          });
+
   const hourly = Array.from({ length: 24 }, (_, hour) => ({
     hour,
-    views: hourMap.get(hour) ?? 0,
+    views: byHour.get(hour)?.views ?? 0,
   }));
 
   const referrers = rank(referrerRows, (key) => key || "Direct / none");
@@ -339,10 +558,14 @@ export async function getAnalyticsReport(
   const channels = [...channelMap.values()].sort((a, b) => b.visitors - a.visitors);
 
   return {
-    range: rangeKey,
+    grain,
+    offset,
+    periodLabel: formatPeriodLabel(grain, from, to),
+    compareLabel: formatPeriodLabel(grain, prevFrom, prevTo),
     from: from.toISOString(),
     to: to.toISOString(),
     realtime: n(realtimeRow[0]?.n),
+    liveCountries: rank(liveCountryRows, countryLabel),
     users,
     usersPrev,
     pageviews,

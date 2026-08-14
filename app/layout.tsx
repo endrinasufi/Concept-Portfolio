@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Outfit, Six_Caps } from "next/font/google";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { SiteFavicon } from "@/components/layout/SiteFavicon";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import "./globals.css";
 
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main className="relative z-0 flex-1">{children}</main>
         <SiteFooter />
         <SiteHeader />
+        <SiteFavicon />
         <PageViewTracker />
       </body>
     </html>

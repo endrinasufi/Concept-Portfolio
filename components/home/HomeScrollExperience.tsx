@@ -190,6 +190,7 @@ export function HomeScrollExperience({
       webDesignProjects,
       clientLogos: sortByOrder(settings.clientLogos ?? []),
       viewportWidth: vw,
+      homeFeatured: settings.homeFeatured,
     });
   }, [
     brandingProjects,
@@ -197,6 +198,7 @@ export function HomeScrollExperience({
     videoItems,
     webDesignProjects,
     settings.clientLogos,
+    settings.homeFeatured,
     vw,
   ]);
 
@@ -210,6 +212,7 @@ export function HomeScrollExperience({
       webDesignProjects,
       clientLogos: sortByOrder(settings.clientLogos ?? []),
       viewportWidth: vw,
+      homeFeatured: settings.homeFeatured,
     });
   }, [
     brandingProjects,
@@ -217,6 +220,7 @@ export function HomeScrollExperience({
     videoItems,
     webDesignProjects,
     settings.clientLogos,
+    settings.homeFeatured,
     vw,
   ]);
 
@@ -230,6 +234,7 @@ export function HomeScrollExperience({
       webDesignProjects,
       clientLogos: sortByOrder(settings.clientLogos ?? []),
       viewportWidth: vw,
+      homeFeatured: settings.homeFeatured,
     });
   }, [
     brandingProjects,
@@ -237,6 +242,7 @@ export function HomeScrollExperience({
     videoItems,
     webDesignProjects,
     settings.clientLogos,
+    settings.homeFeatured,
     vw,
   ]);
 

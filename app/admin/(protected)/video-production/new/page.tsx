@@ -12,7 +12,7 @@ export default function AdminVideoProductionNewPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl">Video e re</h1>
+      <h1 className="text-3xl">Video e re</h1>
       <p className="mt-2 text-sm text-muted">Shto një video YouTube në portfolio.</p>
       <div className="mt-8">
         <VideoProductionEditorForm

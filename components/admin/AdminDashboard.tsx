@@ -66,7 +66,10 @@ function WeekBars({
       {days.map((d, i) => {
         const highlight = peak > 0 && d.views === peak;
         return (
-          <div key={`${d.label}-${i}`} className="flex h-full flex-1 flex-col items-center justify-end gap-2">
+          <div
+            key={`${d.label}-${i}`}
+            className="flex h-full flex-1 flex-col items-center justify-end gap-2"
+          >
             <div
               className={`w-full rounded-full ${
                 highlight ? "bg-[#FDD85D]" : "bg-[#1a1a1a]/10"
@@ -315,9 +318,7 @@ export function AdminDashboard() {
     <div className="space-y-5">
       <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <h1 className="admin-serif text-4xl leading-none md:text-5xl">
-            Mirë se erdhe
-          </h1>
+          <h1>Mirë se erdhe</h1>
           <p className="mt-2 text-sm text-muted">
             Vizitat e faqes dhe projektet e ngarkuara.
           </p>
@@ -388,7 +389,9 @@ export function AdminDashboard() {
             </div>
             <div className="text-right">
               <p className="text-2xl font-semibold tracking-tight">
-                {analytics ? analytics.week.reduce((s, d) => s + d.views, 0) : "…"}
+                {analytics
+                  ? analytics.week.reduce((s, d) => s + d.views, 0)
+                  : "…"}
               </p>
               <Link
                 href="/admin/analytics"
@@ -437,7 +440,9 @@ export function AdminDashboard() {
                         </p>
                       </div>
                     </div>
-                    <span className="text-sm tabular-nums text-muted">{s.total}</span>
+                    <span className="text-sm tabular-nums text-muted">
+                      {s.total}
+                    </span>
                   </div>
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#1a1a1a]/8">
                     <div
@@ -465,19 +470,29 @@ export function AdminDashboard() {
             vizitorë unikë këtë muaj · {analytics?.monthViews ?? 0} views
           </p>
           <div className="mt-5 space-y-3">
-            {(analytics?.topPages.length ? analytics.topPages : []).map((page, i) => (
-              <div key={page.path} className="flex items-center gap-3">
-                <span
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
-                    i < 2 ? "bg-[#FDD85D] text-[#1a1a1a]" : "bg-white/10 text-white/70"
-                  }`}
-                >
-                  {i < 2 ? <CheckCircle2 size={14} /> : <span className="text-[11px]">{i + 1}</span>}
-                </span>
-                <p className="min-w-0 flex-1 truncate text-sm text-white/70">{page.path}</p>
-                <p className="tabular-nums text-sm">{page.views}</p>
-              </div>
-            ))}
+            {(analytics?.topPages.length ? analytics.topPages : []).map(
+              (page, i) => (
+                <div key={page.path} className="flex items-center gap-3">
+                  <span
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
+                      i < 2
+                        ? "bg-[#FDD85D] text-[#1a1a1a]"
+                        : "bg-white/10 text-white/70"
+                    }`}
+                  >
+                    {i < 2 ? (
+                      <CheckCircle2 size={14} />
+                    ) : (
+                      <span className="text-[11px]">{i + 1}</span>
+                    )}
+                  </span>
+                  <p className="min-w-0 flex-1 truncate text-sm text-white/70">
+                    {page.path}
+                  </p>
+                  <p className="tabular-nums text-sm">{page.views}</p>
+                </div>
+              ),
+            )}
             {!analytics?.topPages.length ? (
               <p className="text-sm text-white/50">
                 Vizitat fillojnë të numërohen sapo dikush hap faqen publike.

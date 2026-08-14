@@ -81,13 +81,42 @@ img {
 
 .admin-ui {
   font-family: var(--font-admin-sans), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.011em;
+}
+
+.admin-ui button,
+.admin-ui input,
+.admin-ui select,
+.admin-ui textarea {
+  font-family: inherit;
 }
 
 .admin-ui .font-display,
-.admin-ui .font-hero-caps {
+.admin-ui .font-hero-caps,
+.admin-ui .admin-serif {
   font-family: inherit;
   font-weight: 600;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
+}
+
+.admin-content h1 {
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  font-size: 2.25rem;
+  line-height: 1.1;
+}
+
+.admin-content h1 + p {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.admin-ui h2,
+.admin-ui h3 {
+  font-family: inherit;
 }
 
 .admin-light {
@@ -109,10 +138,12 @@ img {
   background-size: 18px 18px, auto, auto, auto;
 }
 
-.admin-ui .admin-serif {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-weight: 500;
-  letter-spacing: -0.03em;
+.admin-shell {
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 18px 50px rgba(26, 26, 26, 0.08);
 }
 
 .admin-light .bg-foreground,
@@ -127,20 +158,6 @@ img {
   backdrop-filter: blur(16px);
   box-shadow: 0 12px 40px rgba(26, 26, 26, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.45);
-}
-
-.admin-shell {
-  border-radius: 2rem;
-  background: rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(22px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 18px 50px rgba(26, 26, 26, 0.08);
-}
-
-.admin-light h1 {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-weight: 500;
-  letter-spacing: -0.03em;
 }
 
 .admin-light input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="color"]):not([type="range"]),

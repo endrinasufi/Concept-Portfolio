@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getSession, type AdminUser } from "@/lib/server/auth";
+import { isAdminRole } from "@/lib/permissions";
 
 export async function requireApiSession(): Promise<
   AdminUser | NextResponse
@@ -26,6 +27,15 @@ export async function requireApiSession(): Promise<
   }
 }
 
+export async function requireApiAdmin(): Promise<AdminUser | NextResponse> {
+  const session = await requireApiSession();
+  if (isErrorResponse(session)) return session;
+  if (!isAdminRole(session.role)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  return session;
+}
+
 export function isErrorResponse(
   value: AdminUser | NextResponse,
 ): value is NextResponse {
@@ -34,6 +44,18 @@ export function isErrorResponse(
 
 export function jsonError(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status });
+}
+
+/** Cloudinary (and others) reject with a plain object, not `Error`. */
+export function errorMessage(err: unknown, fallback = "Upload failed"): string {
+  if (err instanceof Error && err.message) return err.message;
+  if (typeof err === "string" && err.trim()) return err;
+  if (err && typeof err === "object") {
+    const o = err as { message?: unknown; error?: unknown };
+    if (typeof o.message === "string" && o.message.trim()) return o.message;
+    if (typeof o.error === "string" && o.error.trim()) return o.error;
+  }
+  return fallback;
 }
 
 export function revalidatePublicPaths(paths: string[] = []) {
@@ -46,6 +68,7 @@ export function revalidatePublicPaths(paths: string[] = []) {
     "/video-production",
     "/video-production/social",
     "/video-production/production",
+    "/icon",
   ];
   for (const path of [...base, ...paths]) {
     revalidatePath(path);
@@ -58,6 +81,9 @@ export const ALLOWED_MIME = new Set([
   "image/webp",
   "image/gif",
   "image/svg+xml",
+  "image/x-icon",
+  "image/vnd.microsoft.icon",
+  "image/ico",
   "video/mp4",
   "video/webm",
 ]);
@@ -80,6 +106,7 @@ export function sniffMimeType(filename: string, declared?: string): string {
     webp: "image/webp",
     gif: "image/gif",
     svg: "image/svg+xml",
+    ico: "image/x-icon",
     mp4: "video/mp4",
     webm: "video/webm",
   };

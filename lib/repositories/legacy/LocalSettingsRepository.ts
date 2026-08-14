@@ -1,6 +1,7 @@
 import { getDb } from "./db";
 import {
   DEFAULT_SITE_SETTINGS,
+  normalizeHomeFeatured,
   type SiteSettings,
 } from "@/types/settings";
 import { nowIso } from "@/lib/utils/id";
@@ -16,6 +17,7 @@ export class LocalSettingsRepository {
       ...DEFAULT_SITE_SETTINGS,
       ...row,
       clientLogos: row.clientLogos ?? [],
+      homeFeatured: normalizeHomeFeatured(row.homeFeatured),
     };
   }
 
@@ -27,6 +29,9 @@ export class LocalSettingsRepository {
       ...patch,
       id: "site",
       clientLogos: patch.clientLogos ?? current.clientLogos,
+      homeFeatured: normalizeHomeFeatured(
+        patch.homeFeatured ?? current.homeFeatured,
+      ),
       updatedAt: nowIso(),
     };
     if ("logoMediaId" in patch && !patch.logoMediaId) {
@@ -37,6 +42,9 @@ export class LocalSettingsRepository {
     }
     if ("adminLogoMediaId" in patch && !patch.adminLogoMediaId) {
       delete next.adminLogoMediaId;
+    }
+    if ("faviconMediaId" in patch && !patch.faviconMediaId) {
+      delete next.faviconMediaId;
     }
     await db.settings.put(next);
     return next;

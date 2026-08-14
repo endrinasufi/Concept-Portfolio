@@ -35,7 +35,15 @@ export class CloudinaryStorageProvider implements MediaStorageProvider {
         },
         (error, uploaded) => {
           if (error || !uploaded) {
-            reject(error || new Error("Cloudinary upload failed"));
+            const msg =
+              error &&
+              typeof error === "object" &&
+              "message" in error &&
+              typeof error.message === "string" &&
+              error.message.trim()
+                ? error.message
+                : "Cloudinary upload failed";
+            reject(new Error(msg));
             return;
           }
           resolve({
@@ -46,6 +54,9 @@ export class CloudinaryStorageProvider implements MediaStorageProvider {
           });
         },
       );
+      stream.on("error", (e) => {
+        reject(e instanceof Error ? e : new Error(String(e)));
+      });
       stream.end(buffer);
     });
 

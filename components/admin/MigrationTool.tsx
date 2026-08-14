@@ -266,7 +266,7 @@ export function MigrationTool() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-3xl">Migrim IndexedDB → MySQL</h1>
+        <h1 className="text-3xl">Migrim IndexedDB → MySQL</h1>
         <p className="mt-2 max-w-2xl text-sm text-muted">
           Lexon bazën lokale <code>cma-portfolio-v1</code>, bën backup JSON, pastaj
           ngarkon media + projekte në server (UPSERT, ID të ruajtura). IndexedDB{" "}

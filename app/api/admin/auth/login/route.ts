@@ -57,7 +57,13 @@ export async function POST(request: Request) {
 
   resetLoginRateLimit(ip);
   const { token, expiresAt } = await createSession(user.id);
-  const res = NextResponse.json({ ok: true, email: user.email });
+  const role =
+    user.role === "content_manager" ? "content_manager" : "admin";
+  const res = NextResponse.json({
+    ok: true,
+    email: user.email,
+    role,
+  });
   res.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

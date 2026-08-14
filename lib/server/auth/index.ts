@@ -3,9 +3,10 @@ import {
   SESSION_COOKIE,
   getSessionUser,
   type AdminUser,
+  type AdminRole,
 } from "./sessions";
 
-export type { AdminUser };
+export type { AdminUser, AdminRole };
 
 export async function getSession(): Promise<AdminUser | null> {
   const jar = await cookies();

@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import {
   ALLOWED_MIME,
+  errorMessage,
   isErrorResponse,
   jsonError,
+  requireApiAdmin,
   requireApiSession,
   revalidatePublicPaths,
   sniffMimeType,
@@ -11,7 +13,7 @@ import { getServerMediaRepository } from "@/lib/repositories/server";
 import { query, type RowDataPacket } from "@/lib/server/db";
 
 export async function GET() {
-  const session = await requireApiSession();
+  const session = await requireApiAdmin();
   if (isErrorResponse(session)) return session;
   return NextResponse.json(await getServerMediaRepository().list());
 }
@@ -23,10 +25,13 @@ export async function POST(request: Request) {
     const form = await request.formData();
     const file = form.get("file");
     if (!(file instanceof File)) return jsonError("file is required");
+    if (file.size > 12 * 1024 * 1024) {
+      return jsonError("Fotoja është mbi 12 MB. Zvogëloje ose përdor JPG/WebP.");
+    }
     const mime = sniffMimeType(file.name, file.type);
     if (!ALLOWED_MIME.has(mime)) {
       return jsonError(
-        `Formati nuk lejohet (${mime || file.type || "i panjohur"}). Përdor JPG, PNG, WebP ose GIF.`,
+        `Formati nuk lejohet (${mime || file.type || "i panjohur"}). Përdor JPG, PNG, WebP, GIF, SVG ose ICO.`,
       );
     }
     const id = String(form.get("id") || "") || undefined;
@@ -41,7 +46,8 @@ export async function POST(request: Request) {
     revalidatePublicPaths();
     return NextResponse.json(created, { status: 201 });
   } catch (err) {
-    return jsonError(err instanceof Error ? err.message : "Upload failed", 400);
+    console.error("[media upload]", err);
+    return jsonError(errorMessage(err, "Upload failed"), 400);
   }
 }
 

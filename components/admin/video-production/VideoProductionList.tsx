@@ -43,7 +43,7 @@ export function VideoProductionList() {
       {dialog}
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl">Video Production</h1>
+          <h1 className="text-3xl">Video Production</h1>
           <p className="mt-1 text-sm text-muted">
             Video Social Media (reels) dhe Production (horizontale).
           </p>
@@ -80,7 +80,7 @@ export function VideoProductionList() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-display truncate text-xl">{video.title}</h2>
+                    <h2 className="truncate text-xl">{video.title}</h2>
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider ${
                         video.status === "published"

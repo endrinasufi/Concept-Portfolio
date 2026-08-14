@@ -1,10 +1,12 @@
-export type AnalyticsRangeKey = "today" | "7d" | "28d" | "90d";
+export type AnalyticsGrain = "day" | "week" | "month" | "year";
 
 export type AnalyticsPoint = {
   date: string;
   label: string;
   views: number;
   visitors: number;
+  viewsPrev: number;
+  visitorsPrev: number;
 };
 
 export type AnalyticsRankRow = {
@@ -15,10 +17,14 @@ export type AnalyticsRankRow = {
 };
 
 export type AnalyticsReport = {
-  range: AnalyticsRangeKey;
+  grain: AnalyticsGrain;
+  offset: number;
+  periodLabel: string;
+  compareLabel: string;
   from: string;
   to: string;
   realtime: number;
+  liveCountries: AnalyticsRankRow[];
   users: number;
   usersPrev: number;
   pageviews: number;

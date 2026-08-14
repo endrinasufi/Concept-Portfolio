@@ -1,5 +1,6 @@
 import {
   DEFAULT_SITE_SETTINGS,
+  normalizeHomeFeatured,
   type SiteSettings,
 } from "@/types/settings";
 import { nowIso } from "@/lib/utils/id";
@@ -27,6 +28,7 @@ export class MySqlSettingsRepository {
       ...data,
       id: "site",
       clientLogos: data.clientLogos ?? [],
+      homeFeatured: normalizeHomeFeatured(data.homeFeatured),
       updatedAt: fromMysqlDateTime(row.updated_at),
     };
   }
@@ -38,6 +40,9 @@ export class MySqlSettingsRepository {
       ...patch,
       id: "site",
       clientLogos: patch.clientLogos ?? current.clientLogos,
+      homeFeatured: normalizeHomeFeatured(
+        patch.homeFeatured ?? current.homeFeatured,
+      ),
       updatedAt: nowIso(),
     };
     if ("logoMediaId" in patch && !patch.logoMediaId) {
@@ -48,6 +53,9 @@ export class MySqlSettingsRepository {
     }
     if ("adminLogoMediaId" in patch && !patch.adminLogoMediaId) {
       delete next.adminLogoMediaId;
+    }
+    if ("faviconMediaId" in patch && !patch.faviconMediaId) {
+      delete next.faviconMediaId;
     }
     await execute(
       `INSERT INTO site_settings (id, data_json, updated_at)

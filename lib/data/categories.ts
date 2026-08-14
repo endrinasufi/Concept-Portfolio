@@ -12,3 +12,11 @@ export const SITE_CATEGORIES = [
 
 export type SiteCategory = (typeof SITE_CATEGORIES)[number];
 export type SiteCategoryId = SiteCategory["id"];
+
+/** Kategoritë që dalin me karta në homepage (jo Video / Photoshooting). */
+export const HOME_CARD_CATEGORIES = [
+  SITE_CATEGORIES[0],
+  SITE_CATEGORIES[1],
+  SITE_CATEGORIES[2],
+] as const;
+export type HomeCardCategoryId = (typeof HOME_CARD_CATEGORIES)[number]["id"];

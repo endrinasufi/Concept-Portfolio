@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS site_settings (
 CREATE TABLE IF NOT EXISTS admin_users (
   id VARCHAR(36) NOT NULL PRIMARY KEY,
   email VARCHAR(255) NOT NULL,
+  role ENUM('admin', 'content_manager') NOT NULL DEFAULT 'admin',
   password_hash VARCHAR(255) NOT NULL,
   created_at DATETIME(3) NOT NULL,
   updated_at DATETIME(3) NOT NULL,

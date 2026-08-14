@@ -48,7 +48,7 @@ export function PhotoshootingList() {
       {dialog}
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl">Photoshooting</h1>
+          <h1 className="text-3xl">Photoshooting</h1>
           <p className="mt-1 text-sm text-muted">
             Projekte me grid bento — vetëm foto.
           </p>
@@ -70,7 +70,7 @@ export function PhotoshootingList() {
             <CoverThumb project={project} />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="font-display truncate text-xl">{project.title}</h2>
+                <h2 className="truncate text-xl">{project.title}</h2>
                 <span
                   className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider ${
                     project.status === "published"

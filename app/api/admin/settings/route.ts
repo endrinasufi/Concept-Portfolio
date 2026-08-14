@@ -6,6 +6,8 @@ import {
   revalidatePublicPaths,
 } from "@/lib/server/api";
 import { getServerSettingsRepository } from "@/lib/repositories/server";
+import { isAdminRole } from "@/lib/permissions";
+import type { SiteSettings } from "@/types/settings";
 
 export async function GET() {
   const session = await requireApiSession();
@@ -17,9 +19,14 @@ export async function PATCH(request: Request) {
   const session = await requireApiSession();
   if (isErrorResponse(session)) return session;
   try {
-    const updated = await getServerSettingsRepository().update(
-      await request.json(),
-    );
+    const body = (await request.json()) as Partial<Omit<SiteSettings, "id">>;
+    if (!isAdminRole(session.role)) {
+      const keys = Object.keys(body);
+      if (keys.length === 0 || keys.some((k) => k !== "homeFeatured")) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+    const updated = await getServerSettingsRepository().update(body);
     revalidatePublicPaths();
     return NextResponse.json(updated);
   } catch (err) {

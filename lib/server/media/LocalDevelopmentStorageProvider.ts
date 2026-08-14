@@ -9,6 +9,14 @@ function safeExt(filename: string, mimeType: string): string {
   if (mimeType === "image/jpeg") return ".jpg";
   if (mimeType === "image/webp") return ".webp";
   if (mimeType === "image/gif") return ".gif";
+  if (mimeType === "image/svg+xml") return ".svg";
+  if (
+    mimeType === "image/x-icon" ||
+    mimeType === "image/vnd.microsoft.icon" ||
+    mimeType === "image/ico"
+  ) {
+    return ".ico";
+  }
   if (mimeType === "video/mp4") return ".mp4";
   if (mimeType === "video/webm") return ".webm";
   return ".bin";

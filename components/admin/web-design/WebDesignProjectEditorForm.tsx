@@ -75,7 +75,7 @@ export function WebDesignProjectEditorForm({
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl">
+          <h1 className="text-3xl">
             {initial.title ? "Edito projektin" : "Projekt Web Design i ri"}
           </h1>
           <p className="mt-1 text-sm text-muted">

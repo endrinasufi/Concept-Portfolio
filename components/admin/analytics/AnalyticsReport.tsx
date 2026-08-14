@@ -1,17 +1,20 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { LiveVisitorsMap } from "@/components/admin/analytics/LiveVisitorsMap";
 import type {
-  AnalyticsRangeKey,
+  AnalyticsGrain,
+  AnalyticsPoint,
   AnalyticsRankRow,
   AnalyticsReport as Report,
 } from "@/types/analytics";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
-const RANGES: { key: AnalyticsRangeKey; label: string }[] = [
-  { key: "today", label: "Sot" },
-  { key: "7d", label: "7 ditë" },
-  { key: "28d", label: "28 ditë" },
-  { key: "90d", label: "90 ditë" },
+const GRAINS: { key: AnalyticsGrain; label: string }[] = [
+  { key: "day", label: "Ditë" },
+  { key: "week", label: "Javë" },
+  { key: "month", label: "Muaj" },
+  { key: "year", label: "Vit" },
 ];
 
 const nf = new Intl.NumberFormat("sq-AL");
@@ -24,7 +27,7 @@ function fmt(n: number, digits = 0): string {
 }
 
 function deltaPct(current: number, previous: number): { text: string; up: boolean } {
-  if (previous <= 0) return { text: current > 0 ? "e re" : "0%", up: current >= 0 };
+  if (previous <= 0) return { text: "", up: true };
   const pct = Math.round(((current - previous) / previous) * 100);
   return { text: `${pct > 0 ? "+" : ""}${pct}%`, up: pct >= 0 };
 }
@@ -37,76 +40,60 @@ function flagEmoji(code: string): string {
 }
 
 export function AnalyticsReport() {
-  const [range, setRange] = useState<AnalyticsRangeKey>("7d");
+  const [grain, setGrain] = useState<AnalyticsGrain>("week");
+  const [offset, setOffset] = useState(0);
+  const [compare, setCompare] = useState(false);
   const [data, setData] = useState<Report | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError(null);
-    void (async () => {
+    let first = true;
+    async function load() {
+      if (first) {
+        setLoading(true);
+        setError(null);
+      }
       try {
-        const res = await fetch(`/api/admin/analytics/report?range=${range}`, {
-          credentials: "include",
-          cache: "no-store",
-        });
+        const res = await fetch(
+          `/api/admin/analytics/report?grain=${grain}&offset=${offset}`,
+          { credentials: "include", cache: "no-store" },
+        );
         const json = (await res.json()) as Report & { error?: string };
         if (cancelled) return;
         if (!res.ok) {
           setError(json.error || "Nuk u lexuan statistikat");
-          setData(null);
+          if (first) setData(null);
           return;
         }
         setData(json);
+        setError(null);
       } catch {
-        if (!cancelled) setError("Nuk u lidh me serverin");
+        if (!cancelled && first) setError("Nuk u lidh me serverin");
       } finally {
         if (!cancelled) setLoading(false);
+        first = false;
       }
-    })();
+    }
+    void load();
+    const timer = window.setInterval(() => {
+      void load();
+    }, 20000);
     return () => {
       cancelled = true;
+      window.clearInterval(timer);
     };
-  }, [range]);
+  }, [grain, offset]);
 
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="admin-serif text-4xl leading-none md:text-5xl">Analitika</h1>
+          <h1>Analitika</h1>
           <p className="mt-2 text-sm text-muted">
-            Vizitorë, origjina, pajisje dhe faqet më të lexuara — si Google Analytics, por
-            brenda CMS-së.
+            Vizitorë, origjina, pajisje dhe faqet më të lexuara — brenda CMS-së.
           </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          {data ? (
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 text-xs text-muted">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-              </span>
-              {nf.format(data.realtime)} aktivë tani
-            </span>
-          ) : null}
-          <div className="flex rounded-full bg-white/70 p-1">
-            {RANGES.map((r) => (
-              <button
-                key={r.key}
-                type="button"
-                onClick={() => setRange(r.key)}
-                className={`rounded-full px-3 py-1.5 text-sm transition ${
-                  range === r.key
-                    ? "bg-[#1a1a1a] text-white"
-                    : "text-muted hover:text-foreground"
-                }`}
-              >
-                {r.label}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -116,22 +103,97 @@ export function AnalyticsReport() {
 
       <KpiRow data={data} loading={loading} />
 
-      <section className="admin-card p-5">
-        <div className="mb-4 flex items-start justify-between gap-3">
+      <LiveVisitorsMap
+        realtime={data?.realtime ?? 0}
+        countries={data?.liveCountries ?? []}
+      />
+
+      <section className="admin-card p-5 md:p-6">
+        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="text-sm font-medium">Shikime dhe vizitorë</p>
-            <p className="mt-0.5 text-xs text-muted">Krahasuar me periudhën e mëparshme</p>
+            <p className="mt-0.5 text-xs text-muted">
+              {compare
+                ? `Krahasuar me ${data?.compareLabel ?? "periudhën e mëparshme"}`
+                : data?.periodLabel ?? "Zgjidh periudhën"}
+            </p>
           </div>
-          <div className="flex gap-4 text-xs text-muted">
-            <span className="inline-flex items-center gap-1.5">
-              <i className="h-2 w-2 rounded-full bg-[#1a1a1a]" /> Shikime
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <i className="h-2 w-2 rounded-full bg-[#FDD85D]" /> Vizitorë
-            </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex rounded-full bg-white p-1">
+              {GRAINS.map((g) => (
+                <button
+                  key={g.key}
+                  type="button"
+                  onClick={() => {
+                    setGrain(g.key);
+                    setOffset(0);
+                  }}
+                  className={`rounded-full px-3 py-1.5 text-sm transition ${
+                    grain === g.key
+                      ? "bg-[#1a1a1a] text-white"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  {g.label}
+                </button>
+              ))}
+            </div>
+            <div className="inline-flex items-center rounded-full bg-white p-1">
+              <button
+                type="button"
+                aria-label="Periudha e mëparshme"
+                onClick={() => setOffset((v) => Math.max(-36, v - 1))}
+                className="rounded-full p-1.5 text-muted hover:bg-[#1a1a1a]/6 hover:text-foreground"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <span className="min-w-[5.5rem] px-1 text-center text-sm font-medium tabular-nums">
+                {data?.periodLabel ?? "…"}
+              </span>
+              <button
+                type="button"
+                aria-label="Periudha tjetër"
+                disabled={offset >= 0}
+                onClick={() => setOffset((v) => Math.min(0, v + 1))}
+                className="rounded-full p-1.5 text-muted hover:bg-[#1a1a1a]/6 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => setCompare((v) => !v)}
+              className={`rounded-full px-3 py-1.5 text-sm transition ${
+                compare
+                  ? "bg-[#1a1a1a] text-white"
+                  : "bg-white text-muted hover:text-foreground"
+              }`}
+            >
+              Krahaso
+            </button>
           </div>
         </div>
-        <TrendChart points={data?.timeseries ?? []} />
+        <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
+          <span className="inline-flex items-center gap-1.5">
+            <i className="h-2 w-2 rounded-full bg-[#1a1a1a]" /> Shikime
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <i className="h-2 w-2 rounded-full bg-[#FDD85D]" /> Vizitorë
+          </span>
+          {compare ? (
+            <>
+              <span className="inline-flex items-center gap-1.5">
+                <i className="h-2 w-4 border-t-2 border-dashed border-[#1a1a1a]/55" />{" "}
+                Shikime · {data?.compareLabel}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <i className="h-2 w-4 border-t-2 border-dashed border-[#c9a83a]" />{" "}
+                Vizitorë · {data?.compareLabel}
+              </span>
+            </>
+          ) : null}
+        </div>
+        <TrendChart points={data?.timeseries ?? []} compare={compare} />
       </section>
 
       <div className="grid gap-4 lg:grid-cols-12">
@@ -191,13 +253,15 @@ export function AnalyticsReport() {
           rows={data?.os ?? []}
           empty="—"
         />
-        <section className="admin-card p-5 lg:col-span-8">
-          <p className="text-sm font-medium">Ora e ditës</p>
-          <p className="mt-0.5 text-xs text-muted">Shikime sipas orës UTC</p>
-          <HourBars hours={data?.hourly ?? []} />
-        </section>
+        {grain === "day" ? null : (
+          <section className="admin-card p-5 lg:col-span-8">
+            <p className="text-sm font-medium">Ora e ditës</p>
+            <p className="mt-0.5 text-xs text-muted">Shikime sipas orës UTC</p>
+            <HourBars hours={data?.hourly ?? []} />
+          </section>
+        )}
         <RankCard
-          className="lg:col-span-4"
+          className={grain === "day" ? "lg:col-span-12" : "lg:col-span-4"}
           title="Gjuha e shfletuesit"
           rows={data?.languages ?? []}
           empty="—"
@@ -251,17 +315,19 @@ function KpiRow({ data, loading }: { data: Report | null; loading: boolean }) {
         <div key={card.label} className="admin-card p-5">
           <div className="flex items-center justify-between gap-2">
             <p className="text-xs text-muted">{card.label}</p>
-            <span
-              className={`rounded-full px-2 py-0.5 text-[11px] ${
-                loading
-                  ? "bg-[#1a1a1a]/5 text-muted"
-                  : card.delta.up
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "bg-red-50 text-red-600"
-              }`}
-            >
-              {card.delta.text}
-            </span>
+            {card.delta.text ? (
+              <span
+                className={`rounded-full px-2 py-0.5 text-[11px] ${
+                  loading
+                    ? "bg-[#1a1a1a]/5 text-muted"
+                    : card.delta.up
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "bg-red-50 text-red-600"
+                }`}
+              >
+                {card.delta.text}
+              </span>
+            ) : null}
           </div>
           <p className="mt-3 text-3xl font-semibold tracking-tight">{card.value}</p>
           <p className="mt-1 text-[11px] text-muted">{card.sub}</p>
@@ -273,93 +339,208 @@ function KpiRow({ data, loading }: { data: Report | null; loading: boolean }) {
 
 function TrendChart({
   points,
+  compare,
 }: {
-  points: { date: string; label: string; views: number; visitors: number }[];
+  points: AnalyticsPoint[];
+  compare: boolean;
 }) {
   const [hover, setHover] = useState<number | null>(null);
-  const w = 800;
-  const h = 240;
-  const pad = { l: 12, r: 12, t: 18, b: 32 };
+  const w = 960;
+  const h = 340;
+  const pad = { l: 40, r: 12, t: 14, b: 26 };
   const innerW = w - pad.l - pad.r;
   const innerH = h - pad.t - pad.b;
-  const max = Math.max(1, ...points.map((p) => p.views), ...points.map((p) => p.visitors));
+  const max = Math.max(
+    1,
+    ...points.map((p) => p.views),
+    ...points.map((p) => p.visitors),
+    ...(compare ? points.map((p) => p.viewsPrev) : []),
+    ...(compare ? points.map((p) => p.visitorsPrev) : []),
+  );
   const x = (i: number) =>
     pad.l + (points.length <= 1 ? innerW / 2 : (i / (points.length - 1)) * innerW);
   const y = (v: number) => pad.t + innerH - (v / max) * innerH;
+  const ticks = [0, 0.5, 1].map((t) => Math.round(max * t));
 
-  const viewsLine = points
-    .map((p, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)} ${y(p.views).toFixed(1)}`)
-    .join(" ");
-  const usersLine = points
-    .map((p, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)} ${y(p.visitors).toFixed(1)}`)
-    .join(" ");
+  function line(
+    get: (p: AnalyticsPoint) => number,
+  ): string {
+    return points
+      .map((p, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)} ${y(get(p)).toFixed(1)}`)
+      .join(" ");
+  }
+
+  const viewsLine = line((p) => p.views);
+  const usersLine = line((p) => p.visitors);
+  const viewsPrevLine = line((p) => p.viewsPrev);
+  const usersPrevLine = line((p) => p.visitorsPrev);
   const viewsArea =
     points.length > 0
       ? `${viewsLine} L${x(points.length - 1).toFixed(1)} ${pad.t + innerH} L${x(0).toFixed(1)} ${pad.t + innerH} Z`
       : "";
 
   const labels = useMemo(() => {
-    if (points.length <= 8) return points.map((_, i) => i);
-    const step = Math.ceil(points.length / 7);
+    if (points.length <= 10) return points.map((_, i) => i);
+    const step = Math.ceil(points.length / 8);
     return points.map((_, i) => i).filter((i) => i % step === 0 || i === points.length - 1);
   }, [points]);
 
   const active = hover != null ? points[hover] : null;
+  const tooltipLeft =
+    hover == null
+      ? 50
+      : Math.min(86, Math.max(14, (x(hover) / w) * 100));
+  const empty = points.every(
+    (p) => p.views === 0 && (!compare || p.viewsPrev === 0),
+  );
 
   return (
     <div className="relative">
       {active ? (
-        <div className="pointer-events-none absolute right-0 top-0 rounded-2xl bg-[#1a1a1a] px-3 py-2 text-white">
-          <p className="text-[11px] text-white/55">{active.date}</p>
-          <p className="text-sm">
+        <div
+          className="pointer-events-none absolute z-10 -translate-x-1/2 rounded-2xl bg-[#1a1a1a] px-3 py-2 text-white"
+          style={{ left: `${tooltipLeft}%`, top: 4 }}
+        >
+          <p className="text-[10px] text-white/55">{active.label}</p>
+          <p className="whitespace-nowrap text-xs">
             {fmt(active.views)} shikime · {fmt(active.visitors)} vizitorë
           </p>
+          {compare ? (
+            <p className="mt-0.5 whitespace-nowrap text-[10px] text-white/55">
+              Më parë: {fmt(active.viewsPrev)} · {fmt(active.visitorsPrev)}
+            </p>
+          ) : null}
         </div>
       ) : null}
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        className="h-56 w-full"
-        onMouseLeave={() => setHover(null)}
-        onMouseMove={(e) => {
-          if (points.length === 0) return;
-          const rect = e.currentTarget.getBoundingClientRect();
-          const ratio = (e.clientX - rect.left) / rect.width;
-          const i = Math.round(ratio * (points.length - 1));
-          setHover(Math.max(0, Math.min(points.length - 1, i)));
-        }}
-      >
-        <path d={viewsArea} fill="#1a1a1a" opacity="0.06" />
-        <path d={viewsLine} fill="none" stroke="#1a1a1a" strokeWidth="2.2" />
-        <path d={usersLine} fill="none" stroke="#FDD85D" strokeWidth="2.4" />
-        {hover != null && points[hover] ? (
-          <g>
+      <div className="relative h-[16rem] w-full md:h-[20rem]">
+        {ticks.map((tick) => (
+          <span
+            key={`yt-${tick}`}
+            className="pointer-events-none absolute left-0 -translate-y-1/2 text-[10px] leading-none text-muted tabular-nums"
+            style={{ top: `${(y(tick) / h) * 100}%` }}
+          >
+            {fmt(tick)}
+          </span>
+        ))}
+        <svg
+          viewBox={`0 0 ${w} ${h}`}
+          preserveAspectRatio="none"
+          className="absolute inset-0 h-full w-full"
+          aria-hidden
+        >
+          {ticks.map((tick) => (
+            <line
+              key={`gl-${tick}`}
+              x1={pad.l}
+              x2={w - pad.r}
+              y1={y(tick)}
+              y2={y(tick)}
+              stroke="#1a1a1a"
+              strokeOpacity="0.08"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+          <path d={viewsArea} fill="#1a1a1a" opacity="0.06" />
+          {compare ? (
+            <>
+              <path
+                d={viewsPrevLine}
+                fill="none"
+                stroke="#1a1a1a"
+                strokeOpacity="0.35"
+                strokeWidth="2"
+                strokeDasharray="6 5"
+                vectorEffect="non-scaling-stroke"
+              />
+              <path
+                d={usersPrevLine}
+                fill="none"
+                stroke="#C9A83A"
+                strokeWidth="2"
+                strokeDasharray="6 5"
+                vectorEffect="non-scaling-stroke"
+              />
+            </>
+          ) : null}
+          <path
+            d={viewsLine}
+            fill="none"
+            stroke="#1a1a1a"
+            strokeWidth="2.4"
+            vectorEffect="non-scaling-stroke"
+          />
+          <path
+            d={usersLine}
+            fill="none"
+            stroke="#FDD85D"
+            strokeWidth="2.6"
+            vectorEffect="non-scaling-stroke"
+          />
+          {hover != null ? (
             <line
               x1={x(hover)}
               x2={x(hover)}
               y1={pad.t}
               y2={pad.t + innerH}
               stroke="#1a1a1a"
-              strokeOpacity="0.15"
+              strokeOpacity="0.18"
+              vectorEffect="non-scaling-stroke"
             />
-            <circle cx={x(hover)} cy={y(points[hover].views)} r="4" fill="#1a1a1a" />
-            <circle cx={x(hover)} cy={y(points[hover].visitors)} r="4" fill="#FDD85D" />
-          </g>
+          ) : null}
+        </svg>
+        {hover != null && points[hover] ? (
+          <>
+            <span
+              className="pointer-events-none absolute z-[1] h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1a1a1a]"
+              style={{
+                left: `${(x(hover) / w) * 100}%`,
+                top: `${(y(points[hover].views) / h) * 100}%`,
+              }}
+            />
+            <span
+              className="pointer-events-none absolute z-[1] h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#1a1a1a] bg-[#FDD85D]"
+              style={{
+                left: `${(x(hover) / w) * 100}%`,
+                top: `${(y(points[hover].visitors) / h) * 100}%`,
+              }}
+            />
+          </>
         ) : null}
         {labels.map((i) => (
-          <text
+          <span
             key={points[i]?.date ?? i}
-            x={x(i)}
-            y={h - 8}
-            textAnchor="middle"
-            fill="#6b6b70"
-            fontSize="11"
+            className="pointer-events-none absolute bottom-0 -translate-x-1/2 text-[10px] leading-none text-muted"
+            style={{ left: `${(x(i) / w) * 100}%` }}
           >
             {points[i]?.label}
-          </text>
+          </span>
         ))}
-      </svg>
-      {points.every((p) => p.views === 0) ? (
-        <p className="absolute inset-0 flex items-center justify-center text-sm text-muted">
+        <div
+          className="absolute"
+          style={{
+            left: `${(pad.l / w) * 100}%`,
+            right: `${(pad.r / w) * 100}%`,
+            top: `${(pad.t / h) * 100}%`,
+            bottom: `${(pad.b / h) * 100}%`,
+          }}
+          onMouseLeave={() => setHover(null)}
+        >
+          <div className="flex h-full">
+            {points.map((p, i) => (
+              <button
+                key={p.date}
+                type="button"
+                aria-label={`${p.label}: ${p.views} shikime, ${p.visitors} vizitorë`}
+                className="h-full min-w-0 flex-1 cursor-crosshair bg-transparent"
+                onMouseEnter={() => setHover(i)}
+                onFocus={() => setHover(i)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+      {empty ? (
+        <p className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm text-muted">
           Nuk ka të dhëna për këtë periudhë.
         </p>
       ) : null}

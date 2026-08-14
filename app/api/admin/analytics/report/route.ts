@@ -1,18 +1,19 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/server/auth";
+import { isErrorResponse, requireApiAdmin } from "@/lib/server/api";
 import {
   getAnalyticsReport,
-  parseRangeKey,
+  parseGrain,
+  parseOffset,
 } from "@/lib/server/analytics-report";
 
 export async function GET(request: Request) {
-  const user = await getSession();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  const range = parseRangeKey(new URL(request.url).searchParams.get("range"));
+  const session = await requireApiAdmin();
+  if (isErrorResponse(session)) return session;
+  const url = new URL(request.url);
+  const grain = parseGrain(url.searchParams.get("grain"));
+  const offset = parseOffset(url.searchParams.get("offset"));
   try {
-    const data = await getAnalyticsReport(range);
+    const data = await getAnalyticsReport(grain, offset);
     return NextResponse.json(data);
   } catch (err) {
     console.error("[analytics report]", err);

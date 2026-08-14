@@ -7,7 +7,17 @@ import type { SiteSettings } from "@/types/settings";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 
-type LogoField = "logoMediaId" | "logoDarkMediaId" | "adminLogoMediaId";
+type LogoField =
+  | "logoMediaId"
+  | "logoDarkMediaId"
+  | "adminLogoMediaId"
+  | "faviconMediaId";
+
+function isAllowedImage(file: File): boolean {
+  if (file.type.startsWith("image/")) return true;
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  return ["png", "jpg", "jpeg", "webp", "gif", "svg", "ico"].includes(ext);
+}
 
 function LogoSlot({
   field,
@@ -28,8 +38,8 @@ function LogoSlot({
   const currentId = settings[field];
 
   async function applyFile(file: File | undefined) {
-    if (!file || !file.type.startsWith("image/")) {
-      setMessage("Ngarko një imazh (PNG, SVG, WebP, JPG).");
+    if (!file || !isAllowedImage(file)) {
+      setMessage("Ngarko një imazh (PNG, SVG, WebP, JPG ose ICO).");
       return;
     }
     setBusy(true);
@@ -45,7 +55,9 @@ function LogoSlot({
           /* ignore */
         }
       }
-      setMessage("Logo u ruajt.");
+      setMessage(
+        field === "faviconMediaId" ? "Favicon u ruajt." : "Logo u ruajt.",
+      );
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Gabim në ngarkim");
     } finally {
@@ -67,19 +79,21 @@ function LogoSlot({
           /* ignore */
         }
       }
-      setMessage("Logo u hoq.");
+      setMessage(
+        field === "faviconMediaId" ? "Favicon u hoq." : "Logo u hoq.",
+      );
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <section className="space-y-4 admin-card p-5">
+    <section className="space-y-2.5 rounded-2xl bg-white/70 p-3">
       <div>
-        <h2 className="text-sm font-medium uppercase tracking-wider text-muted">
+        <h2 className="text-[11px] font-medium uppercase tracking-wider text-muted">
           {title}
         </h2>
-        <p className="mt-1 text-xs text-muted">{hint}</p>
+        <p className="mt-0.5 text-[11px] text-muted">{hint}</p>
       </div>
 
       <div
@@ -106,7 +120,7 @@ function LogoSlot({
           setDragging(false);
           void applyFile(e.dataTransfer.files?.[0]);
         }}
-        className={`relative flex min-h-[9rem] cursor-pointer flex-col items-center justify-center gap-3 overflow-hidden rounded-[1.35rem] border border-dashed px-4 py-6 transition ${
+        className={`relative flex min-h-[5.5rem] cursor-pointer flex-col items-center justify-center gap-1.5 overflow-hidden rounded-xl border border-dashed px-3 py-3 transition ${
           dragging
             ? "border-accent bg-accent-soft"
             : "border-border bg-white/50 hover:border-[#1a1a1a]/25"
@@ -117,50 +131,47 @@ function LogoSlot({
             mediaId={currentId}
             alt={title}
             fit="contain"
-            className="max-h-16 max-w-[18rem]"
+            className="max-h-10 max-w-[10rem]"
           />
         ) : (
           <>
-            <ImagePlus className="text-muted" size={28} />
-            <p className="text-center text-sm text-foreground/85">{emptyLabel}</p>
-            <p className="text-center text-xs text-muted">PNG · SVG · WebP · JPG</p>
+            <ImagePlus className="text-muted" size={18} />
+            <p className="text-center text-xs text-foreground/85">{emptyLabel}</p>
           </>
         )}
 
-        {busy ? <p className="text-xs text-muted">Duke ngarkuar…</p> : null}
+        {busy ? <p className="text-[11px] text-muted">Duke ngarkuar…</p> : null}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-1.5">
         <button
           type="button"
           disabled={busy}
           onClick={() => inputRef.current?.click()}
-          className="rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background disabled:opacity-50"
+          className="rounded-full bg-foreground px-3 py-1 text-[11px] font-medium text-background disabled:opacity-50"
         >
-          Zgjidh skedar
+          Zgjidh
         </button>
         {currentId ? (
           <button
             type="button"
             disabled={busy}
             onClick={() => void clearLogo()}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs disabled:opacity-50"
+            className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-[11px] disabled:opacity-50"
           >
-            <Trash2 size={12} /> Hiq logon
+            <Trash2 size={11} /> Hiq
           </button>
         ) : null}
       </div>
 
       {message ? (
-        <p className="rounded-lg border border-border bg-surface px-3 py-2 text-sm">
-          {message}
-        </p>
+        <p className="text-[11px] text-muted">{message}</p>
       ) : null}
 
       <input
         ref={inputRef}
         type="file"
-        accept="image/*,.svg"
+        accept="image/*,.svg,.ico"
         className="hidden"
         onChange={(e) => void applyFile(e.target.files?.[0])}
       />
@@ -170,7 +181,7 @@ function LogoSlot({
 
 export function SiteLogoSettings() {
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <LogoSlot
         field="logoMediaId"
         title="Logo e faqes (e bardhë)"
@@ -188,6 +199,12 @@ export function SiteLogoSettings() {
         title="Logo e dashboard-it"
         hint="Shfaqet në sidebar dhe në faqen e login-it të adminit. Nuk ndikon te faqja publike."
         emptyLabel="Drop logon e dashboard-it këtu"
+      />
+      <LogoSlot
+        field="faviconMediaId"
+        title="Favicon"
+        hint="Ikona e tab-it në shfletues. PNG, SVG ose ICO, 32×32 ose 64×64."
+        emptyLabel="Drop favicon këtu"
       />
     </div>
   );

@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/server/auth";
+import { isErrorResponse, requireApiAdmin } from "@/lib/server/api";
 import { getAnalyticsSummary } from "@/lib/server/analytics";
 
 export async function GET() {
-  const user = await getSession();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await requireApiAdmin();
+  if (isErrorResponse(session)) return session;
   try {
     const data = await getAnalyticsSummary();
     return NextResponse.json(data);

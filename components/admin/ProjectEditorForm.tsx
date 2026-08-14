@@ -118,7 +118,7 @@ export function ProjectEditorForm({
     <form onSubmit={(e) => void handleSubmit(e)} className="space-y-10 max-w-6xl">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl">
+          <h1 className="text-3xl">
             {initial.id ? "Edito projektin" : "Projekt i ri"}
           </h1>
           {form.slug ? (

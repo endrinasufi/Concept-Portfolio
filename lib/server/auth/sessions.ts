@@ -1,26 +1,34 @@
+import type { AdminRole } from "@/lib/permissions";
 import { createHash, randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
 import { createId, nowIso } from "@/lib/utils/id";
 import { execute, query, type RowDataPacket } from "@/lib/server/db";
 import { SESSION_COOKIE, SESSION_TTL_MS, getAuthSecret } from "./constants";
 
+export type { AdminRole };
+
 export interface AdminUser {
   id: string;
   email: string;
+  role: AdminRole;
 }
 
 interface UserRow extends RowDataPacket {
   id: string;
   email: string;
   password_hash: string;
+  role?: string;
 }
 
 interface SessionRow extends RowDataPacket {
   id: string;
   user_id: string;
   email: string;
+  role?: string;
   expires_at: Date | string;
 }
+
+let roleColumnReady = false;
 
 export function hashPassword(password: string): string {
   return bcrypt.hashSync(password, 12);
@@ -40,7 +48,34 @@ export function createSessionToken(): string {
   return randomBytes(32).toString("hex");
 }
 
+function normalizeRole(raw: unknown): AdminRole {
+  return raw === "content_manager" ? "content_manager" : "admin";
+}
+
+export async function ensureAdminRoleColumn(): Promise<void> {
+  if (roleColumnReady) return;
+  const existing = await query<(RowDataPacket & { COLUMN_NAME: string })[]>(
+    `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'admin_users'
+       AND COLUMN_NAME = 'role'`,
+  );
+  if (!existing.length) {
+    try {
+      await execute(
+        `ALTER TABLE admin_users
+         ADD COLUMN role ENUM('admin', 'content_manager') NOT NULL DEFAULT 'admin'
+         AFTER email`,
+      );
+    } catch (err) {
+      const code = (err as { errno?: number }).errno;
+      if (code !== 1060) throw err;
+    }
+  }
+  roleColumnReady = true;
+}
+
 export async function countAdminUsers(): Promise<number> {
+  await ensureAdminRoleColumn();
   const rows = await query<RowDataPacket[]>(
     "SELECT COUNT(*) AS c FROM admin_users",
   );
@@ -48,6 +83,7 @@ export async function countAdminUsers(): Promise<number> {
 }
 
 export async function bootstrapAdminIfNeeded(): Promise<void> {
+  await ensureAdminRoleColumn();
   const count = await countAdminUsers();
   if (count > 0) return;
   const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
@@ -59,8 +95,8 @@ export async function bootstrapAdminIfNeeded(): Promise<void> {
   }
   const stamp = nowIso();
   await execute(
-    `INSERT INTO admin_users (id, email, password_hash, created_at, updated_at)
-     VALUES (:id, :email, :password_hash, :created_at, :updated_at)`,
+    `INSERT INTO admin_users (id, email, role, password_hash, created_at, updated_at)
+     VALUES (:id, :email, 'admin', :password_hash, :created_at, :updated_at)`,
     {
       id: createId(),
       email,
@@ -72,8 +108,9 @@ export async function bootstrapAdminIfNeeded(): Promise<void> {
 }
 
 export async function findUserByEmail(email: string): Promise<UserRow | null> {
+  await ensureAdminRoleColumn();
   const rows = await query<UserRow[]>(
-    "SELECT id, email, password_hash FROM admin_users WHERE email = :email LIMIT 1",
+    "SELECT id, email, password_hash, role FROM admin_users WHERE email = :email LIMIT 1",
     { email: email.trim().toLowerCase() },
   );
   return rows[0] ?? null;
@@ -112,8 +149,9 @@ export async function getSessionUser(
   token: string | undefined | null,
 ): Promise<AdminUser | null> {
   if (!token) return null;
+  await ensureAdminRoleColumn();
   const rows = await query<SessionRow[]>(
-    `SELECT s.id, s.user_id, s.expires_at, u.email
+    `SELECT s.id, s.user_id, s.expires_at, u.email, u.role
      FROM admin_sessions s
      INNER JOIN admin_users u ON u.id = s.user_id
      WHERE s.token_hash = :token_hash
@@ -130,7 +168,11 @@ export async function getSessionUser(
     await execute("DELETE FROM admin_sessions WHERE id = :id", { id: row.id });
     return null;
   }
-  return { id: row.user_id, email: row.email };
+  return {
+    id: row.user_id,
+    email: row.email,
+    role: normalizeRole(row.role),
+  };
 }
 
 export async function changePassword(
@@ -138,8 +180,9 @@ export async function changePassword(
   currentPassword: string,
   newPassword: string,
 ): Promise<void> {
+  await ensureAdminRoleColumn();
   const rows = await query<UserRow[]>(
-    "SELECT id, email, password_hash FROM admin_users WHERE id = :id LIMIT 1",
+    "SELECT id, email, password_hash, role FROM admin_users WHERE id = :id LIMIT 1",
     { id: userId },
   );
   const user = rows[0];
@@ -154,6 +197,116 @@ export async function changePassword(
     "UPDATE admin_users SET password_hash = :password_hash, updated_at = :updated_at WHERE id = :id",
     {
       id: userId,
+      password_hash: hashPassword(newPassword),
+      updated_at: nowIso().slice(0, 23).replace("T", " "),
+    },
+  );
+}
+
+export type ManagedUser = {
+  id: string;
+  email: string;
+  role: AdminRole;
+  createdAt: string;
+};
+
+export async function listContentManagers(): Promise<ManagedUser[]> {
+  await ensureAdminRoleColumn();
+  const rows = await query<
+    (RowDataPacket & {
+      id: string;
+      email: string;
+      role: string;
+      created_at: Date | string;
+    })[]
+  >(
+    `SELECT id, email, role, created_at FROM admin_users
+     WHERE role = 'content_manager'
+     ORDER BY created_at DESC`,
+  );
+  return rows.map((row) => ({
+    id: row.id,
+    email: row.email,
+    role: "content_manager" as const,
+    createdAt:
+      row.created_at instanceof Date
+        ? row.created_at.toISOString()
+        : String(row.created_at),
+  }));
+}
+
+export async function createContentManager(
+  emailRaw: string,
+  password: string,
+): Promise<ManagedUser> {
+  await ensureAdminRoleColumn();
+  const email = emailRaw.trim().toLowerCase();
+  if (!email || !email.includes("@")) {
+    throw new Error("Email i pavlefshëm");
+  }
+  if (password.length < 8) {
+    throw new Error("Fjalëkalimi duhet të ketë të paktën 8 karaktere");
+  }
+  const existing = await findUserByEmail(email);
+  if (existing) {
+    throw new Error("Ky email është tashmë i regjistruar");
+  }
+  const id = createId();
+  const stamp = nowIso();
+  await execute(
+    `INSERT INTO admin_users (id, email, role, password_hash, created_at, updated_at)
+     VALUES (:id, :email, 'content_manager', :password_hash, :created_at, :updated_at)`,
+    {
+      id,
+      email,
+      password_hash: hashPassword(password),
+      created_at: stamp,
+      updated_at: stamp,
+    },
+  );
+  return {
+    id,
+    email,
+    role: "content_manager",
+    createdAt: stamp,
+  };
+}
+
+export async function deleteContentManager(id: string): Promise<void> {
+  await ensureAdminRoleColumn();
+  const rows = await query<UserRow[]>(
+    "SELECT id, email, password_hash, role FROM admin_users WHERE id = :id LIMIT 1",
+    { id },
+  );
+  const user = rows[0];
+  if (!user) throw new Error("Përdoruesi nuk u gjet");
+  if (normalizeRole(user.role) !== "content_manager") {
+    throw new Error("Mund të fshihet vetëm Content Manager");
+  }
+  await execute("DELETE FROM admin_users WHERE id = :id", { id });
+}
+
+export async function resetContentManagerPassword(
+  id: string,
+  newPassword: string,
+): Promise<void> {
+  await ensureAdminRoleColumn();
+  if (newPassword.length < 8) {
+    throw new Error("Fjalëkalimi duhet të ketë të paktën 8 karaktere");
+  }
+  const rows = await query<UserRow[]>(
+    "SELECT id, email, password_hash, role FROM admin_users WHERE id = :id LIMIT 1",
+    { id },
+  );
+  const user = rows[0];
+  if (!user) throw new Error("Përdoruesi nuk u gjet");
+  if (normalizeRole(user.role) !== "content_manager") {
+    throw new Error("Mund të ndryshohet vetëm Content Manager");
+  }
+  await execute(
+    "UPDATE admin_users SET password_hash = :password_hash, updated_at = :updated_at WHERE id = :id",
+    {
+      id,
       password_hash: hashPassword(newPassword),
       updated_at: nowIso().slice(0, 23).replace("T", " "),
     },
