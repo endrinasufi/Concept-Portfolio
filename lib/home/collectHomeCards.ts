@@ -8,7 +8,10 @@ import type { SiteCategory } from "@/lib/data/categories";
 import { getProjectCover } from "@/lib/utils/projectCover";
 import { collectProjectPhotos } from "@/lib/utils/projectPhotos";
 import { homeCardCount } from "@/lib/home/scrollCardLayout";
-import { youtubeThumbnailUrl } from "@/lib/video-production/youtube";
+import {
+  youtubeReelThumbProps,
+  youtubeThumbnailUrl,
+} from "@/lib/video-production/youtube";
 import { pickFeatured, homeFeaturedLimit } from "@/lib/home/pickFeatured";
 
 export type HomeCard = {
@@ -58,7 +61,7 @@ function socialProjectThumbnail(project: SocialMediaProject): {
       feed?.imageUrl ??
       project.block1.mockupImage1Url ??
       project.block1.mockupImage2Url ??
-      reel?.thumbnailUrl ??
+      (reel ? youtubeReelThumbProps(reel).imageUrl : undefined) ??
       story?.imageUrl,
   };
 }
@@ -164,7 +167,7 @@ function videoProductionCards(
     client: video.clientName?.trim() || undefined,
     tagColors: [video.accentColor].filter(Boolean),
     mediaId: thumbnailMediaId,
-    imageUrl: thumbnailMediaId ? undefined : youtubeThumbnailUrl(video.youtubeId),
+    imageUrl: thumbnailMediaId ? undefined : youtubeThumbnailUrl(video.youtubeId, "max"),
     href: "/video-production",
   }));
 }

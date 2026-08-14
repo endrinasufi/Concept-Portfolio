@@ -337,7 +337,7 @@ function SelectedRow({
         type="button"
         disabled={uploading}
         onClick={() => inputRef.current?.click()}
-        className="inline-flex items-center gap-1 rounded-full border border-[#1a1a1a]/12 px-2 py-1 text-[11px] text-muted hover:text-foreground disabled:opacity-50"
+        className="admin-upload-btn disabled:opacity-50"
       >
         <ImagePlus size={11} />
         {uploading ? "Duke ngarkuar…" : hasThumb ? "Ndrysho" : "Thumbnail"}

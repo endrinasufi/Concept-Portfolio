@@ -15,6 +15,7 @@ export default function NewSocialMediaProjectPage() {
   return (
     <SocialMediaProjectEditorForm
       initial={emptySocialMediaProjectForm()}
+      isNew
       saving={saving}
       onSave={async (value) => {
         setSaving(true);

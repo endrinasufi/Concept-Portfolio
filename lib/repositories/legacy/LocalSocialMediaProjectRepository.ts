@@ -37,9 +37,7 @@ function normalizeProject(raw: SocialMediaProject): SocialMediaProject {
       feedPosts,
     },
     block2: raw.block2 ?? defaultBlock2(),
-    block3: {
-      stories: Array.isArray(raw.block3?.stories) ? raw.block3.stories : [],
-    },
+    block3: raw.block3 ?? { stories: [] },
   };
 }
 

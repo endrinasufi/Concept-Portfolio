@@ -84,6 +84,8 @@ export const ALLOWED_MIME = new Set([
   "image/x-icon",
   "image/vnd.microsoft.icon",
   "image/ico",
+  "image/heic",
+  "image/heif",
   "video/mp4",
   "video/webm",
 ]);
@@ -106,7 +108,10 @@ export function sniffMimeType(filename: string, declared?: string): string {
     webp: "image/webp",
     gif: "image/gif",
     svg: "image/svg+xml",
-    ico: "image/x-icon",
+            ico: "image/x-icon",
+            heic: "image/heic",
+            heif: "image/heif",
+            jfif: "image/jpeg",
     mp4: "video/mp4",
     webm: "video/webm",
   };

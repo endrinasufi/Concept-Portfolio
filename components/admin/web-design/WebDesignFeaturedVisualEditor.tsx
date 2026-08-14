@@ -2,12 +2,12 @@
 
 import type { WebDesignFeaturedVisual } from "@/types/web-design";
 import { WEB_DESIGN_FEATURED_FRAMES } from "@/types/web-design";
-import { MediaImage } from "@/components/branding/MediaImage";
 import { uploadWebDesignAsset } from "@/lib/web-design/media";
+import { WebDesignMediaSlot } from "./WebDesignMediaSlot";
 
 const field =
-  "mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm";
-const label = "block text-xs uppercase tracking-[0.16em] text-muted";
+  "mt-1 w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm";
+const label = "block text-[10px] font-medium uppercase tracking-[0.16em] text-muted";
 
 export function WebDesignFeaturedVisualEditor({
   value,
@@ -43,55 +43,63 @@ export function WebDesignFeaturedVisualEditor({
     }
   }
 
+  const slots = [
+    {
+      key: "background" as const,
+      title: "Background image",
+      mediaId: value.backgroundMediaId,
+      imageUrl: value.backgroundImageUrl,
+      frame: WEB_DESIGN_FEATURED_FRAMES.background,
+      clear: () =>
+        onChange({
+          ...value,
+          backgroundMediaId: undefined,
+          backgroundImageUrl: undefined,
+        }),
+    },
+    {
+      key: "desktop" as const,
+      title: "Desktop website image",
+      mediaId: value.desktopMediaId,
+      imageUrl: value.desktopImageUrl,
+      frame: WEB_DESIGN_FEATURED_FRAMES.desktop,
+      clear: () =>
+        onChange({
+          ...value,
+          desktopMediaId: undefined,
+          desktopImageUrl: undefined,
+        }),
+    },
+    {
+      key: "mobile" as const,
+      title: "Mobile website image",
+      mediaId: value.mobileMediaId,
+      imageUrl: value.mobileImageUrl,
+      frame: WEB_DESIGN_FEATURED_FRAMES.mobile,
+      clear: () =>
+        onChange({
+          ...value,
+          mobileMediaId: undefined,
+          mobileImageUrl: undefined,
+        }),
+    },
+  ];
+
   return (
-    <div className="space-y-5">
-      <div className="grid gap-4 md:grid-cols-3">
-        {(
-          [
-            {
-              key: "background" as const,
-              title: "Background image",
-              mediaId: value.backgroundMediaId,
-              imageUrl: value.backgroundImageUrl,
-              frame: WEB_DESIGN_FEATURED_FRAMES.background,
-            },
-            {
-              key: "desktop" as const,
-              title: "Desktop website image",
-              mediaId: value.desktopMediaId,
-              imageUrl: value.desktopImageUrl,
-              frame: WEB_DESIGN_FEATURED_FRAMES.desktop,
-            },
-            {
-              key: "mobile" as const,
-              title: "Mobile website image",
-              mediaId: value.mobileMediaId,
-              imageUrl: value.mobileImageUrl,
-              frame: WEB_DESIGN_FEATURED_FRAMES.mobile,
-            },
-          ] as const
-        ).map((slot) => (
-          <label key={slot.key} className="block">
-            <span className={label}>{slot.title}</span>
-            <div className="relative mt-2 h-16 w-24 overflow-hidden rounded-md bg-surface-elevated">
-              <MediaImage
-                mediaId={slot.mediaId}
-                imageUrl={slot.imageUrl}
-                alt={slot.title}
-                fit="cover"
-              />
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              className="mt-2 block w-full text-xs"
-              onChange={(e) => void upload(slot.key, e.target.files?.[0])}
-            />
-            <p className="mt-1 text-[11px] text-muted">
-              Përmasa: {slot.frame.width} × {slot.frame.height} px ·{" "}
-              {slot.frame.ratioLabel}
-            </p>
-          </label>
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-3">
+        {slots.map((slot) => (
+          <WebDesignMediaSlot
+            key={slot.key}
+            title={slot.title}
+            mediaId={slot.mediaId}
+            imageUrl={slot.imageUrl}
+            width={slot.frame.width}
+            height={slot.frame.height}
+            boxClassName="w-[20.25rem] max-w-full"
+            onFile={(file) => void upload(slot.key, file)}
+            onClear={slot.clear}
+          />
         ))}
       </div>
 
@@ -111,7 +119,7 @@ export function WebDesignFeaturedVisualEditor({
           <span className={label}>Overlay color</span>
           <input
             type="color"
-            className="mt-1 h-10 w-full rounded border border-border bg-background"
+            className="mt-1 h-8 w-full rounded-lg border border-border bg-background"
             value={value.backgroundOverlayColor ?? "#000000"}
             onChange={(e) =>
               onChange({ ...value, backgroundOverlayColor: e.target.value })
@@ -138,9 +146,7 @@ export function WebDesignFeaturedVisualEditor({
           />
         </label>
         <label>
-          <span className={label}>
-            Blur ({value.backgroundBlur ?? 18}px)
-          </span>
+          <span className={label}>Blur ({value.backgroundBlur ?? 18}px)</span>
           <input
             type="range"
             min={0}
@@ -158,7 +164,7 @@ export function WebDesignFeaturedVisualEditor({
         </label>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <label>
           <span className={label}>Desktop scale</span>
           <input

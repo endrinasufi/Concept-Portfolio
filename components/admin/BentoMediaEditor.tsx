@@ -133,7 +133,11 @@ function Slot({
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-[var(--radius-xl)] bg-surface-elevated ${
+      className={`group relative overflow-hidden rounded-[var(--radius-xl)] ${
+        mediaId
+          ? "bg-surface-elevated"
+          : "admin-upload-empty"
+      } ${
         fit === "contain" ? "flex items-center justify-center p-6" : ""
       } ${className ?? ""}`}
       style={style}

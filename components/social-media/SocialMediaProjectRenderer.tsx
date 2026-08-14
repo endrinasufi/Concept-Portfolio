@@ -4,7 +4,6 @@ import { useCallback, useMemo, useState } from "react";
 import type {
   SocialMediaFeedPost,
   SocialMediaProject,
-  SocialMediaReel,
   SocialMediaStory,
 } from "@/types/social-media";
 import { sortByOrder } from "@/lib/utils/id";
@@ -19,7 +18,6 @@ import {
 
 type ViewerState =
   | { mode: "feed"; index: number }
-  | { mode: "reel"; reel: SocialMediaReel }
   | { mode: "story"; story: SocialMediaStory }
   | null;
 
@@ -58,17 +56,6 @@ export function SocialMediaProjectRenderer({
         title: post.caption,
       };
     }
-    if (viewer.mode === "reel") {
-      return {
-        type: "video",
-        mediaId: viewer.reel.thumbnailMediaId,
-        imageUrl: viewer.reel.thumbnailUrl,
-        videoMediaId: viewer.reel.videoMediaId,
-        videoUrl: viewer.reel.videoUrl,
-        title: viewer.reel.title,
-        alt: viewer.reel.title,
-      };
-    }
     const storyIndex = stories.findIndex((s) => s.id === viewer.story.id);
     return {
       type: "image",
@@ -94,10 +81,7 @@ export function SocialMediaProjectRenderer({
 
       <SocialMediaBlock1 project={project} onOpenFeed={openFeed} />
 
-      <SocialMediaBlock2
-        block2={project.block2}
-        onOpenReel={(reel) => setViewer({ mode: "reel", reel })}
-      />
+      <SocialMediaBlock2 block2={project.block2} />
 
       <SocialMediaBlock3
         stories={project.block3.stories}

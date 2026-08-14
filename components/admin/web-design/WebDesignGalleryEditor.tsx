@@ -5,11 +5,12 @@ import type {
   WebDesignGalleryItem,
 } from "@/types/web-design";
 import { WEB_DESIGN_GALLERY_FRAMES } from "@/types/web-design";
+import { AdminUploadDropzone } from "@/components/admin/AdminUploadDropzone";
 import { SortableList, SortableItem } from "@/components/admin/SortableList";
 import { MediaImage } from "@/components/branding/MediaImage";
 import { uploadWebDesignAsset } from "@/lib/web-design/media";
 import { createId } from "@/lib/utils/id";
-import { Plus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 function galleryType(value: string): WebDesignGalleryDisplayType {
   return value === "mobile" ? "mobile" : "desktop";
@@ -62,16 +63,12 @@ export function WebDesignGalleryEditor({
           <h3 className="text-sm font-medium">Additional screenshots</h3>
           <p className="text-xs text-muted">Zvarris për të rirenditur</p>
         </div>
-        <label className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface-elevated">
-          <Plus size={12} /> Upload
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => void upload(e.target.files)}
-          />
-        </label>
+        <AdminUploadDropzone
+          variant="button"
+          label="Ngarko foto"
+          multiple
+          onFiles={(files) => void upload(files)}
+        />
       </div>
 
       <SortableList

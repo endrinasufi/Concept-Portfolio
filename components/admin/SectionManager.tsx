@@ -6,6 +6,7 @@ import { SortableList, SortableItem } from "./SortableList";
 import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { useConfirm } from "./ConfirmDialog";
+import { AdminUploadDropzone } from "./AdminUploadDropzone";
 import { uploadMedia } from "@/lib/media";
 
 const SECTION_TYPES: { type: BrandingSectionType; label: string }[] = [
@@ -92,15 +93,13 @@ function SectionEditor({
     case "logo":
       return (
         <div className="space-y-2">
-          <Field label="Ngarko imazh">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) =>
-                void handleFile(e.target.files?.[0], (mediaId) => set({ mediaId }))
-              }
-            />
-          </Field>
+          <AdminUploadDropzone
+            label="Ngarko imazh"
+            hint="JPG / PNG / WebP"
+            onFiles={(files) =>
+              void handleFile(files?.[0], (mediaId) => set({ mediaId }))
+            }
+          />
           <Field label="ose URL e jashtme">
             <input
               className={inputClass}
@@ -150,11 +149,11 @@ function SectionEditor({
           {(["A", "B"] as const).map((key) => (
             <div key={key} className="space-y-1 rounded border border-border/60 p-2">
               <p className="text-xs text-muted">Imazh {key}</p>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) =>
-                  void handleFile(e.target.files?.[0], (mediaId) =>
+              <AdminUploadDropzone
+                label={`Ngarko imazh ${key}`}
+                className="min-h-[4.25rem] py-3"
+                onFiles={(files) =>
+                  void handleFile(files?.[0], (mediaId) =>
                     set({ [`mediaId${key}`]: mediaId }),
                   )
                 }
@@ -175,11 +174,11 @@ function SectionEditor({
           {(["A", "B", "C"] as const).map((key) => (
             <div key={key} className="space-y-1 rounded border border-border/60 p-2">
               <p className="text-xs text-muted">Imazh {key}</p>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) =>
-                  void handleFile(e.target.files?.[0], (mediaId) =>
+              <AdminUploadDropzone
+                label={`Ngarko imazh ${key}`}
+                className="min-h-[4.25rem] py-3"
+                onFiles={(files) =>
+                  void handleFile(files?.[0], (mediaId) =>
                     set({ [`mediaId${key}`]: mediaId }),
                   )
                 }

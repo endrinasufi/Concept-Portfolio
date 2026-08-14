@@ -1,10 +1,17 @@
 "use client";
 
 import type { SocialMediaReel } from "@/types/social-media";
+import { AdminUploadDropzone } from "@/components/admin/AdminUploadDropzone";
 import { SortableList, SortableItem } from "@/components/admin/SortableList";
 import { MediaImage } from "@/components/branding/MediaImage";
 import { uploadSocialMediaAsset } from "@/lib/social-media/media";
 import { extractVideoFrame } from "@/lib/social-media/video-frame";
+import {
+  extractYoutubeId,
+  isYoutubeThumbnailUrl,
+  youtubePosterFromUrl,
+  youtubeReelThumbProps,
+} from "@/lib/video-production/youtube";
 import { createId } from "@/lib/utils/id";
 import { Plus, Trash2 } from "lucide-react";
 
@@ -91,19 +98,42 @@ export function SocialMediaReelsEditor({
     onChange(ordered.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   }
 
+  function setVideoUrl(id: string, raw: string) {
+    const current = ordered.find((r) => r.id === id);
+    const ytId = extractYoutubeId(raw);
+    const keepUploaded = Boolean(current?.thumbnailMediaId);
+    onChange(
+      ordered.map((r) => {
+        if (r.id !== id) return r;
+        const next: SocialMediaReel = {
+          ...r,
+          videoUrl: raw.trim() || undefined,
+        };
+        if (!keepUploaded) {
+          if (ytId) {
+            next.thumbnailUrl = youtubePosterFromUrl(raw);
+          } else if (isYoutubeThumbnailUrl(r.thumbnailUrl)) {
+            next.thumbnailUrl = undefined;
+          }
+        }
+        return next;
+      }),
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-medium">Reels</h3>
           <p className="text-xs text-muted">
-            Zvarris për të rirenditur · thumbnail auto nga video nëse mungon
+            Zvarris për të rirenditur · thumbnail auto nga video ose YouTube
           </p>
         </div>
         <button
           type="button"
           onClick={() => void addReel()}
-          className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs"
+          className="admin-upload-btn"
         >
           <Plus size={12} /> Shto reel
         </button>
@@ -117,7 +147,7 @@ export function SocialMediaReelsEditor({
                 <div className="relative h-36 w-24 shrink-0 overflow-hidden rounded-lg bg-surface-elevated">
                   <MediaImage
                     mediaId={reel.thumbnailMediaId}
-                    imageUrl={reel.thumbnailUrl}
+                    {...youtubeReelThumbProps(reel)}
                     alt={reel.title ?? ""}
                     fit="cover"
                   />
@@ -130,37 +160,35 @@ export function SocialMediaReelsEditor({
                     className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm"
                   />
                   <div className="grid gap-2 sm:grid-cols-2">
-                    <label className="block rounded-lg border border-dashed border-border px-2 py-2 text-xs text-muted">
-                      Thumbnail (opsionale)
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="mt-1 block w-full text-[10px]"
-                        onChange={(e) =>
-                          void uploadThumb(reel.id, e.target.files?.[0])
-                        }
-                      />
-                    </label>
-                    <label className="block rounded-lg border border-dashed border-border px-2 py-2 text-xs text-muted">
-                      Video file
-                      <input
-                        type="file"
-                        accept="video/*"
-                        className="mt-1 block w-full text-[10px]"
-                        onChange={(e) =>
-                          void uploadVideo(reel.id, e.target.files?.[0])
-                        }
-                      />
-                    </label>
+                    <AdminUploadDropzone
+                      label="Thumbnail"
+                      hint="opsionale"
+                      className="min-h-[5.5rem] py-3"
+                      onFiles={(files) =>
+                        void uploadThumb(reel.id, files?.[0])
+                      }
+                    />
+                    <AdminUploadDropzone
+                      label="Video file"
+                      hint="mp4 / webm"
+                      accept="video/*"
+                      className="min-h-[5.5rem] py-3"
+                      onFiles={(files) =>
+                        void uploadVideo(reel.id, files?.[0])
+                      }
+                    />
                   </div>
                   <input
                     value={reel.videoUrl ?? ""}
-                    onChange={(e) =>
-                      update(reel.id, { videoUrl: e.target.value })
-                    }
-                    placeholder="ose Video URL (opsionale)"
+                    onChange={(e) => setVideoUrl(reel.id, e.target.value)}
+                    placeholder="ose Video URL / YouTube (watch, shorts, youtu.be)"
                     className="w-full rounded-lg border border-border bg-background px-2 py-2 text-xs"
                   />
+                  {extractYoutubeId(reel.videoUrl ?? "") ? (
+                    <p className="text-[10px] text-muted">
+                      YouTube · thumbnail merret automatikisht nga linku
+                    </p>
+                  ) : null}
                   <button
                     type="button"
                     onClick={() => remove(reel.id)}

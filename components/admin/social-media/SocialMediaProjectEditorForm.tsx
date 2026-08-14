@@ -4,17 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import type { SocialMediaProject } from "@/types/social-media";
 import {
-  emptySocialMediaProjectDraft,
+  defaultPageAppearance,
   SOCIAL_MEDIA_COVER_FRAME,
 } from "@/types/social-media";
-import { slugify } from "@/lib/utils/id";
+import { createId, slugify } from "@/lib/utils/id";
 import { uploadSocialMediaAsset } from "@/lib/social-media/media";
-import { MediaImage } from "@/components/branding/MediaImage";
 import { SocialMediaFeedEditor } from "./SocialMediaFeedEditor";
 import { SocialMediaStoriesEditor } from "./SocialMediaStoriesEditor";
 import { SocialMediaReelsEditor } from "./SocialMediaReelsEditor";
 import { SocialMediaUsernamesEditor } from "./SocialMediaUsernamesEditor";
-import { ExternalLink, Trash2 } from "lucide-react";
+import { WebDesignMediaSlot } from "@/components/admin/web-design/WebDesignMediaSlot";
+import { ExternalLink } from "lucide-react";
 
 export type SocialMediaProjectFormValue = Omit<
   SocialMediaProject,
@@ -22,22 +22,49 @@ export type SocialMediaProjectFormValue = Omit<
 >;
 
 export function emptySocialMediaProjectForm(): SocialMediaProjectFormValue {
-  const d = emptySocialMediaProjectDraft();
   return {
-    slug: d.slug,
-    title: d.title,
-    clientName: d.clientName,
-    serviceLabel: d.serviceLabel,
-    usernames: d.usernames,
-    status: d.status,
-    order: d.order,
-    coverMediaId: d.coverMediaId,
-    coverImageUrl: d.coverImageUrl,
-    pageAppearance: d.pageAppearance,
-    block1: d.block1,
-    block2: d.block2,
-    block3: d.block3,
-    seo: d.seo,
+    slug: "emri-klientit",
+    title: "Emri i projektit",
+    clientName: "Emri i klientit",
+    serviceLabel: "Social Media Management",
+    usernames: [
+      {
+        id: createId(),
+        label: "@klienti",
+        url: "https://instagram.com/klienti",
+        order: 0,
+      },
+      {
+        id: createId(),
+        label: "@klienti",
+        url: "https://tiktok.com/@klienti",
+        order: 1,
+      },
+    ],
+    status: "draft",
+    order: 0,
+    coverMediaId: undefined,
+    coverImageUrl: undefined,
+    pageAppearance: defaultPageAppearance(),
+    block1: { feedPosts: [] },
+    block2: {
+      title: "Project overview",
+      audience:
+        "Përshkruaj audiencën e markës — kush janë, çfarë kërkojnë dhe ku i gjen në social media.",
+      projectChallenge:
+        "Cili ishte problemi ose sfida e projektit që duhej zgjidhur me përmbajtje në rrjetet sociale.",
+      result:
+        "Çfarë u arrit: rritje engagement, identitet më i qartë, ose një sistem i rregullt postimesh.",
+      backgroundColors: ["#141018", "#2a1820", "#0a0c12"],
+      grainStrength: 0.55,
+      reels: [],
+    },
+    block3: { stories: [] },
+    seo: {
+      metaTitle: "Emri i projektit — Social Media | Concept Marketing",
+      metaDescription:
+        "Menaxhim i rrjeteve sociale: feed, reels dhe stories për këtë markë.",
+    },
   };
 }
 
@@ -49,10 +76,12 @@ export function SocialMediaProjectEditorForm({
   initial,
   saving,
   onSave,
+  isNew = false,
 }: {
   initial: SocialMediaProjectFormValue;
   saving?: boolean;
   onSave: (value: SocialMediaProjectFormValue) => Promise<void>;
+  isNew?: boolean;
 }) {
   const [value, setValue] = useState<SocialMediaProjectFormValue>(initial);
 
@@ -109,7 +138,7 @@ export function SocialMediaProjectEditorForm({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl">
-            {initial.title ? "Edito projektin" : "Projekt Social Media i ri"}
+            {isNew ? "Projekt Social Media i ri" : "Edito projektin"}
           </h1>
           <p className="mt-1 text-sm text-muted">
             3 blloqe · CMS i izoluar nga Branding
@@ -256,29 +285,25 @@ export function SocialMediaProjectEditorForm({
         </label>
       </section>
 
-      <section className="space-y-4 admin-card p-5">
-        <h2 className="text-xl">Cover (lista /social-media)</h2>
-        <p className="text-xs text-muted">
-          Fotoja që shfaqet te karta e projektit në faqen e listës.
-        </p>
-        <div className="flex flex-wrap items-start gap-4">
-          <div className="relative h-28 w-24 overflow-hidden rounded-lg bg-surface-elevated">
-            <MediaImage
-              mediaId={value.coverMediaId}
-              imageUrl={value.coverImageUrl}
-              alt="Cover"
-              fit="cover"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="inline-flex cursor-pointer items-center rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface-elevated">
-              Upload cover
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
+      <section className="admin-card p-4 sm:p-5">
+        <div className="grid gap-5 lg:grid-cols-3 lg:gap-0">
+          <div className="min-w-0 lg:border-r lg:border-[#1a1a1a]/10 lg:pr-5">
+            <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted">
+              Cover (lista /social-media)
+            </h2>
+            <p className="mt-1 text-[11px] leading-snug text-muted">
+              Fotoja që shfaqet te karta e projektit në faqen e listës.
+            </p>
+            <div className="mt-3">
+              <WebDesignMediaSlot
+                title="Cover"
+                mediaId={value.coverMediaId}
+                imageUrl={value.coverImageUrl}
+                width={SOCIAL_MEDIA_COVER_FRAME.width}
+                height={SOCIAL_MEDIA_COVER_FRAME.height}
+                aspectClass="aspect-[4/5]"
+                boxClassName="w-[16.5rem] max-w-full"
+                onFile={(file) => {
                   if (!file) return;
                   void uploadSocialMediaAsset(file).then((asset) => {
                     patch({
@@ -287,74 +312,72 @@ export function SocialMediaProjectEditorForm({
                     });
                   });
                 }}
-              />
-            </label>
-            {(value.coverMediaId || value.coverImageUrl) && (
-              <button
-                type="button"
-                onClick={() =>
+                onClear={() =>
                   patch({ coverMediaId: undefined, coverImageUrl: undefined })
                 }
-                className="inline-flex items-center gap-1 rounded-full border border-red-500/30 px-3 py-1.5 text-xs text-red-400"
-              >
-                <Trash2 size={12} /> Hiq
-              </button>
-            )}
-            <p className="text-[11px] text-muted">
-              Përmasa: {SOCIAL_MEDIA_COVER_FRAME.width} ×{" "}
-              {SOCIAL_MEDIA_COVER_FRAME.height} px ·{" "}
-              {SOCIAL_MEDIA_COVER_FRAME.ratioLabel}
-            </p>
+              />
+            </div>
           </div>
-        </div>
-      </section>
 
-      <section className="space-y-5 admin-card p-5">
-        <h2 className="text-xl">Block 1 — Hero</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {([1, 2] as const).map((slot) => {
-            const mediaId =
-              slot === 1
-                ? value.block1.mockupImage1MediaId
-                : value.block1.mockupImage2MediaId;
-            const imageUrl =
-              slot === 1
-                ? value.block1.mockupImage1Url
-                : value.block1.mockupImage2Url;
-            return (
-              <div key={slot} className="rounded-xl border border-border p-3">
-                <p className="mb-2 text-xs uppercase tracking-[0.16em] text-muted">
-                  Mockup {slot}
-                </p>
-                <div className="relative mx-auto aspect-[9/16] w-28 overflow-hidden rounded-xl bg-surface-elevated">
-                  <MediaImage
+          <div className="min-w-0 lg:col-span-2 lg:pl-5">
+            <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted">
+              Block 1 — Hero
+            </h2>
+            <p className="mt-1 text-[11px] leading-snug text-muted">
+              Dy telefonat që shfaqen në krye të faqes së projektit.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              {([1, 2] as const).map((slot) => {
+                const mediaId =
+                  slot === 1
+                    ? value.block1.mockupImage1MediaId
+                    : value.block1.mockupImage2MediaId;
+                const imageUrl =
+                  slot === 1
+                    ? value.block1.mockupImage1Url
+                    : value.block1.mockupImage2Url;
+                return (
+                  <WebDesignMediaSlot
+                    key={slot}
+                    title={`Mockup ${slot}`}
                     mediaId={mediaId}
                     imageUrl={imageUrl}
-                    alt={`Mockup ${slot}`}
-                    fit="cover"
-                  />
-                </div>
-                <label className="mt-3 block text-xs text-muted">
-                  Upload
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="mt-1 block w-full text-xs"
-                    onChange={(e) =>
-                      void uploadMockup(slot, e.target.files?.[0])
+                    width={1080}
+                    height={1920}
+                    aspectClass="aspect-[4/5]"
+                    boxClassName="w-[16.5rem] max-w-full"
+                    onFile={(file) => void uploadMockup(slot, file)}
+                    onClear={() =>
+                      patch({
+                        block1: {
+                          ...value.block1,
+                          ...(slot === 1
+                            ? {
+                                mockupImage1MediaId: undefined,
+                                mockupImage1Url: undefined,
+                              }
+                            : {
+                                mockupImage2MediaId: undefined,
+                                mockupImage2Url: undefined,
+                              }),
+                        },
+                      })
                     }
                   />
-                </label>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </div>
         </div>
-        <SocialMediaFeedEditor
-          posts={value.block1.feedPosts}
-          onChange={(feedPosts) =>
-            patch({ block1: { ...value.block1, feedPosts } })
-          }
-        />
+
+        <div className="mt-5 border-t border-[#1a1a1a]/10 pt-5">
+          <SocialMediaFeedEditor
+            posts={value.block1.feedPosts}
+            onChange={(feedPosts) =>
+              patch({ block1: { ...value.block1, feedPosts } })
+            }
+          />
+        </div>
       </section>
 
       <section className="space-y-4 admin-card p-5">

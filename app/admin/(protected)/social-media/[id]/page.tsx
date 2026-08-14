@@ -23,11 +23,7 @@ function toFormValue(project: SocialMediaProject): SocialMediaProjectFormValue {
     pageAppearance: project.pageAppearance,
     block1: project.block1,
     block2: project.block2,
-    block3: {
-      stories: Array.isArray(project.block3?.stories)
-        ? project.block3.stories
-        : [],
-    },
+    block3: project.block3,
     seo: project.seo,
   };
 }

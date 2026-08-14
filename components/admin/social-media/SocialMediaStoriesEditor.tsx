@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type { SocialMediaStory } from "@/types/social-media";
+import { AdminUploadDropzone } from "@/components/admin/AdminUploadDropzone";
 import { SortableList, SortableItem } from "@/components/admin/SortableList";
 import { MediaImage } from "@/components/branding/MediaImage";
 import { uploadSocialMediaAsset } from "@/lib/social-media/media";
 import { createId } from "@/lib/utils/id";
-import { Plus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 function previewUrl(asset: { id: string; publicUrl?: string }) {
   return asset.publicUrl || `/api/media/${encodeURIComponent(asset.id)}`;
@@ -20,7 +21,6 @@ export function SocialMediaStoriesEditor({
   onChange: (next: SocialMediaStory[]) => void;
 }) {
   const ordered = [...(stories ?? [])].sort((a, b) => a.order - b.order);
-  const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,11 +31,6 @@ export function SocialMediaStoriesEditor({
     const next = [...ordered];
     try {
       for (const file of Array.from(files)) {
-        if (!file.type.startsWith("image/") && !/\.(jpe?g|png|webp|gif)$/i.test(file.name)) {
-          throw new Error(
-            `"${file.name}" nuk është imazh. Stories pranojnë JPG, PNG, WebP ose GIF.`,
-          );
-        }
         const asset = await uploadSocialMediaAsset(file);
         next.push({
           id: createId(),
@@ -51,7 +46,6 @@ export function SocialMediaStoriesEditor({
       setError(e instanceof Error ? e.message : "Ngarkimi i story dështoi");
     } finally {
       setBusy(false);
-      if (inputRef.current) inputRef.current.value = "";
     }
   }
 
@@ -79,22 +73,14 @@ export function SocialMediaStoriesEditor({
             9:16 · JPG/PNG/WebP · zgjidh disa skedarë njëherësh · zvarris me ≡
           </p>
         </div>
-        <label
-          className={`inline-flex cursor-pointer items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs ${
-            busy ? "pointer-events-none opacity-60" : "hover:bg-surface-elevated"
-          }`}
-        >
-          <Plus size={12} /> {busy ? "Duke ngarkuar…" : "Upload"}
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif"
-            multiple
-            disabled={busy}
-            className="hidden"
-            onChange={(e) => void upload(e.target.files)}
-          />
-        </label>
+        <AdminUploadDropzone
+          variant="button"
+          label="Ngarko stories"
+          multiple
+          busy={busy}
+          form=""
+          onFiles={(files) => void upload(files)}
+        />
       </div>
 
       {error ? (
@@ -105,6 +91,15 @@ export function SocialMediaStoriesEditor({
 
       <SortableList ids={ordered.map((s) => s.id)} onReorder={reorder} strategy="grid">
         <div className="flex flex-wrap gap-3">
+          <AdminUploadDropzone
+            label="Shto story"
+            hint="9:16"
+            multiple
+            busy={busy}
+            form=""
+            className="w-28 aspect-[9/16] min-h-0"
+            onFiles={(files) => void upload(files)}
+          />
           {ordered.map((story) => (
             <SortableItem key={story.id} id={story.id} className="w-28">
               <div className="overflow-hidden rounded-xl border border-border bg-surface/40">

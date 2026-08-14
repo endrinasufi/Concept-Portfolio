@@ -26,11 +26,13 @@ export function SortableItem({
   children,
   className = "",
   handle = true,
+  compact = false,
 }: {
   id: string;
   children: ReactNode;
   className?: string;
   handle?: boolean;
+  compact?: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id });
@@ -47,12 +49,16 @@ export function SortableItem({
       {handle ? (
         <button
           type="button"
-          className="absolute left-1.5 top-1.5 z-10 cursor-grab touch-none rounded-md border border-border/60 bg-background/90 p-1 text-muted shadow-sm hover:text-foreground active:cursor-grabbing"
+          className={
+            compact
+              ? "absolute left-0.5 top-0.5 z-10 cursor-grab touch-none rounded border border-border/60 bg-background/90 p-0.5 text-muted shadow-sm hover:text-foreground active:cursor-grabbing"
+              : "absolute left-1.5 top-1.5 z-10 cursor-grab touch-none rounded-md border border-border/60 bg-background/90 p-1 text-muted shadow-sm hover:text-foreground active:cursor-grabbing"
+          }
           aria-label="Zvarrite për të rirenditur"
           {...attributes}
           {...listeners}
         >
-          <GripVertical size={14} />
+          <GripVertical size={compact ? 10 : 14} />
         </button>
       ) : (
         <div className="absolute inset-0 cursor-grab touch-none" {...attributes} {...listeners} />

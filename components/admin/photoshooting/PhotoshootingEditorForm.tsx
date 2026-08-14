@@ -5,7 +5,7 @@ import type { PhotoshootingProject } from "@/types/photoshooting";
 import { slugify } from "@/lib/utils/id";
 import { uploadMedia } from "@/lib/media";
 import { PhotoshootingVisualGridEditor } from "@/components/admin/photoshooting/PhotoshootingVisualGridEditor";
-import { Upload } from "lucide-react";
+import { AdminUploadDropzone } from "@/components/admin/AdminUploadDropzone";
 
 type FormValue = Omit<PhotoshootingProject, "id" | "createdAt" | "updatedAt"> & {
   id?: string;
@@ -152,16 +152,12 @@ export function PhotoshootingEditorForm({
                 }
                 placeholder="https://…"
               />
-              <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border px-4 py-2 text-sm">
-                <Upload size={14} />
-                {uploadingCover ? "…" : "Ngarko"}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => void uploadCover(e.target.files?.[0])}
-                />
-              </label>
+              <AdminUploadDropzone
+                variant="button"
+                label={uploadingCover ? "Duke ngarkuar…" : "Ngarko"}
+                busy={uploadingCover}
+                onFiles={(files) => void uploadCover(files?.[0])}
+              />
             </div>
           </label>
           <label className="flex items-center gap-2 text-sm">

@@ -63,9 +63,9 @@ export function ProjectVideoEditor({
           </div>
         </div>
       ) : (
-        <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-background/50 px-4 py-10 text-muted transition hover:border-foreground/30 hover:text-foreground/70">
+        <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#1a1a1a]/30 bg-[#fdd85d]/16 px-4 py-10 text-[#1a1a1a]/80 transition hover:border-[#1a1a1a]/45 hover:bg-[#fdd85d]/28">
           <Upload size={20} />
-          <span className="text-xs">Ngarko video (mp4, webm…)</span>
+          <span className="text-xs font-semibold">Ngarko video (mp4, webm…)</span>
           <input
             type="file"
             accept="video/*"

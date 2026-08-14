@@ -1,11 +1,17 @@
 "use client";
 
-import { useRef, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import type { SocialMediaBlock2 as Block2, SocialMediaReel } from "@/types/social-media";
 import { socialMediaContentClass } from "@/lib/social-media/layout";
 import { MediaImage } from "@/components/branding/MediaImage";
 import { sortByOrder } from "@/lib/utils/id";
+import { useResolvedSrc } from "@/lib/hooks/useMediaUrl";
+import {
+  extractYoutubeId,
+  youtubeEmbedUrl,
+  youtubeReelThumbProps,
+} from "@/lib/video-production/youtube";
 
 function grainStyle(strength: number): CSSProperties {
   const opacity = Math.min(1, Math.max(0, strength)) * 0.65;
@@ -28,15 +34,193 @@ function cardBackground(colors: string[]): string {
   return c[0] || "#141018";
 }
 
-export function SocialMediaBlock2({
-  block2,
-  onOpenReel,
+function ytCommand(
+  iframe: HTMLIFrameElement | null,
+  func: string,
+  args: unknown[] = [],
+) {
+  iframe?.contentWindow?.postMessage(
+    JSON.stringify({ event: "command", func, args }),
+    "*",
+  );
+}
+
+function ReelCard({
+  reel,
+  playing,
+  onToggle,
 }: {
-  block2: Block2;
-  onOpenReel: (reel: SocialMediaReel) => void;
+  reel: SocialMediaReel;
+  playing: boolean;
+  onToggle: () => void;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [ytLive, setYtLive] = useState(false);
+  const [iframeOn, setIframeOn] = useState(false);
+  const youtubeId = extractYoutubeId(reel.videoUrl ?? "");
+  const fileSrc = useResolvedSrc({
+    mediaId: reel.videoMediaId,
+    imageUrl: youtubeId ? undefined : reel.videoUrl,
+  });
+
+  useEffect(() => {
+    if (!playing) {
+      setIframeOn(false);
+      setYtLive(false);
+      return;
+    }
+    if (!youtubeId) return;
+    const t = window.setTimeout(() => setIframeOn(true), 120);
+    return () => window.clearTimeout(t);
+  }, [playing, youtubeId]);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    if (!playing) {
+      el.pause();
+      return;
+    }
+    el.muted = true;
+    const start = () => {
+      void el.play().catch(() => undefined);
+    };
+    if (el.readyState >= 2) start();
+    else el.addEventListener("canplay", start, { once: true });
+  }, [playing, fileSrc]);
+
+  useEffect(() => {
+    if (!playing || !youtubeId || !iframeOn) return;
+    const iframe = iframeRef.current;
+    let playingOnce = false;
+
+    const kick = () => {
+      ytCommand(iframe, "playVideo");
+      iframe?.contentWindow?.postMessage(
+        JSON.stringify({ event: "listening", id: reel.id }),
+        "*",
+      );
+      ytCommand(iframe, "addEventListener", ["onStateChange"]);
+    };
+
+    const onMessage = (event: MessageEvent) => {
+      let data: unknown = event.data;
+      if (typeof data === "string") {
+        try {
+          data = JSON.parse(data) as unknown;
+        } catch {
+          return;
+        }
+      }
+      if (!data || typeof data !== "object") return;
+      const payload = data as { event?: string; info?: number };
+      if (payload.event !== "onStateChange") return;
+      if (payload.info === 1) {
+        setYtLive(true);
+        if (!playingOnce) {
+          playingOnce = true;
+          window.setTimeout(() => ytCommand(iframeRef.current, "unMute"), 400);
+        }
+      }
+      if (payload.info === 2 || payload.info === 5) {
+        ytCommand(iframeRef.current, "playVideo");
+      }
+      if (payload.info === 0) {
+        ytCommand(iframeRef.current, "playVideo");
+      }
+    };
+
+    const timer = window.setInterval(kick, 500);
+    const stop = window.setTimeout(() => window.clearInterval(timer), 2500);
+    iframe?.addEventListener("load", kick);
+    window.addEventListener("message", onMessage);
+    return () => {
+      window.clearInterval(timer);
+      window.clearTimeout(stop);
+      iframe?.removeEventListener("load", kick);
+      window.removeEventListener("message", onMessage);
+    };
+  }, [playing, youtubeId, iframeOn, reel.id]);
+
+  function handlePress(e: MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggle();
+  }
+
+  const showPoster = !playing || (Boolean(youtubeId) && !ytLive);
+
+  return (
+    <div
+      data-reel-card
+      className="relative w-[calc((100%-0.75rem)/2)] min-w-[calc((100%-0.75rem)/2)] shrink-0 snap-start overflow-hidden rounded-[1.25rem] border border-white/10 bg-black/30 sm:w-[calc((100%-1rem)/2)] sm:min-w-[calc((100%-1rem)/2)] md:rounded-[1.35rem]"
+    >
+      <div className="relative aspect-[9/16] w-full overflow-hidden bg-black">
+        {showPoster ? (
+          <MediaImage
+            mediaId={reel.thumbnailMediaId}
+            {...youtubeReelThumbProps(reel)}
+            alt={reel.title ?? "Reel"}
+            fit="cover"
+          />
+        ) : null}
+
+        {iframeOn && youtubeId ? (
+          <iframe
+            ref={iframeRef}
+            src={youtubeEmbedUrl(youtubeId, {
+              autoplay: true,
+              controls: false,
+              mute: true,
+              enableJsApi: true,
+            })}
+            title={reel.title ?? "Reel"}
+            width={1280}
+            height={720}
+            tabIndex={-1}
+            allow="autoplay; encrypted-media"
+            className="pointer-events-none absolute left-1/2 top-0 z-[1] h-full max-w-none -translate-x-1/2 border-0"
+            style={{ aspectRatio: "16 / 9", width: "auto" }}
+          />
+        ) : null}
+
+        {playing && fileSrc && !youtubeId ? (
+          <video
+            ref={videoRef}
+            src={fileSrc}
+            playsInline
+            loop
+            muted
+            autoPlay
+            disablePictureInPicture
+            controlsList="nodownload nofullscreen noremoteplayback"
+            className="reel-inline-video pointer-events-none absolute inset-0 z-[1] h-full w-full object-contain"
+          />
+        ) : null}
+
+        <button
+          type="button"
+          onPointerDown={(e) => e.preventDefault()}
+          onClick={handlePress}
+          className="absolute inset-0 z-10 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+          aria-label={playing ? "Ndalo reel" : "Luaj reel"}
+        >
+          {playing ? null : (
+            <span className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 backdrop-blur-sm">
+              <Play size={14} className="ml-0.5 text-white" fill="currentColor" />
+            </span>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export function SocialMediaBlock2({ block2 }: { block2: Block2 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const reels = sortByOrder(block2.reels);
+  const [playingId, setPlayingId] = useState<string | null>(null);
 
   function scrollBy(dir: -1 | 1) {
     const el = scrollerRef.current;
@@ -120,30 +304,14 @@ export function SocialMediaBlock2({
               className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-4 [&::-webkit-scrollbar]:hidden"
             >
               {reels.map((reel) => (
-                <button
+                <ReelCard
                   key={reel.id}
-                  type="button"
-                  data-reel-card
-                  onClick={() => onOpenReel(reel)}
-                  className="group relative w-[calc((100%-0.75rem)/2)] min-w-[calc((100%-0.75rem)/2)] shrink-0 snap-start overflow-hidden rounded-[1.25rem] border border-white/10 bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 sm:w-[calc((100%-1rem)/2)] sm:min-w-[calc((100%-1rem)/2)] md:rounded-[1.35rem]"
-                >
-                  <div className="relative aspect-[9/16] w-full">
-                    <MediaImage
-                      mediaId={reel.thumbnailMediaId}
-                      imageUrl={reel.thumbnailUrl}
-                      alt={reel.title ?? "Reel"}
-                      fit="cover"
-                    />
-                    <span className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 backdrop-blur-sm transition group-hover:scale-105">
-                      <Play size={14} className="ml-0.5 text-white" fill="currentColor" />
-                    </span>
-                    {reel.title ? (
-                      <span className="absolute bottom-3 left-3 right-3 text-left text-[11px] leading-tight text-white/85">
-                        {reel.title}
-                      </span>
-                    ) : null}
-                  </div>
-                </button>
+                  reel={reel}
+                  playing={playingId === reel.id}
+                  onToggle={() =>
+                    setPlayingId((id) => (id === reel.id ? null : reel.id))
+                  }
+                />
               ))}
             </div>
           </div>

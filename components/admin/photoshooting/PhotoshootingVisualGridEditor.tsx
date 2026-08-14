@@ -347,7 +347,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
               {t.label}
             </button>
           ))}
-          <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-[11px] hover:bg-white/5">
+          <label className="admin-upload-btn">
             <Upload size={12} />
             {busy ? "…" : "Shto foto"}
             <input
@@ -382,7 +382,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
         }}
       >
         {photoCells.length === 0 ? (
-          <div className="flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/15 text-center">
+          <div className="admin-upload-empty flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-xl text-center">
             <ImagePlus size={20} className="text-muted" />
             <p className="text-xs text-muted">Zgjidh layout ose shto foto</p>
           </div>

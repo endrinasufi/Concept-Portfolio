@@ -135,10 +135,10 @@ export function ClientLogosEditor() {
           setDragging(false);
           void applyFiles(e.dataTransfer.files);
         }}
-        className={`relative flex min-h-[4.5rem] cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border border-dashed px-3 py-3 transition ${
+        className={`relative flex min-h-[4.5rem] cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border-2 border-dashed px-3 py-3 transition ${
           dragging
-            ? "border-accent bg-accent-soft"
-            : "border-border bg-white/50 hover:border-[#1a1a1a]/25"
+            ? "border-[#1a1a1a]/45 bg-[#fdd85d]/28"
+            : "border-[#1a1a1a]/30 bg-[#fdd85d]/16 hover:border-[#1a1a1a]/42 hover:bg-[#fdd85d]/24"
         } ${busy || loading ? "pointer-events-none opacity-60" : ""}`}
       >
         <ImagePlus className="text-muted" size={18} />

@@ -169,6 +169,77 @@ img {
   border-radius: 0.9rem;
 }
 
+.admin-light .admin-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  border-radius: 999px;
+  border: 1px solid rgba(26, 26, 26, 0.2);
+  background: rgba(253, 216, 93, 0.48);
+  color: #1a1a1a;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.42rem 0.95rem;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.admin-light .admin-upload-btn:hover {
+  background: rgba(253, 216, 93, 0.72);
+  border-color: rgba(26, 26, 26, 0.34);
+}
+
+.admin-light .admin-upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  border-radius: 0.9rem;
+  border: 2px dashed rgba(26, 26, 26, 0.3);
+  background: rgba(253, 216, 93, 0.16);
+  color: #1a1a1a;
+  text-align: center;
+  padding: 0.85rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.admin-light .admin-upload-zone:hover,
+.admin-light .admin-upload-zone.is-dragging {
+  border-color: rgba(26, 26, 26, 0.46);
+  background: rgba(253, 216, 93, 0.28);
+}
+
+.admin-light .admin-upload-hint {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: rgba(26, 26, 26, 0.55);
+}
+
+.admin-light .admin-upload-empty {
+  border: 2px dashed rgba(26, 26, 26, 0.28);
+  background: rgba(253, 216, 93, 0.12);
+}
+
+.admin-light input[type="file"]:not(.hidden) {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  font-size: 0.72rem;
+  padding: 0.55rem 0.6rem;
+  border: 2px dashed rgba(26, 26, 26, 0.28);
+  background: rgba(253, 216, 93, 0.14);
+  border-radius: 0.85rem;
+  color: #1a1a1a;
+}
+
 .admin-light input:focus,
 .admin-light textarea:focus,
 .admin-light select:focus {
@@ -403,4 +474,17 @@ html[data-cms-logged-in] body::after {
     transparent 100%
   );
   opacity: 0.85;
+}
+
+/* Fsheh overlay-in e browserit te reels (pause / skip) */
+.reel-inline-video::-webkit-media-controls,
+.reel-inline-video::-webkit-media-controls-enclosure,
+.reel-inline-video::-webkit-media-controls-panel,
+.reel-inline-video::-webkit-media-controls-overlay-play-button,
+.reel-inline-video::-webkit-media-controls-overlay-enclosure,
+.reel-inline-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  appearance: none !important;
 }

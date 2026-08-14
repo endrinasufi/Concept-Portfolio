@@ -7,10 +7,10 @@ import { emptyWebDesignProjectDraft } from "@/types/web-design";
 import { slugify } from "@/lib/utils/id";
 import { WebDesignFeaturedVisualEditor } from "./WebDesignFeaturedVisualEditor";
 import { WebDesignGalleryEditor } from "./WebDesignGalleryEditor";
-import { ExternalLink, Trash2 } from "lucide-react";
-import { MediaImage } from "@/components/branding/MediaImage";
+import { ExternalLink } from "lucide-react";
 import { uploadWebDesignAsset } from "@/lib/web-design/media";
 import { WEB_DESIGN_COVER_FRAME } from "@/types/web-design";
+import { WebDesignMediaSlot } from "./WebDesignMediaSlot";
 
 export type WebDesignProjectFormValue = Omit<
   WebDesignProject,
@@ -240,31 +240,24 @@ export function WebDesignProjectEditorForm({
         </div>
       </section>
 
-      <section className="admin-card space-y-4 p-5">
-        <h2 className="text-xs uppercase tracking-[0.2em] text-muted">
-          Cover (lista /web-design)
-        </h2>
-        <p className="text-xs text-muted">
-          Fotoja që shfaqet te karta e projektit në faqen e listës.
-        </p>
-        <div className="flex flex-wrap items-start gap-4">
-          <div className="relative h-24 w-40 overflow-hidden rounded-lg bg-surface-elevated">
-            <MediaImage
-              mediaId={value.coverMediaId}
-              imageUrl={value.coverImageUrl}
-              alt="Cover"
-              fit="cover"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="inline-flex cursor-pointer items-center rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface-elevated">
-              Upload cover
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
+      <section className="admin-card p-4 sm:p-5">
+        <div className="grid gap-5 lg:grid-cols-4 lg:gap-0">
+          <div className="min-w-0 lg:border-r lg:border-[#1a1a1a]/10 lg:pr-5">
+            <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted">
+              Cover (lista /web-design)
+            </h2>
+            <p className="mt-1 text-[11px] leading-snug text-muted">
+              Fotoja që shfaqet te karta e projektit në faqen e listës.
+            </p>
+            <div className="mt-3">
+              <WebDesignMediaSlot
+                title="Cover"
+                mediaId={value.coverMediaId}
+                imageUrl={value.coverImageUrl}
+                width={WEB_DESIGN_COVER_FRAME.width}
+                height={WEB_DESIGN_COVER_FRAME.height}
+                boxClassName="w-[20.25rem] max-w-full"
+                onFile={(file) => {
                   if (!file) return;
                   void uploadWebDesignAsset(file).then((asset) => {
                     patch({
@@ -273,36 +266,28 @@ export function WebDesignProjectEditorForm({
                     });
                   });
                 }}
-              />
-            </label>
-            {(value.coverMediaId || value.coverImageUrl) && (
-              <button
-                type="button"
-                onClick={() =>
+                onClear={() =>
                   patch({ coverMediaId: undefined, coverImageUrl: undefined })
                 }
-                className="inline-flex items-center gap-1 rounded-full border border-red-500/30 px-3 py-1.5 text-xs text-red-400"
-              >
-                <Trash2 size={12} /> Hiq
-              </button>
-            )}
-            <p className="text-[11px] text-muted">
-              Përmasa: {WEB_DESIGN_COVER_FRAME.width} ×{" "}
-              {WEB_DESIGN_COVER_FRAME.height} px ·{" "}
-              {WEB_DESIGN_COVER_FRAME.ratioLabel}
+              />
+            </div>
+          </div>
+
+          <div className="min-w-0 lg:col-span-3 lg:pl-5">
+            <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted">
+              Featured website presentation
+            </h2>
+            <p className="mt-1 text-[11px] leading-snug text-muted">
+              Tre imazhe të ndara për hero: background, desktop dhe mobile.
             </p>
+            <div className="mt-3">
+              <WebDesignFeaturedVisualEditor
+                value={value.featuredVisual}
+                onChange={(featuredVisual) => patch({ featuredVisual })}
+              />
+            </div>
           </div>
         </div>
-      </section>
-
-      <section className="admin-card space-y-4 p-5">
-        <h2 className="text-xs uppercase tracking-[0.2em] text-muted">
-          Featured website presentation
-        </h2>
-        <WebDesignFeaturedVisualEditor
-          value={value.featuredVisual}
-          onChange={(featuredVisual) => patch({ featuredVisual })}
-        />
       </section>
 
       <section className="admin-card space-y-4 p-5">

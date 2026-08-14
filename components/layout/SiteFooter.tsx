@@ -7,16 +7,12 @@ export function SiteFooter() {
   const pathname = usePathname();
   if (pathname?.startsWith("/admin")) return null;
 
-  const isSocialProject = Boolean(pathname?.startsWith("/social-media/"));
+  const isSocialProject = Boolean(
+    pathname?.startsWith("/social-media/"),
+  );
   const isSocialList = pathname === "/social-media";
   const isWeb = Boolean(pathname?.startsWith("/web-design"));
   const isDarkList = isSocialList || isWeb;
-
-  const linkClass = isSocialProject
-    ? "transition hover:text-neutral-900"
-    : isDarkList
-      ? "transition hover:text-white"
-      : "transition hover:text-foreground";
 
   return (
     <footer
@@ -40,7 +36,7 @@ export function SiteFooter() {
                   : "text-muted"
             }`}
           >
-            Branding, social media, web design, video dhe photoshooting.
+            Branding, social media, web design dhe drejtim artistik.
           </p>
         </div>
         <div
@@ -52,20 +48,53 @@ export function SiteFooter() {
                 : "text-muted"
           }`}
         >
-          <Link href="/branding" className={linkClass}>
+          <Link
+            href="/branding"
+            className={
+              isSocialProject
+                ? "transition hover:text-neutral-900"
+                : isDarkList
+                  ? "transition hover:text-white"
+                  : "transition hover:text-foreground"
+            }
+          >
             Branding
           </Link>
-          <Link href="/social-media" className={linkClass}>
+          <Link
+            href="/social-media"
+            className={
+              isSocialProject
+                ? "transition hover:text-neutral-900"
+                : isDarkList
+                  ? "transition hover:text-white"
+                  : "transition hover:text-foreground"
+            }
+          >
             Social Media
           </Link>
-          <Link href="/web-design" className={linkClass}>
+          <Link
+            href="/web-design"
+            className={
+              isSocialProject
+                ? "transition hover:text-neutral-900"
+                : isDarkList
+                  ? "transition hover:text-white"
+                  : "transition hover:text-foreground"
+            }
+          >
             Web Design
           </Link>
-          <Link href="/video-production" className={linkClass}>
-            Video
-          </Link>
-          <Link href="/photoshooting" className={linkClass}>
-            Photoshooting
+          <Link
+            href="/admin"
+            className={
+              isSocialProject
+                ? "transition hover:text-neutral-900"
+                : isDarkList
+                  ? "transition hover:text-white"
+                  : "transition hover:text-foreground"
+            }
+          >
+            Admin
           </Link>
         </div>
       </div>

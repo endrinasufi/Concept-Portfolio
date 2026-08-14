@@ -36,7 +36,9 @@ function PuzzleSlot({
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-[var(--radius-xl)] bg-surface-elevated ${className ?? ""}`}
+      className={`group relative overflow-hidden rounded-[var(--radius-xl)] ${
+        mediaId ? "bg-surface-elevated" : "admin-upload-empty"
+      } ${className ?? ""}`}
     >
       {mediaId ? (
         <MediaImage mediaId={mediaId} alt={label} fit="cover" />

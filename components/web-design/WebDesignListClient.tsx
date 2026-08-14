@@ -127,7 +127,7 @@ function WebDesignProjectCard({
           {meta || project.serviceLabel}
         </p>
 
-        <h2 className="mt-3 text-xl font-semibold leading-[1.15] tracking-tight text-white transition duration-300 group-hover:text-white/75 md:text-2xl">
+        <h2 className="mt-3 text-lg font-semibold leading-[1.15] tracking-tight text-white transition duration-300 group-hover:text-white/75 md:text-xl">
           {project.title}
         </h2>
 
@@ -189,7 +189,7 @@ export function WebDesignListClient({
         ) : projects.length === 0 ? (
           <p className="mt-16 text-white/45">Nuk ka projekte ende.</p>
         ) : (
-          <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2 md:mt-16 md:gap-x-14 md:gap-y-20 lg:gap-x-16 lg:gap-y-24">
+          <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 md:mt-16 md:grid-cols-3 md:gap-x-10 md:gap-y-16 lg:gap-x-12 lg:gap-y-20">
             {projects.map((project, i) => (
               <Reveal key={project.id} delay={Math.min(i * 0.05, 0.2)}>
                 <div className="h-full border-b border-white/[0.08] pb-10 md:pb-12">

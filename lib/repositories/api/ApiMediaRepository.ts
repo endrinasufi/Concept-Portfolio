@@ -1,6 +1,7 @@
 import type { MediaAsset } from "@/types/media";
 import type { MediaRepository } from "@/lib/repositories/media-types";
 import { apiGet, apiUpload } from "./http";
+import { compressImageForUpload } from "@/lib/media/compressImage";
 
 const BASE = "/api/admin/media";
 
@@ -16,11 +17,14 @@ export class ApiMediaRepository implements MediaRepository {
       >
     > & { id?: string },
   ): Promise<MediaAsset> {
-    const form = new FormData();
     const filename =
       meta?.filename ??
       (file instanceof File ? file.name : `upload-${Date.now()}`);
-    form.append("file", file, filename);
+    const source =
+      file instanceof File ? file : new File([file], filename, { type: file.type });
+    const prepared = await compressImageForUpload(source);
+    const form = new FormData();
+    form.append("file", prepared, prepared.name || filename);
     if (meta?.id) form.append("id", meta.id);
     if (meta?.width != null) form.append("width", String(meta.width));
     if (meta?.height != null) form.append("height", String(meta.height));

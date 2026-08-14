@@ -235,7 +235,7 @@ export function GalleryManager({
                         {Array.from({ length: emptySlots }).map((_, i) => (
                           <label
                             key={`empty-${row.id}-${i}`}
-                            className="flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border bg-surface/40 text-muted transition hover:border-foreground/30 hover:text-foreground/70"
+                            className="admin-upload-zone aspect-[4/3] min-h-0 px-2 py-3 text-[10px]"
                           >
                             <ImagePlus size={18} />
                             <span className="text-[10px]">Ngarko</span>

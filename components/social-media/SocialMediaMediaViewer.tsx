@@ -4,6 +4,10 @@ import { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { MediaImage } from "@/components/branding/MediaImage";
 import { useResolvedSrc } from "@/lib/hooks/useMediaUrl";
+import {
+  extractYoutubeId,
+  youtubeEmbedUrl,
+} from "@/lib/video-production/youtube";
 
 export type SocialMediaViewerItem = {
   type: "image" | "video";
@@ -31,9 +35,10 @@ export function SocialMediaMediaViewer({
   hasNext?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const youtubeId = extractYoutubeId(item?.videoUrl ?? "");
   const videoSrc = useResolvedSrc({
     mediaId: item?.videoMediaId,
-    imageUrl: item?.videoUrl,
+    imageUrl: youtubeId ? undefined : item?.videoUrl,
   });
 
   useEffect(() => {
@@ -54,7 +59,7 @@ export function SocialMediaMediaViewer({
 
   useEffect(() => {
     const el = videoRef.current;
-    if (!el || item?.type !== "video" || !videoSrc) return;
+    if (!el || item?.type !== "video" || !videoSrc || youtubeId) return;
 
     el.muted = false;
     const play = () => {
@@ -73,7 +78,7 @@ export function SocialMediaMediaViewer({
     return () => {
       el.pause();
     };
-  }, [item, videoSrc]);
+  }, [item, videoSrc, youtubeId]);
 
   if (!item) return null;
 
@@ -122,10 +127,23 @@ export function SocialMediaMediaViewer({
       ) : null}
 
       <div
-        className="flex max-h-[90vh] w-auto max-w-[min(90vw,32rem)] flex-col items-center"
+        className={`flex max-h-[90vh] w-auto flex-col items-center ${
+          item.type === "video" && youtubeId
+            ? "max-w-[min(90vw,28rem)]"
+            : "max-w-[min(90vw,32rem)]"
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {item.type === "video" && videoSrc ? (
+        {item.type === "video" && youtubeId ? (
+          <iframe
+            key={youtubeId}
+            src={youtubeEmbedUrl(youtubeId)}
+            title={item.title ?? "YouTube"}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            className="aspect-[9/16] h-[min(85vh,48rem)] w-auto max-w-full rounded-2xl border-0"
+          />
+        ) : item.type === "video" && videoSrc ? (
           <video
             key={videoSrc}
             ref={videoRef}
