@@ -72,7 +72,7 @@ export function BrandingProjectList() {
             const { coverUrl, coverMediaId } = getProjectCover(project);
             return (
               <SortableItem key={project.id} id={project.id} className="pl-9">
-                <div className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface/50 p-3 sm:flex-row sm:items-center">
+                <div className="flex flex-col gap-4 admin-card p-3 sm:flex-row sm:items-center">
                   <div className="h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-surface-elevated">
                     <MediaImage
                       mediaId={coverMediaId}
@@ -87,14 +87,14 @@ export function BrandingProjectList() {
                       <span
                         className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider ${
                           project.status === "published"
-                            ? "bg-emerald-500/15 text-emerald-300"
-                            : "bg-amber-500/15 text-amber-300"
+                            ? "bg-[#1a1a1a] text-white"
+                            : "bg-[#FDD85D] text-[#1a1a1a]"
                         }`}
                       >
                         {project.status}
                       </span>
                       {project.featured ? (
-                        <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] uppercase tracking-wider text-accent">
+                        <span className="rounded-full bg-[#FDD85D] px-2 py-0.5 text-[10px] uppercase tracking-wider text-[#1a1a1a]">
                           Featured
                         </span>
                       ) : null}

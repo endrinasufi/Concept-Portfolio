@@ -69,7 +69,7 @@ export function PhotoshootingEditorForm({
 
   return (
     <form onSubmit={(e) => void handleSubmit(e)} className="space-y-10">
-      <section className="space-y-4 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="space-y-4 admin-card p-5">
         <h2 className="text-xs uppercase tracking-[0.2em] text-muted">Projekti</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">

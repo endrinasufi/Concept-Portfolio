@@ -91,7 +91,7 @@ img {
 }
 
 .admin-light {
-  --background: transparent;
+  --background: #ffffff;
   --foreground: #1a1a1a;
   --muted: #6b6b70;
   --surface: rgba(255, 255, 255, 0.72);
@@ -113,6 +113,12 @@ img {
   letter-spacing: -0.03em;
 }
 
+.admin-light .bg-foreground,
+.admin-light a.bg-foreground,
+.admin-light .bg-\[\#1a1a1a\] {
+  color: #ffffff;
+}
+
 .admin-card {
   border-radius: 2rem;
   background: rgba(255, 255, 255, 0.72);
@@ -127,6 +133,85 @@ img {
   backdrop-filter: blur(22px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 18px 50px rgba(26, 26, 26, 0.08);
+}
+
+.admin-light h1 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.admin-light input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="color"]):not([type="range"]),
+.admin-light textarea,
+.admin-light select {
+  background: #ffffff;
+  border-color: rgba(26, 26, 26, 0.1);
+  color: #1a1a1a;
+  border-radius: 0.9rem;
+}
+
+.admin-light input:focus,
+.admin-light textarea:focus,
+.admin-light select:focus {
+  outline: none;
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 3px rgba(253, 216, 93, 0.4);
+}
+
+.admin-light .bg-surface,
+.admin-light .bg-surface\/40,
+.admin-light .bg-surface\/50,
+.admin-light .bg-surface\/60 {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 32px rgba(26, 26, 26, 0.05);
+}
+
+.admin-light .rounded-\[var\(--radius-lg\)\] {
+  border-radius: 1.75rem;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.admin-light .text-emerald-300 {
+  color: #157a45;
+}
+
+.admin-light .text-amber-300 {
+  color: #a16207;
+}
+
+.admin-light .text-red-400,
+.admin-light .text-red-300,
+.admin-light .text-red-300\/80 {
+  color: #dc2626;
+}
+
+.admin-light .hover\:text-red-200:hover {
+  color: #b91c1c;
+}
+
+.admin-light .bg-accent-soft {
+  color: #1a1a1a;
+}
+
+.admin-light a.text-accent {
+  color: #1a1a1a;
+}
+
+.admin-light button.rounded-lg.bg-foreground,
+.admin-light a.rounded-lg.bg-foreground,
+.admin-light label.rounded-lg.bg-foreground {
+  border-radius: 9999px;
+}
+
+.admin-light a.rounded-full.border,
+.admin-light button.rounded-full.border {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.admin-light a.rounded-full.border:hover,
+.admin-light button.rounded-full.border:hover {
+  background: #ffffff;
 }
 
 .scroll-card-hover {

@@ -63,7 +63,7 @@ export function VideoProductionList() {
         <div className="space-y-3">
           {videos.map((video) => (
             <SortableItem key={video.id} id={video.id} className="pl-9">
-              <div className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface/50 p-3 sm:flex-row sm:items-center">
+              <div className="flex flex-col gap-4 admin-card p-3 sm:flex-row sm:items-center">
                 <div
                   className={`relative shrink-0 overflow-hidden rounded-lg bg-surface-elevated ${
                     video.orientation === "portrait"
@@ -84,8 +84,8 @@ export function VideoProductionList() {
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider ${
                         video.status === "published"
-                          ? "bg-emerald-500/15 text-emerald-300"
-                          : "bg-amber-500/15 text-amber-300"
+                          ? "bg-[#1a1a1a] text-white"
+                          : "bg-[#FDD85D] text-[#1a1a1a]"
                       }`}
                     >
                       {video.status}

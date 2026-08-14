@@ -96,7 +96,7 @@ export function VideoProductionEditorForm({
   const thumbId = extractYoutubeId(youtubeInput) ?? value.youtubeId;
 
   return (
-    <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
+    <form onSubmit={(e) => void handleSubmit(e)} className="admin-card space-y-6 p-5">
       <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
         <div className="space-y-4">
           <label className="block">

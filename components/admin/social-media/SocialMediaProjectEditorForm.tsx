@@ -135,7 +135,7 @@ export function SocialMediaProjectEditorForm({
         </div>
       </div>
 
-      <section className="grid gap-4 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5 md:grid-cols-2">
+      <section className="grid gap-4 admin-card p-5 md:grid-cols-2">
         <h2 className="font-display text-xl md:col-span-2">General</h2>
         <label className={label}>
           Title
@@ -256,7 +256,7 @@ export function SocialMediaProjectEditorForm({
         </label>
       </section>
 
-      <section className="space-y-4 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="space-y-4 admin-card p-5">
         <h2 className="font-display text-xl">Cover (lista /social-media)</h2>
         <p className="text-xs text-muted">
           Fotoja që shfaqet te karta e projektit në faqen e listës.
@@ -309,7 +309,7 @@ export function SocialMediaProjectEditorForm({
         </div>
       </section>
 
-      <section className="space-y-5 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="space-y-5 admin-card p-5">
         <h2 className="font-display text-xl">Block 1 — Hero</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {([1, 2] as const).map((slot) => {
@@ -357,7 +357,7 @@ export function SocialMediaProjectEditorForm({
         />
       </section>
 
-      <section className="space-y-4 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="space-y-4 admin-card p-5">
         <h2 className="font-display text-xl">Block 2 — Floating card</h2>
         <label className={label}>
           Section title
@@ -471,7 +471,7 @@ export function SocialMediaProjectEditorForm({
         />
       </section>
 
-      <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="admin-card p-5">
         <h2 className="mb-4 font-display text-xl">Block 3 — Stories</h2>
         <SocialMediaStoriesEditor
           stories={value.block3?.stories ?? []}
@@ -481,7 +481,7 @@ export function SocialMediaProjectEditorForm({
         />
       </section>
 
-      <section className="grid gap-4 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5 md:grid-cols-2">
+      <section className="grid gap-4 admin-card p-5 md:grid-cols-2">
         <h2 className="font-display text-xl md:col-span-2">SEO</h2>
         <label className={label}>
           Meta title

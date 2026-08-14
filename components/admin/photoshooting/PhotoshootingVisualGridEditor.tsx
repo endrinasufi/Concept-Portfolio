@@ -326,7 +326,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
   }
 
   return (
-    <section className="space-y-3">
+    <section className="admin-card space-y-3 p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 className="text-xs uppercase tracking-[0.2em] text-muted">
@@ -455,7 +455,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
       </div>
 
       {selected ? (
-        <div className="rounded-2xl border border-border bg-surface/40 p-3">
+        <div className="admin-card p-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-muted">
               Foto · {selected.colSpan}×{selected.rowSpan}

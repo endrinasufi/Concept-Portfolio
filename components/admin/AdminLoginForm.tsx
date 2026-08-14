@@ -63,7 +63,7 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background disabled:opacity-60"
+        className="w-full rounded-full bg-foreground px-4 py-2.5 text-sm font-medium text-background disabled:opacity-60"
       >
         {loading ? "Duke hyrë…" : "Hyr"}
       </button>

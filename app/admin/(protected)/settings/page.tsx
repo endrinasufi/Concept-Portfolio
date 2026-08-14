@@ -53,7 +53,7 @@ export default function AdminSettingsPage() {
 
       <form
         onSubmit={changePassword}
-        className="max-w-md space-y-3 rounded-xl border border-border p-5"
+        className="max-w-md space-y-3 admin-card p-5"
       >
         <h2 className="font-display text-xl">Ndrysho fjalëkalimin</h2>
         <label className="block text-sm">

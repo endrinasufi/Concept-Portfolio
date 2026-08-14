@@ -60,7 +60,7 @@ export function SiteLogoSettings() {
   }
 
   return (
-    <section className="max-w-xl space-y-4 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+    <section className="max-w-xl space-y-4 admin-card p-5">
       <div>
         <h2 className="text-sm font-medium uppercase tracking-wider text-muted">
           Logo e headerit

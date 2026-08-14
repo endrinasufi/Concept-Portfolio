@@ -279,7 +279,7 @@ export function MigrationTool() {
           type="button"
           disabled={busy}
           onClick={() => void analyze()}
-          className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-surface-elevated disabled:opacity-50"
+          className="rounded-full border border-border px-4 py-2 text-sm hover:bg-white disabled:opacity-50"
         >
           Analizo IndexedDB
         </button>
@@ -287,7 +287,7 @@ export function MigrationTool() {
           type="button"
           disabled={busy}
           onClick={() => void downloadBackup()}
-          className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-surface-elevated disabled:opacity-50"
+          className="rounded-full border border-border px-4 py-2 text-sm hover:bg-white disabled:opacity-50"
         >
           Shkarko backup JSON
         </button>
@@ -295,7 +295,7 @@ export function MigrationTool() {
           type="button"
           disabled={busy}
           onClick={() => void migrate()}
-          className="rounded-lg bg-foreground px-4 py-2 text-sm text-background disabled:opacity-50"
+          className="rounded-full bg-foreground px-4 py-2 text-sm text-background disabled:opacity-50"
         >
           {busy ? "Duke migruar…" : "Fillo migrimin"}
         </button>
@@ -321,7 +321,7 @@ export function MigrationTool() {
           <p className="text-sm">
             Sukses: {okCount} · Dështime: {failed.length}
           </p>
-          <div className="max-h-80 overflow-auto rounded-lg border border-border bg-surface/40 p-3 font-mono text-xs">
+          <div className="admin-card max-h-80 overflow-auto p-3 font-mono text-xs">
             {log.map((line, i) => (
               <div
                 key={`${line.kind}-${line.id}-${i}`}
@@ -336,7 +336,7 @@ export function MigrationTool() {
               type="button"
               disabled={busy}
               onClick={() => void migrate()}
-              className="rounded-lg border border-border px-4 py-2 text-sm"
+              className="rounded-full border border-border px-4 py-2 text-sm"
             >
               Retry (ri-ekzekuto migrimin)
             </button>

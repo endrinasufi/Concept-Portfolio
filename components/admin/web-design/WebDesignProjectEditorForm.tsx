@@ -102,7 +102,7 @@ export function WebDesignProjectEditorForm({
         </div>
       </div>
 
-      <section className="space-y-4">
+      <section className="admin-card space-y-4 p-5">
         <h2 className="text-xs uppercase tracking-[0.2em] text-muted">General</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <label>
@@ -153,7 +153,7 @@ export function WebDesignProjectEditorForm({
         </div>
       </section>
 
-      <section className="space-y-4">
+      <section className="admin-card space-y-4 p-5">
         <h2 className="text-xs uppercase tracking-[0.2em] text-muted">
           Project information
         </h2>
@@ -240,7 +240,7 @@ export function WebDesignProjectEditorForm({
         </div>
       </section>
 
-      <section className="space-y-4">
+      <section className="admin-card space-y-4 p-5">
         <h2 className="text-xs uppercase tracking-[0.2em] text-muted">
           Cover (lista /web-design)
         </h2>
@@ -295,7 +295,7 @@ export function WebDesignProjectEditorForm({
         </div>
       </section>
 
-      <section className="space-y-4">
+      <section className="admin-card space-y-4 p-5">
         <h2 className="text-xs uppercase tracking-[0.2em] text-muted">
           Featured website presentation
         </h2>
@@ -305,7 +305,7 @@ export function WebDesignProjectEditorForm({
         />
       </section>
 
-      <section className="space-y-4">
+      <section className="admin-card space-y-4 p-5">
         <h2 className="text-xs uppercase tracking-[0.2em] text-muted">
           Additional screenshots
         </h2>
@@ -315,7 +315,7 @@ export function WebDesignProjectEditorForm({
         />
       </section>
 
-      <section className="space-y-4">
+      <section className="admin-card space-y-4 p-5">
         <h2 className="text-xs uppercase tracking-[0.2em] text-muted">Appearance</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <label>
@@ -369,7 +369,7 @@ export function WebDesignProjectEditorForm({
         </div>
       </section>
 
-      <section className="space-y-4">
+      <section className="admin-card space-y-4 p-5">
         <h2 className="text-xs uppercase tracking-[0.2em] text-muted">SEO</h2>
         <label>
           <span className={label}>Meta title</span>

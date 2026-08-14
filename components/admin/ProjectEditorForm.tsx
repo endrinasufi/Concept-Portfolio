@@ -149,7 +149,7 @@ export function ProjectEditorForm({
         <p className="rounded-lg border border-border bg-surface px-3 py-2 text-sm">{message}</p>
       ) : null}
 
-      <section className="space-y-4 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="space-y-4 admin-card p-5">
         <h2 className="text-sm font-medium uppercase tracking-wider text-muted">Meta</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block text-xs text-muted sm:col-span-2">
@@ -299,7 +299,7 @@ export function ProjectEditorForm({
         </div>
       </section>
 
-      <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="admin-card p-5">
         <BentoMediaEditor
           logoMediaId={form.logoMediaId}
           mockupMediaId={form.mockupMediaId}
@@ -326,7 +326,7 @@ export function ProjectEditorForm({
         />
       </section>
 
-      <section className="space-y-4 rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="space-y-4 admin-card p-5">
         <h2 className="text-sm font-medium uppercase tracking-wider text-muted">SEO</h2>
         <label className="block text-xs text-muted">
           Meta title
@@ -347,14 +347,14 @@ export function ProjectEditorForm({
         </label>
       </section>
 
-      <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="admin-card p-5">
         <ColorManager
           colors={form.brandColors}
           onChange={(brandColors: BrandColor[]) => patch({ brandColors })}
         />
       </section>
 
-      <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="admin-card p-5">
         <GalleryManager
           rows={form.galleryRows ?? []}
           onChange={(galleryRows: GalleryRow[]) =>
@@ -366,7 +366,7 @@ export function ProjectEditorForm({
         />
       </section>
 
-      <section className="rounded-[var(--radius-lg)] border border-border bg-surface/40 p-5">
+      <section className="admin-card p-5">
         <ProjectVideoEditor
           videoMediaId={form.videoMediaId}
           onChange={(videoMediaId) => patch({ videoMediaId })}

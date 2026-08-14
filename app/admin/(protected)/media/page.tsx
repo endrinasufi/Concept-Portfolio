@@ -66,7 +66,7 @@ export default function AdminMediaPage() {
           {items.map((item) => (
             <div
               key={item.id}
-              className="overflow-hidden rounded-lg border border-border bg-surface/50"
+              className="admin-card overflow-hidden"
             >
               <MediaImage
                 mediaId={item.id}

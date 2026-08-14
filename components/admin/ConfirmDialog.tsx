@@ -20,7 +20,7 @@ export function ConfirmDialog({
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-[var(--radius-lg)] border border-border bg-surface p-6 shadow-2xl">
+      <div className="admin-card w-full max-w-md p-6">
         <h3 className="font-display text-xl">{title}</h3>
         <p className="mt-2 text-sm text-muted">{message}</p>
         <div className="mt-6 flex justify-end gap-3">

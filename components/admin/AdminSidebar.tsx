@@ -64,7 +64,7 @@ export function AdminSidebar({ userEmail }: { userEmail?: string }) {
               href={item.href}
               className={`flex items-center gap-3 rounded-full px-3 py-2.5 text-sm transition ${
                 active
-                  ? "bg-[#1a1a1a] text-white"
+                  ? "bg-foreground text-white"
                   : "text-muted hover:bg-white/50 hover:text-foreground"
               }`}
             >
