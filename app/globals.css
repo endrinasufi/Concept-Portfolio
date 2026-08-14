@@ -102,9 +102,11 @@ img {
   color: var(--foreground);
   background-color: #cfd4da;
   background-image:
+    radial-gradient(rgba(26, 26, 26, 0.12) 1px, transparent 1px),
     radial-gradient(1100px 720px at 92% 78%, #fff6d6 0%, transparent 58%),
     radial-gradient(820px 520px at 6% 8%, #d5dbe3 0%, transparent 52%),
     linear-gradient(165deg, #c8d0d8 0%, #e6e2da 48%, #f7f1e4 100%);
+  background-size: 18px 18px, auto, auto, auto;
 }
 
 .admin-ui .admin-serif {

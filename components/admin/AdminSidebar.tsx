@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { AdminBrandLogo } from "@/components/admin/AdminBrandLogo";
 import {
   LayoutDashboard,
+  BarChart3,
   Palette,
   Share2,
   Monitor,
@@ -19,6 +21,7 @@ import {
 
 const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/analytics", label: "Analitika", icon: BarChart3 },
   { href: "/admin/branding", label: "Branding", icon: Palette },
   { href: "/admin/social-media", label: "Social Media", icon: Share2 },
   { href: "/admin/web-design", label: "Web Design", icon: Monitor },
@@ -29,7 +32,7 @@ const nav = [
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
-export function AdminSidebar({ userEmail }: { userEmail?: string }) {
+export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -44,13 +47,10 @@ export function AdminSidebar({ userEmail }: { userEmail?: string }) {
 
   return (
     <aside className="flex w-60 shrink-0 flex-col">
-      <div className="px-5 py-6">
-        <p className="inline-flex rounded-full border border-[#1a1a1a]/20 px-4 py-1.5 text-sm font-semibold tracking-tight">
-          CMA
-        </p>
-        {userEmail ? (
-          <p className="mt-3 truncate text-xs text-muted">{userEmail}</p>
-        ) : null}
+      <div className="px-3 pt-6 pb-11">
+        <div className="flex min-h-8 items-center px-3 pl-5">
+          <AdminBrandLogo height={50} />
+        </div>
       </div>
       <nav className="flex flex-1 flex-col gap-1 px-3">
         {nav.map((item) => {

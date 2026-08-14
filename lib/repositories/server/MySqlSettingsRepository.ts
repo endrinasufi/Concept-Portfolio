@@ -43,6 +43,12 @@ export class MySqlSettingsRepository {
     if ("logoMediaId" in patch && !patch.logoMediaId) {
       delete next.logoMediaId;
     }
+    if ("logoDarkMediaId" in patch && !patch.logoDarkMediaId) {
+      delete next.logoDarkMediaId;
+    }
+    if ("adminLogoMediaId" in patch && !patch.adminLogoMediaId) {
+      delete next.adminLogoMediaId;
+    }
     await execute(
       `INSERT INTO site_settings (id, data_json, updated_at)
        VALUES ('site', :data_json, :updated_at)

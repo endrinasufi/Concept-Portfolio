@@ -2,8 +2,23 @@ import { createHash } from "node:crypto";
 import { createId } from "@/lib/utils/id";
 import { execute, query, type RowDataPacket } from "@/lib/server/db";
 import { getAuthSecret } from "@/lib/server/auth/constants";
+import { resolveGeo } from "@/lib/server/analytics-geo";
+import {
+  parseReferrerHost,
+  parseUserAgent,
+} from "@/lib/server/analytics-ua";
 
 let tableReady = false;
+
+const EXTRA_COLUMNS: { name: string; ddl: string }[] = [
+  { name: "country_code", ddl: "VARCHAR(2) NULL" },
+  { name: "city", ddl: "VARCHAR(80) NULL" },
+  { name: "referrer_host", ddl: "VARCHAR(255) NULL" },
+  { name: "device", ddl: "VARCHAR(16) NULL" },
+  { name: "browser", ddl: "VARCHAR(40) NULL" },
+  { name: "os", ddl: "VARCHAR(40) NULL" },
+  { name: "language", ddl: "VARCHAR(16) NULL" },
+];
 
 export async function ensureAnalyticsTable(): Promise<void> {
   if (tableReady) return;
@@ -13,11 +28,49 @@ export async function ensureAnalyticsTable(): Promise<void> {
       path VARCHAR(500) NOT NULL,
       visitor_hash CHAR(64) NOT NULL,
       created_at DATETIME(3) NOT NULL,
+      country_code VARCHAR(2) NULL,
+      city VARCHAR(80) NULL,
+      referrer_host VARCHAR(255) NULL,
+      device VARCHAR(16) NULL,
+      browser VARCHAR(40) NULL,
+      os VARCHAR(40) NULL,
+      language VARCHAR(16) NULL,
       INDEX idx_views_created (created_at),
       INDEX idx_views_path (path(191)),
-      INDEX idx_views_visitor_day (visitor_hash, created_at)
+      INDEX idx_views_visitor_day (visitor_hash, created_at),
+      INDEX idx_views_country (country_code),
+      INDEX idx_views_device (device)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
+
+  const existing = await query<(RowDataPacket & { COLUMN_NAME: string })[]>(
+    `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'page_views'`,
+  );
+  const have = new Set(existing.map((row) => row.COLUMN_NAME));
+  for (const col of EXTRA_COLUMNS) {
+    if (have.has(col.name)) continue;
+    try {
+      await execute(`ALTER TABLE page_views ADD COLUMN ${col.name} ${col.ddl}`);
+    } catch (err) {
+      const code = (err as { errno?: number }).errno;
+      if (code !== 1060) throw err;
+    }
+  }
+
+  try {
+    await execute("CREATE INDEX idx_views_country ON page_views (country_code)");
+  } catch (err) {
+    const code = (err as { errno?: number }).errno;
+    if (code !== 1061) throw err;
+  }
+  try {
+    await execute("CREATE INDEX idx_views_device ON page_views (device)");
+  } catch (err) {
+    const code = (err as { errno?: number }).errno;
+    if (code !== 1061) throw err;
+  }
+
   tableReady = true;
 }
 
@@ -50,20 +103,42 @@ export async function recordPageView(opts: {
   path: string;
   ip: string;
   userAgent: string;
+  referrer?: string;
+  language?: string;
+  headers: Headers;
+  host?: string;
 }): Promise<void> {
   const path = normalizePath(opts.path);
   if (!path) return;
   if (isBotUserAgent(opts.userAgent)) return;
   await ensureAnalyticsTable();
+
+  const ua = parseUserAgent(opts.userAgent);
+  const referrerHost = parseReferrerHost(opts.referrer, opts.host || "");
+  const geo = await resolveGeo(opts.ip, opts.headers);
+  const language = (opts.language || "").trim().slice(0, 16) || null;
   const now = new Date().toISOString().slice(0, 23).replace("T", " ");
+
   await execute(
-    `INSERT INTO page_views (id, path, visitor_hash, created_at)
-     VALUES (:id, :path, :visitor_hash, :created_at)`,
+    `INSERT INTO page_views (
+       id, path, visitor_hash, created_at,
+       country_code, city, referrer_host, device, browser, os, language
+     ) VALUES (
+       :id, :path, :visitor_hash, :created_at,
+       :country_code, :city, :referrer_host, :device, :browser, :os, :language
+     )`,
     {
       id: createId(),
       path,
       visitor_hash: hashVisitor(opts.ip || "unknown", opts.userAgent || ""),
       created_at: now,
+      country_code: geo?.countryCode || null,
+      city: geo?.city || null,
+      referrer_host: referrerHost,
+      device: ua.device,
+      browser: ua.browser,
+      os: ua.os,
+      language,
     },
   );
 }
@@ -83,12 +158,16 @@ interface PathRow extends RowDataPacket {
   views: number | string;
 }
 
-function n(value: number | string | null | undefined): number {
+export function n(value: number | string | null | undefined): number {
   return Number(value ?? 0);
 }
 
 function dayKey(d: Date): string {
   return d.toISOString().slice(0, 10);
+}
+
+export function fmtSqlDate(d: Date): string {
+  return d.toISOString().slice(0, 19).replace("T", " ");
 }
 
 export interface AnalyticsSummary {
@@ -116,28 +195,26 @@ export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
   const weekStart = new Date(todayStart);
   weekStart.setUTCDate(weekStart.getUTCDate() - 6);
 
-  const fmt = (d: Date) => d.toISOString().slice(0, 19).replace("T", " ");
-
   const [todayViews] = await query<CountRow[]>(
     `SELECT COUNT(*) AS n FROM page_views WHERE created_at >= :from`,
-    { from: fmt(todayStart) },
+    { from: fmtSqlDate(todayStart) },
   );
   const [todayVisitors] = await query<CountRow[]>(
     `SELECT COUNT(DISTINCT visitor_hash) AS n FROM page_views WHERE created_at >= :from`,
-    { from: fmt(todayStart) },
+    { from: fmtSqlDate(todayStart) },
   );
   const [yesterdayViews] = await query<CountRow[]>(
     `SELECT COUNT(*) AS n FROM page_views
      WHERE created_at >= :from AND created_at < :to`,
-    { from: fmt(yesterdayStart), to: fmt(todayStart) },
+    { from: fmtSqlDate(yesterdayStart), to: fmtSqlDate(todayStart) },
   );
   const [monthViews] = await query<CountRow[]>(
     `SELECT COUNT(*) AS n FROM page_views WHERE created_at >= :from`,
-    { from: fmt(monthStart) },
+    { from: fmtSqlDate(monthStart) },
   );
   const [monthVisitors] = await query<CountRow[]>(
     `SELECT COUNT(DISTINCT visitor_hash) AS n FROM page_views WHERE created_at >= :from`,
-    { from: fmt(monthStart) },
+    { from: fmtSqlDate(monthStart) },
   );
 
   const weekRows = await query<DayRow[]>(
@@ -148,7 +225,7 @@ export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
      WHERE created_at >= :from
      GROUP BY DATE(created_at)
      ORDER BY day ASC`,
-    { from: fmt(weekStart) },
+    { from: fmtSqlDate(weekStart) },
   );
 
   const byDay = new Map(
@@ -180,7 +257,7 @@ export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
        GROUP BY path
        ORDER BY views DESC
        LIMIT 5`,
-      { from: fmt(monthStart) },
+      { from: fmtSqlDate(monthStart) },
     )
   ).map((row) => ({ path: row.path, views: n(row.views) }));
 

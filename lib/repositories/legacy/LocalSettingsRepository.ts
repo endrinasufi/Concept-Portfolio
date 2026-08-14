@@ -32,6 +32,12 @@ export class LocalSettingsRepository {
     if ("logoMediaId" in patch && !patch.logoMediaId) {
       delete next.logoMediaId;
     }
+    if ("logoDarkMediaId" in patch && !patch.logoDarkMediaId) {
+      delete next.logoDarkMediaId;
+    }
+    if ("adminLogoMediaId" in patch && !patch.adminLogoMediaId) {
+      delete next.adminLogoMediaId;
+    }
     await db.settings.put(next);
     return next;
   }

@@ -7,6 +7,8 @@ export interface ClientLogo {
 export interface SiteSettings {
   id: "site";
   logoMediaId?: string;
+  logoDarkMediaId?: string;
+  adminLogoMediaId?: string;
   clientLogos: ClientLogo[];
   updatedAt: string;
 }

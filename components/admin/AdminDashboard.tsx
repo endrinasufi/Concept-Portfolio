@@ -386,9 +386,17 @@ export function AdminDashboard() {
               <p className="text-sm font-medium">Vizita javore</p>
               <p className="mt-1 text-xs text-muted">7 ditët e fundit</p>
             </div>
-            <p className="text-2xl font-semibold tracking-tight">
-              {analytics ? analytics.week.reduce((s, d) => s + d.views, 0) : "…"}
-            </p>
+            <div className="text-right">
+              <p className="text-2xl font-semibold tracking-tight">
+                {analytics ? analytics.week.reduce((s, d) => s + d.views, 0) : "…"}
+              </p>
+              <Link
+                href="/admin/analytics"
+                className="text-xs text-muted hover:text-foreground"
+              >
+                Analitika →
+              </Link>
+            </div>
           </div>
           <div className="mt-4">
             <WeekBars week={week} />
@@ -482,10 +490,10 @@ export function AdminDashboard() {
               {publishedRatio}% e projekteve janë live
             </div>
             <Link
-              href="/"
+              href="/admin/analytics"
               className="inline-flex items-center gap-1 text-sm font-medium text-white"
             >
-              Hap faqen <ArrowUpRight size={14} />
+              Analitika <ArrowUpRight size={14} />
             </Link>
           </div>
         </section>

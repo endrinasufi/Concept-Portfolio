@@ -46,6 +46,54 @@ function applyPose(el: HTMLElement, pose: CardPose, visible = 1) {
   });
 }
 
+function lockHomeScroll() {
+  const html = document.documentElement;
+  const body = document.body;
+  const prev = {
+    htmlOverflow: html.style.overflow,
+    bodyOverflow: body.style.overflow,
+    htmlOverscroll: html.style.overscrollBehavior,
+    bodyOverscroll: body.style.overscrollBehavior,
+  };
+
+  html.style.overflow = "hidden";
+  body.style.overflow = "hidden";
+  html.style.overscrollBehavior = "none";
+  body.style.overscrollBehavior = "none";
+  window.scrollTo(0, 0);
+
+  const block = (event: Event) => {
+    event.preventDefault();
+  };
+  const blockKeys = (event: KeyboardEvent) => {
+    if (
+      event.key === "ArrowDown" ||
+      event.key === "ArrowUp" ||
+      event.key === "PageDown" ||
+      event.key === "PageUp" ||
+      event.key === " " ||
+      event.key === "Home" ||
+      event.key === "End"
+    ) {
+      event.preventDefault();
+    }
+  };
+
+  window.addEventListener("wheel", block, { passive: false, capture: true });
+  window.addEventListener("touchmove", block, { passive: false, capture: true });
+  window.addEventListener("keydown", blockKeys, { capture: true });
+
+  return () => {
+    html.style.overflow = prev.htmlOverflow;
+    body.style.overflow = prev.bodyOverflow;
+    html.style.overscrollBehavior = prev.htmlOverscroll;
+    body.style.overscrollBehavior = prev.bodyOverscroll;
+    window.removeEventListener("wheel", block, { capture: true });
+    window.removeEventListener("touchmove", block, { capture: true });
+    window.removeEventListener("keydown", blockKeys, { capture: true });
+  };
+}
+
 import type { Project } from "@/types/branding";
 import type { SocialMediaProject } from "@/types/social-media";
 import type { VideoProductionItem } from "@/types/video-production";
@@ -213,6 +261,8 @@ export function HomeScrollExperience({
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     gsap.registerPlugin(ScrollTrigger);
 
+    let unlockScroll: (() => void) | undefined;
+
     const ctx = gsap.context(() => {
       const section = scrollSectionRef.current;
       const pin = pinRef.current;
@@ -281,6 +331,8 @@ export function HomeScrollExperience({
         }
         return;
       }
+
+      unlockScroll = lockHomeScroll();
 
       brandingEls.forEach((el, i) => {
         applyPose(el, pile[Math.min(i, early - 1)] ?? pile[0], 0);
@@ -611,6 +663,9 @@ export function HomeScrollExperience({
           setActiveTitle(socialEls, -1);
           setActiveTitle(webEls, -1);
           gsap.set(stage, { x: 0, y: 0, opacity: 1, force3D: true });
+          window.scrollTo(0, 0);
+          unlockScroll?.();
+          unlockScroll = undefined;
           scrollTl.progress(0, false);
           scrollTl.scrollTrigger?.enable();
           ScrollTrigger.refresh();
@@ -913,6 +968,9 @@ export function HomeScrollExperience({
           opacity: 1,
           force3D: true,
         });
+        window.scrollTo(0, 0);
+        unlockScroll?.();
+        unlockScroll = undefined;
         scrollTl.progress(0, false);
         scrollTl.scrollTrigger?.enable();
         ScrollTrigger.refresh();
@@ -922,6 +980,7 @@ export function HomeScrollExperience({
     }, scrollSectionRef);
 
     return () => {
+      unlockScroll?.();
       ctx.revert();
     };
   }, [

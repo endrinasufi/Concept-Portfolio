@@ -72,7 +72,16 @@ CREATE TABLE IF NOT EXISTS page_views (
   path VARCHAR(500) NOT NULL,
   visitor_hash CHAR(64) NOT NULL,
   created_at DATETIME(3) NOT NULL,
+  country_code VARCHAR(2) NULL,
+  city VARCHAR(80) NULL,
+  referrer_host VARCHAR(255) NULL,
+  device VARCHAR(16) NULL,
+  browser VARCHAR(40) NULL,
+  os VARCHAR(40) NULL,
+  language VARCHAR(16) NULL,
   INDEX idx_views_created (created_at),
   INDEX idx_views_path (path(191)),
-  INDEX idx_views_visitor_day (visitor_hash, created_at)
+  INDEX idx_views_visitor_day (visitor_hash, created_at),
+  INDEX idx_views_country (country_code),
+  INDEX idx_views_device (device)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -43,8 +43,7 @@ export default function AdminSettingsPage() {
       <div>
         <h1 className="font-display text-3xl">Settings</h1>
         <p className="mt-2 max-w-lg text-muted">
-          Logo e site-it, logo klientësh dhe fjalëkalimi i adminit. Të dhënat
-          ruhen në MySQL (prod).
+          Logo e bardhë, logo e zezë, logo e dashboard-it, logo klientësh dhe fjalëkalimi.
         </p>
       </div>
 

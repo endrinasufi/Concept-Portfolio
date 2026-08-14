@@ -38,34 +38,38 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
   return (
     <form onSubmit={onSubmit} className="mt-8 space-y-4">
       <label className="block text-sm">
-        <span className="text-muted">Email</span>
+        <span className="text-[11px] uppercase tracking-[0.16em] text-muted">
+          Email
+        </span>
         <input
           type="email"
           required
           autoComplete="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
+          className="mt-1.5 w-full rounded-2xl border border-border bg-white px-4 py-3"
         />
       </label>
       <label className="block text-sm">
-        <span className="text-muted">Fjalëkalimi</span>
+        <span className="text-[11px] uppercase tracking-[0.16em] text-muted">
+          Fjalëkalimi
+        </span>
         <input
           type="password"
           required
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
+          className="mt-1.5 w-full rounded-2xl border border-border bg-white px-4 py-3"
         />
       </label>
       {error ? <p className="text-sm text-red-500">{error}</p> : null}
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-full bg-foreground px-4 py-2.5 text-sm font-medium text-background disabled:opacity-60"
+        className="mt-2 w-full rounded-full bg-foreground px-4 py-3 text-sm font-medium text-background disabled:opacity-60"
       >
-        {loading ? "Duke hyrë…" : "Hyr"}
+        {loading ? "Duke hyrë…" : "Hyr në CMS"}
       </button>
     </form>
   );
