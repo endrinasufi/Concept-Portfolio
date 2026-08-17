@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useMediaUrl } from "@/lib/hooks/useMediaUrl";
 import { useSiteSettings } from "@/lib/hooks/useSiteSettings";
 import { Inter } from "next/font/google";
+import { Menu, X } from "lucide-react";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 
@@ -62,6 +63,7 @@ export function SiteHeader() {
   const isAdmin = pathname?.startsWith("/admin");
   const isLightPage = Boolean(pathname?.startsWith("/social-media/"));
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -71,6 +73,19 @@ export function SiteHeader() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [menuOpen]);
 
   if (isAdmin) return null;
 
@@ -117,7 +132,7 @@ export function SiteHeader() {
             "linear-gradient(to bottom, #000 0%, transparent 38%)",
         }}
       />
-      <div className="pointer-events-auto relative mx-auto box-border flex w-full max-w-7xl items-center justify-between px-5 pt-[var(--header-top)] pb-3 md:px-8">
+      <div className="pointer-events-auto relative z-10 mx-auto box-border flex w-full max-w-7xl items-center justify-between px-5 pt-[var(--header-top)] pb-3 md:px-8">
         <div
           className="box-border flex w-max shrink-0 grow-0 items-center"
           style={{
@@ -173,7 +188,7 @@ export function SiteHeader() {
             href={SITE}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center rounded-full px-5 py-[7px] text-[14px] font-medium transition"
+            className="hidden items-center rounded-full px-5 py-[7px] text-[14px] font-medium transition md:inline-flex"
             style={
               isLightPage
                 ? { background: "#171717", color: "#ffffff" }
@@ -185,8 +200,111 @@ export function SiteHeader() {
               <PortfolioArrow />
             </span>
           </a>
+
+          <button
+            type="button"
+            className="inline-flex h-11 w-11 items-center justify-center md:hidden"
+            style={{
+              ...stroke,
+              background: isLightPage ? "rgba(255,255,255,0.72)" : "transparent",
+            }}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+            aria-label={menuOpen ? "Mbyll menunë" : "Hap menunë"}
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            {menuOpen ? <X size={18} strokeWidth={1.8} /> : <Menu size={18} strokeWidth={1.8} />}
+          </button>
         </div>
       </div>
+
+      {menuOpen ? (
+        <div
+          id="mobile-nav"
+          className="pointer-events-auto fixed inset-0 z-[1] flex flex-col md:hidden"
+          style={{
+            background: isLightPage
+              ? "linear-gradient(180deg, #F3F1ED 0%, #EAEAEA 100%)"
+              : "linear-gradient(180deg, #121214 0%, #0a0a0b 100%)",
+            color: isLightPage ? "#171717" : "#f2efe8",
+            paddingTop: "calc(var(--header-top) + var(--header-h) + 1.25rem)",
+          }}
+        >
+          <nav
+            className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 pt-6"
+            aria-label="Mobile"
+          >
+            {navLinks.map((link, i) => {
+              const active = isActive(pathname, link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="flex items-center justify-between gap-4 py-3.5"
+                  style={{
+                    color: "inherit",
+                    borderBottom: isLightPage
+                      ? "0.5px solid rgba(0,0,0,0.1)"
+                      : "0.5px solid rgba(255,255,255,0.1)",
+                    opacity: active ? 1 : 0.55,
+                  }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span
+                    className="text-[22px] font-light tracking-[-0.02em]"
+                    style={{ fontWeight: active ? 500 : 300 }}
+                  >
+                    {link.label}
+                  </span>
+                  <span
+                    className="text-[11px] tabular-nums tracking-[0.16em]"
+                    style={{
+                      opacity: 0.45,
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div
+            className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5"
+            style={{
+              borderTop: isLightPage
+                ? "0.5px solid rgba(0,0,0,0.1)"
+                : "0.5px solid rgba(255,255,255,0.1)",
+            }}
+          >
+            <a
+              href={SITE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center rounded-full px-5 py-3.5 text-[14px] font-medium"
+              style={
+                isLightPage
+                  ? {
+                      background: "#171717",
+                      color: "#ffffff",
+                      boxShadow: "0 10px 28px rgba(23,23,23,0.18)",
+                    }
+                  : {
+                      background: "#ffffff",
+                      color: "#171717",
+                      boxShadow: "0 10px 28px rgba(0,0,0,0.28)",
+                    }
+              }
+              onClick={() => setMenuOpen(false)}
+            >
+              <span>Visit Website</span>
+              <span className="ml-[5px] inline-block">
+                <PortfolioArrow />
+              </span>
+            </a>
+          </div>
+        </div>
+      ) : null}
     </header>
   );
 }

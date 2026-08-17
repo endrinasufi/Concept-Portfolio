@@ -324,12 +324,13 @@ export function deckMobileStack(
     }));
   }
 
-  // Branding — tufë vertikale e mbivendosur, e çrregullt, e qendruar
+  // Branding — tufë vertikale e mbivendosur, karta katrore
   const xs = [4, -26, 20, -12, 28, -6, 14];
   const rots = [-3.6, 5.2, -2.2, 4.2, -4.6, 2.4, -1.4];
-  const peek = Math.round(Math.min(48, h * 0.125));
-  const stackH = h + Math.max(0, total - 1) * peek;
-  const y0 = -stackH / 2 + h / 2;
+  const square = w;
+  const peek = Math.round(Math.min(48, square * 0.125));
+  const stackH = square + Math.max(0, total - 1) * peek;
+  const y0 = -stackH / 2 + square / 2;
   return Array.from({ length: total }, (_, i) => ({
     x: xs[i % xs.length],
     y: y0 + i * peek,

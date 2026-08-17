@@ -1,5 +1,9 @@
 import type { BrandingProject } from "@/types/branding";
 import { SEED_COVERS } from "@/lib/data/seed";
+import {
+  MOSAIC_PHOTO_COUNT,
+  normalizeMosaicMediaIds,
+} from "@/lib/branding/mosaicLayout";
 
 export type ProjectPhoto = {
   mediaId?: string;
@@ -23,6 +27,10 @@ export function collectProjectPhotos(project: BrandingProject): ProjectPhoto[] {
     if (seen.has(key)) return;
     seen.add(key);
     out.push({ mediaId: mid, imageUrl: url });
+  }
+
+  for (const id of project.mosaicMediaIds ?? []) {
+    add(id);
   }
 
   add(project.coverMediaId);
@@ -66,4 +74,21 @@ export function collectProjectPhotos(project: BrandingProject): ProjectPhoto[] {
   if (seed?.cover) add(undefined, seed.cover);
 
   return out;
+}
+
+/** 7 slotet e mosaikut — pozicioni ruhet edhe nëse një slot është bosh. */
+export function getMosaicPhotos(
+  project: BrandingProject,
+): (ProjectPhoto | null)[] {
+  if (Array.isArray(project.mosaicMediaIds)) {
+    return normalizeMosaicMediaIds(project.mosaicMediaIds).map((id) =>
+      id ? { mediaId: id } : null,
+    );
+  }
+
+  const collected = collectProjectPhotos(project).slice(0, MOSAIC_PHOTO_COUNT);
+  return Array.from(
+    { length: MOSAIC_PHOTO_COUNT },
+    (_, i) => collected[i] ?? null,
+  );
 }

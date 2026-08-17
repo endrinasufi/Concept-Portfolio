@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ScrollArtCard } from "@/components/home/ScrollArtCard";
+import { ClientLogosBand } from "@/components/home/ClientLogosBand";
 import { SITE_CATEGORIES } from "@/lib/data/categories";
 import { collectCategoryCards } from "@/lib/home/collectHomeCards";
 import {
@@ -1029,6 +1030,7 @@ export function HomeScrollExperience({
   const cardW = cardWidth(vw);
   const cardH = cardHeight(vw);
   const mobile = isMobileHome(vw);
+  const brandingH = mobile ? cardW : cardH;
 
   const heroHeadline = (
     <h1
@@ -1124,7 +1126,7 @@ export function HomeScrollExperience({
                     }}
                     card={card}
                     width={cardW}
-                    height={cardH}
+                    height={brandingH}
                     showInlineTitle={mobile}
                   />
                 ))}
@@ -1242,6 +1244,8 @@ export function HomeScrollExperience({
           </div>
         </div>
       </section>
+
+      <ClientLogosBand logos={sortByOrder(settings.clientLogos ?? [])} />
 
       {/* Bridge into rest of site */}
       <section

@@ -8,9 +8,12 @@ import type {
 import { ColorManager } from "./ColorManager";
 import { GalleryManager } from "./GalleryManager";
 import { BentoMediaEditor } from "./BentoMediaEditor";
+import { MosaicPhotosEditor } from "./MosaicPhotosEditor";
 import { ProjectVideoEditor } from "./ProjectVideoEditor";
 import { slugify } from "@/lib/utils/id";
 import { flattenGalleryRows, getGalleryRows } from "@/lib/utils/galleryRows";
+import { collectProjectPhotos } from "@/lib/utils/projectPhotos";
+import { normalizeMosaicMediaIds } from "@/lib/branding/mosaicLayout";
 import Link from "next/link";
 import { ExternalLink, Save } from "lucide-react";
 import { useState } from "react";
@@ -44,6 +47,7 @@ export function emptyProjectForm(): ProjectFormValue {
     coverStat2Value: "",
     coverStat2Label: "",
     aboutPuzzleMediaIds: ["", "", ""],
+    mosaicMediaIds: ["", "", "", "", "", "", ""],
     brandColors: [
       { id: crypto.randomUUID(), hex: "#D4A574", order: 0 },
       { id: crypto.randomUUID(), hex: "#1A1A1A", order: 1 },
@@ -73,6 +77,13 @@ export function ProjectEditorForm({
   const [form, setForm] = useState<ProjectFormValue>(() => ({
     ...initial,
     galleryRows: getGalleryRows(initial),
+    mosaicMediaIds: initial.mosaicMediaIds?.some((id) => id?.trim())
+      ? normalizeMosaicMediaIds(initial.mosaicMediaIds)
+      : normalizeMosaicMediaIds(
+          collectProjectPhotos(initial as BrandingProject).map(
+            (p) => p.mediaId ?? "",
+          ),
+        ),
   }));
   const [servicesRaw, setServicesRaw] = useState(initial.services.join(", "));
   const [message, setMessage] = useState<string | null>(null);
@@ -101,6 +112,7 @@ export function ProjectEditorForm({
         items: row.items.map((g, j) => ({ ...g, order: j })),
       })),
       gallery: flattenGalleryRows(form.galleryRows ?? []),
+      mosaicMediaIds: normalizeMosaicMediaIds(form.mosaicMediaIds),
     };
     if (payload.brandColors.length < 2 || payload.brandColors.length > 5) {
       setMessage("Paleta duhet të ketë 2–5 ngjyra.");
@@ -323,6 +335,17 @@ export function ProjectEditorForm({
             .map((s) => s.trim())
             .filter(Boolean)}
           onChange={(media) => patch(media)}
+        />
+      </section>
+
+      <section className="admin-card p-5">
+        <MosaicPhotosEditor
+          mediaIds={form.mosaicMediaIds}
+          logoMediaId={form.logoMediaId}
+          logoBackgroundColor={form.logoBackgroundColor}
+          title={form.title}
+          sourceProject={form as BrandingProject}
+          onChange={(mosaicMediaIds) => patch({ mosaicMediaIds })}
         />
       </section>
 

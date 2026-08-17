@@ -360,7 +360,10 @@ function TrendChart({
   const x = (i: number) =>
     pad.l + (points.length <= 1 ? innerW / 2 : (i / (points.length - 1)) * innerW);
   const y = (v: number) => pad.t + innerH - (v / max) * innerH;
-  const ticks = [0, 0.5, 1].map((t) => Math.round(max * t));
+  const topTick = Math.max(1, Math.round(max));
+  const midTick = Math.round(topTick / 2);
+  const ticks =
+    midTick === 0 || midTick === topTick ? [0, topTick] : [0, midTick, topTick];
 
   function line(
     get: (p: AnalyticsPoint) => number,
@@ -413,24 +416,26 @@ function TrendChart({
         </div>
       ) : null}
       <div className="relative h-[16rem] w-full md:h-[20rem]">
-        {ticks.map((tick) => (
-          <span
-            key={`yt-${tick}`}
-            className="pointer-events-none absolute left-0 -translate-y-1/2 text-[10px] leading-none text-muted tabular-nums"
-            style={{ top: `${(y(tick) / h) * 100}%` }}
-          >
-            {fmt(tick)}
-          </span>
-        ))}
+        <div className="pointer-events-none absolute inset-0">
+          {ticks.map((tick, i) => (
+            <span
+              key={i}
+              className="absolute left-0 -translate-y-1/2 text-[10px] leading-none text-muted tabular-nums"
+              style={{ top: `${(y(tick) / h) * 100}%` }}
+            >
+              {fmt(tick)}
+            </span>
+          ))}
+        </div>
         <svg
           viewBox={`0 0 ${w} ${h}`}
           preserveAspectRatio="none"
           className="absolute inset-0 h-full w-full"
           aria-hidden
         >
-          {ticks.map((tick) => (
+          {ticks.map((tick, i) => (
             <line
-              key={`gl-${tick}`}
+              key={i}
               x1={pad.l}
               x2={w - pad.r}
               y1={y(tick)}
@@ -506,15 +511,17 @@ function TrendChart({
             />
           </>
         ) : null}
-        {labels.map((i) => (
-          <span
-            key={points[i]?.date ?? i}
-            className="pointer-events-none absolute bottom-0 -translate-x-1/2 text-[10px] leading-none text-muted"
-            style={{ left: `${(x(i) / w) * 100}%` }}
-          >
-            {points[i]?.label}
-          </span>
-        ))}
+        <div className="pointer-events-none absolute inset-0">
+          {labels.map((i) => (
+            <span
+              key={i}
+              className="absolute bottom-0 -translate-x-1/2 text-[10px] leading-none text-muted"
+              style={{ left: `${(x(i) / w) * 100}%` }}
+            >
+              {points[i]?.label}
+            </span>
+          ))}
+        </div>
         <div
           className="absolute"
           style={{
@@ -528,7 +535,7 @@ function TrendChart({
           <div className="flex h-full">
             {points.map((p, i) => (
               <button
-                key={p.date}
+                key={i}
                 type="button"
                 aria-label={`${p.label}: ${p.views} shikime, ${p.visitors} vizitorë`}
                 className="h-full min-w-0 flex-1 cursor-crosshair bg-transparent"

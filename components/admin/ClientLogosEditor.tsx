@@ -78,7 +78,7 @@ export function ClientLogosEditor() {
           Logo klientësh
         </h2>
         <p className="mt-0.5 text-[11px] text-muted">
-          Logot shfaqen si katrorë në homepage grid.
+          Logot shfaqen poshtë kartave të Web Design në homepage.
         </p>
       </div>
 

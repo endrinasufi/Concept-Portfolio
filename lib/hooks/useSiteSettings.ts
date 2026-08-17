@@ -32,6 +32,8 @@ export function useSiteSettings(options?: {
       try {
         const next = await getSettingsRepository().get();
         if (!cancelled) setSettings(next);
+      } catch {
+        /* public pages still render with defaults */
       } finally {
         if (!cancelled) setLoading(false);
       }

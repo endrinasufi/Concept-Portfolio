@@ -10,8 +10,6 @@ import { isAdminRole } from "@/lib/permissions";
 import type { SiteSettings } from "@/types/settings";
 
 export async function GET() {
-  const session = await requireApiSession();
-  if (isErrorResponse(session)) return session;
   return NextResponse.json(await getServerSettingsRepository().get());
 }
 

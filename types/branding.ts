@@ -95,6 +95,8 @@ export interface BrandingProject {
   secondaryBackgroundColor?: string;
   /** 3 foto për bllokun puzzle poshtë hero (tekst + mosaic) */
   aboutPuzzleMediaIds?: string[];
+  /** 7 foto të mosaikut (logoja vjen nga logoMediaId) */
+  mosaicMediaIds?: string[];
   /** Video opsionale e projektit (upload) — shfaqet në fund */
   videoMediaId?: string;
   brandColors: BrandColor[];
