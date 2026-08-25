@@ -33,15 +33,15 @@ export function PhotoshootingList() {
 
   async function remove(id: string, title: string) {
     const ok = await confirm(
-      "Fshi projektin?",
-      `“${title}” do të fshihet nga Photoshooting.`,
+      "Delete project?",
+      `“${title}” will be deleted from Photoshooting.`,
     );
     if (!ok) return;
     await getPhotoshootingRepository().delete(id);
     await refresh();
   }
 
-  if (loading) return <p className="text-muted">Duke ngarkuar…</p>;
+  if (loading) return <p className="text-muted">Loading…</p>;
 
   return (
     <div>
@@ -50,14 +50,14 @@ export function PhotoshootingList() {
         <div>
           <h1 className="text-3xl">Photoshooting</h1>
           <p className="mt-1 text-sm text-muted">
-            Projekte me grid bento — vetëm foto.
+            Bento grid projects — photos only.
           </p>
         </div>
         <Link
           href="/admin/photoshooting/new"
           className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
         >
-          <Plus size={16} /> Projekt i ri
+          <Plus size={16} /> New project
         </Link>
       </div>
 
@@ -82,7 +82,7 @@ export function PhotoshootingList() {
                 </span>
               </div>
               <p className="mt-0.5 text-sm text-muted">
-                {project.clientName} · {project.cells.length} qeliza · /
+                {project.clientName} · {project.cells.length} cells · /
                 {project.slug}
               </p>
             </div>
@@ -91,21 +91,21 @@ export function PhotoshootingList() {
                 href={`/photoshooting/${project.slug}`}
                 className="rounded-full border border-border px-3 py-1.5 text-xs text-muted hover:text-foreground"
               >
-                Shiko
+                View
               </Link>
               <button
                 type="button"
                 onClick={() => router.push(`/admin/photoshooting/${project.id}`)}
                 className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs text-muted hover:text-foreground"
               >
-                <Pencil size={12} /> Ndrysho
+                <Pencil size={12} /> Edit
               </button>
               <button
                 type="button"
                 onClick={() => void remove(project.id, project.title)}
                 className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs text-red-300/80 hover:text-red-200"
               >
-                <Trash2 size={12} /> Fshi
+                <Trash2 size={12} /> Delete
               </button>
             </div>
           </div>

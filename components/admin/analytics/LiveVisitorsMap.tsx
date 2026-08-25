@@ -16,7 +16,7 @@ import {
 } from "@/lib/analytics/mapZoom";
 import type { AnalyticsRankRow } from "@/types/analytics";
 
-const nf = new Intl.NumberFormat("sq-AL");
+const nf = new Intl.NumberFormat("en-US");
 const WORLD_VB = parseViewBox(WORLD_MAP_VIEWBOX);
 const ZOOM_MS = 480;
 
@@ -107,9 +107,9 @@ export function LiveVisitorsMap({
     <section className="admin-card overflow-hidden p-5">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-sm font-medium">Vizitorë live</p>
+          <p className="text-sm font-medium">Live visitors</p>
           <p className="mt-0.5 text-xs text-muted">
-            5 minutat e fundit · kliko shtetin për zoom
+            Last 5 minutes · click a country to zoom
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -120,7 +120,7 @@ export function LiveVisitorsMap({
               className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs text-muted transition hover:text-foreground"
             >
               <Globe size={13} />
-              Shfaq botën
+              Show world
             </button>
           ) : null}
           <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs text-muted">
@@ -128,7 +128,7 @@ export function LiveVisitorsMap({
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
-            {nf.format(realtime)} aktivë tani
+            {nf.format(realtime)} active now
           </span>
         </div>
       </div>
@@ -139,7 +139,7 @@ export function LiveVisitorsMap({
             viewBox={viewBox}
             className="h-[min(22rem,46vw)] w-full"
             role="img"
-            aria-label="Harta e vizitorëve live sipas shtetit"
+            aria-label="Live visitors map by country"
             onMouseLeave={() => setHover(null)}
           >
             {WORLD_MAP_PATHS.map((path, i) => {
@@ -178,7 +178,7 @@ export function LiveVisitorsMap({
               <p className="text-[11px] text-white/55">{active.label}</p>
               <p className="text-sm">
                 {nf.format(active.visitors)}{" "}
-                {active.visitors === 1 ? "vizitor" : "vizitorë"}
+                {active.visitors === 1 ? "visitor" : "visitors"}
               </p>
             </div>
           ) : null}
@@ -187,7 +187,7 @@ export function LiveVisitorsMap({
         <ul className="space-y-2.5 lg:col-span-4">
           {listed.length === 0 ? (
             <li className="py-8 text-sm text-muted">
-              Nuk ka vizitorë live për momentin.
+              No live visitors at the moment.
             </li>
           ) : (
             listed.map((row) => {

@@ -28,7 +28,7 @@ export function ColorPills({
           : "h-auto w-full min-h-[4.5rem] flex-row gap-2.5"
       } ${className}`}
       role="list"
-      aria-label="Paleta e markës"
+      aria-label="Brand palette"
     >
       {sorted.map((c) => (
         <div

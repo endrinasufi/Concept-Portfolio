@@ -45,7 +45,7 @@ export function WebDesignMediaSlot({
           <>
             <ImagePlus size={16} className="text-[#1a1a1a]/65" />
             <span className="mt-1 text-[11px] font-semibold leading-none text-[#1a1a1a]">
-              Ngarko
+              Upload
             </span>
             <span className="mt-1 px-1 text-[10px] leading-tight text-muted">
               {width} × {height}
@@ -70,7 +70,7 @@ export function WebDesignMediaSlot({
               onClear();
             }}
             className="absolute right-1 top-1 rounded-md border border-red-500/30 bg-white/90 p-1 text-red-500 opacity-0 transition group-hover:opacity-100"
-            aria-label={`Hiq ${title}`}
+            aria-label={`Remove ${title}`}
           >
             <Trash2 size={11} />
           </button>

@@ -6,6 +6,7 @@ import {
   revalidatePublicPaths,
 } from "@/lib/server/api";
 import { getServerWebDesignRepository } from "@/lib/repositories/server";
+import { enrichNestedSeo } from "@/lib/seo/enrich";
 
 export async function GET(request: Request) {
   const session = await requireApiSession();
@@ -21,9 +22,8 @@ export async function POST(request: Request) {
   const session = await requireApiSession();
   if (isErrorResponse(session)) return session;
   try {
-    const created = await getServerWebDesignRepository().create(
-      await request.json(),
-    );
+    const body = await enrichNestedSeo(await request.json(), "web-design");
+    const created = await getServerWebDesignRepository().create(body);
     revalidatePublicPaths([`/web-design/${created.slug}`]);
     return NextResponse.json(created, { status: 201 });
   } catch (err) {

@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   const limit = checkLoginRateLimit(ip);
   if (!limit.ok) {
     return NextResponse.json(
-      { error: `Shumë tentativa. Provo përsëri pas ${limit.retryAfterSec}s.` },
+      { error: `Too many attempts. Try again in ${limit.retryAfterSec}s.` },
       { status: 429 },
     );
   }
@@ -26,14 +26,14 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "JSON i pavlefshëm" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
   const email = body.email?.trim().toLowerCase();
   const password = body.password ?? "";
   if (!email || !password) {
     return NextResponse.json(
-      { error: "Email dhe fjalëkalimi janë të detyrueshëm" },
+      { error: "Email and password are required" },
       { status: 400 },
     );
   }
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     await bootstrapAdminIfNeeded();
   } catch (err) {
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Bootstrap dështoi" },
+      { error: err instanceof Error ? err.message : "Bootstrap failed" },
       { status: 500 },
     );
   }
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
   const user = await findUserByEmail(email);
   if (!user || !verifyPassword(password, user.password_hash)) {
     return NextResponse.json(
-      { error: "Email ose fjalëkalim i gabuar" },
+      { error: "Invalid email or password" },
       { status: 401 },
     );
   }

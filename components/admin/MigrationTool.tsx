@@ -64,7 +64,7 @@ export function MigrationTool() {
       setError(
         err instanceof Error
           ? err.message
-          : "Nuk u lexua IndexedDB (hap në të njëjtin browser ku ke të dhënat).",
+          : "Could not read IndexedDB (open in the same browser where your data is).",
       );
     }
   }, []);
@@ -95,7 +95,7 @@ export function MigrationTool() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Backup dështoi");
+      setError(err instanceof Error ? err.message : "Backup failed");
     } finally {
       setBusy(false);
     }
@@ -123,7 +123,7 @@ export function MigrationTool() {
             kind: "media",
             id: meta.id,
             ok: false,
-            message: "Mungon blob",
+            message: "Missing blob",
           });
           continue;
         }
@@ -254,7 +254,7 @@ export function MigrationTool() {
 
       await analyze();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Migrimi dështoi");
+      setError(err instanceof Error ? err.message : "Migration failed");
     } finally {
       setBusy(false);
     }
@@ -266,11 +266,12 @@ export function MigrationTool() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl">Migrim IndexedDB → MySQL</h1>
+        <h1 className="text-3xl">IndexedDB → MySQL migration</h1>
         <p className="mt-2 max-w-2xl text-sm text-muted">
-          Lexon bazën lokale <code>cma-portfolio-v1</code>, bën backup JSON, pastaj
-          ngarkon media + projekte në server (UPSERT, ID të ruajtura). IndexedDB{" "}
-          <strong>nuk fshihet</strong> automatikisht.
+          Reads the local <code>cma-portfolio-v1</code> database, creates a JSON
+          backup, then uploads media + projects to the server (UPSERT, IDs
+          preserved). IndexedDB is{" "}
+          <strong>not deleted</strong> automatically.
         </p>
       </div>
 
@@ -281,7 +282,7 @@ export function MigrationTool() {
           onClick={() => void analyze()}
           className="rounded-full border border-border px-4 py-2 text-sm hover:bg-white disabled:opacity-50"
         >
-          Analizo IndexedDB
+          Analyze IndexedDB
         </button>
         <button
           type="button"
@@ -289,7 +290,7 @@ export function MigrationTool() {
           onClick={() => void downloadBackup()}
           className="rounded-full border border-border px-4 py-2 text-sm hover:bg-white disabled:opacity-50"
         >
-          Shkarko backup JSON
+          Download JSON backup
         </button>
         <button
           type="button"
@@ -297,7 +298,7 @@ export function MigrationTool() {
           onClick={() => void migrate()}
           className="rounded-full bg-foreground px-4 py-2 text-sm text-background disabled:opacity-50"
         >
-          {busy ? "Duke migruar…" : "Fillo migrimin"}
+          {busy ? "Migrating…" : "Start migration"}
         </button>
       </div>
 
@@ -312,14 +313,14 @@ export function MigrationTool() {
           <li>Video: {analysis.video}</li>
           <li>Media meta: {analysis.media}</li>
           <li>Media blobs: {analysis.mediaBlobs}</li>
-          <li>Settings: {analysis.settings ? "po" : "jo"}</li>
+          <li>Settings: {analysis.settings ? "yes" : "no"}</li>
         </ul>
       ) : null}
 
       {log.length > 0 ? (
         <div className="space-y-2">
           <p className="text-sm">
-            Sukses: {okCount} · Dështime: {failed.length}
+            Success: {okCount} · Failures: {failed.length}
           </p>
           <div className="admin-card max-h-80 overflow-auto p-3 font-mono text-xs">
             {log.map((line, i) => (
@@ -338,7 +339,7 @@ export function MigrationTool() {
               onClick={() => void migrate()}
               className="rounded-full border border-border px-4 py-2 text-sm"
             >
-              Retry (ri-ekzekuto migrimin)
+              Retry (run migration again)
             </button>
           ) : null}
         </div>

@@ -37,9 +37,9 @@ export default function EditSocialMediaProjectPage({
   const { project, loading, error, refresh } = useSocialMediaProjectById(id);
   const [saving, setSaving] = useState(false);
 
-  if (loading) return <p className="text-muted">Duke ngarkuar…</p>;
+  if (loading) return <p className="text-muted">Loading…</p>;
   if (error || !project) {
-    return <p className="text-red-400">{error ?? "Projekti nuk u gjet"}</p>;
+    return <p className="text-red-400">{error ?? "Project not found"}</p>;
   }
 
   return (

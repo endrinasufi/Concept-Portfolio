@@ -6,6 +6,7 @@ import {
   revalidatePublicPaths,
 } from "@/lib/server/api";
 import { getServerProjectRepository } from "@/lib/repositories/server";
+import { enrichBrandingSeo } from "@/lib/seo/enrich";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -23,8 +24,17 @@ export async function PATCH(request: Request, ctx: Ctx) {
   if (isErrorResponse(session)) return session;
   const { id } = await ctx.params;
   try {
+    const existing = await getServerProjectRepository().getById(id);
     const patch = await request.json();
-    const updated = await getServerProjectRepository().update(id, patch);
+    const merged = await enrichBrandingSeo({
+      ...(existing ?? {}),
+      ...patch,
+    });
+    const updated = await getServerProjectRepository().update(id, {
+      ...patch,
+      metaTitle: merged.metaTitle as string | undefined,
+      metaDescription: merged.metaDescription as string | undefined,
+    });
     revalidatePublicPaths([`/branding/${updated.slug}`]);
     return NextResponse.json(updated);
   } catch (err) {

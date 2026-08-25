@@ -40,7 +40,7 @@ export function SocialMediaBlock3({
                 type="button"
                 onClick={() => scrollBy(-1)}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-900/15 bg-white/50 text-neutral-800 transition hover:bg-white"
-                aria-label="Stories e mëparshme"
+                aria-label="Previous stories"
               >
                 <ChevronLeft size={14} strokeWidth={1.5} />
               </button>
@@ -48,7 +48,7 @@ export function SocialMediaBlock3({
                 type="button"
                 onClick={() => scrollBy(1)}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-900/15 bg-white/50 text-neutral-800 transition hover:bg-white"
-                aria-label="Stories tjetër"
+                aria-label="Next stories"
               >
                 <ChevronRight size={14} strokeWidth={1.5} />
               </button>

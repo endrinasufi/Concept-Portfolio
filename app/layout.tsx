@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Fraunces, Outfit, Six_Caps } from "next/font/google";
+import { Fraunces, Inter, Six_Caps } from "next/font/google";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteFavicon } from "@/components/layout/SiteFavicon";
 import { AdminFrontDock } from "@/components/layout/AdminFrontDock";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
+import { OrganizationJsonLd } from "@/components/seo/JsonLd";
+import {
+  SITE_DEFAULT_DESCRIPTION,
+  SITE_NAME,
+  siteMetadataBase,
+} from "@/lib/seo/metadata";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -13,8 +19,8 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
@@ -27,27 +33,35 @@ const sixCaps = Six_Caps({
 });
 
 export const metadata: Metadata = {
+  metadataBase: siteMetadataBase(),
   title: {
-    default: "Concept Marketing Albania — Branding",
-    template: "%s | Concept Marketing Albania",
+    default: `${SITE_NAME} — Branding`,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "Portfolio branding nga Concept Marketing Albania. Identitete vizuale, sisteme marke dhe drejtim artistik.",
+  description: SITE_DEFAULT_DESCRIPTION,
   openGraph: {
-    title: "Concept Marketing Albania — Branding",
-    description: "Portfolio branding editorial nga CMA.",
+    title: `${SITE_NAME} — Branding`,
+    description: SITE_DEFAULT_DESCRIPTION,
     type: "website",
-    locale: "sq_AL",
+    locale: "en_US",
+    siteName: SITE_NAME,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: SITE_DEFAULT_DESCRIPTION,
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="sq"
-      className={`${fraunces.variable} ${outfit.variable} ${sixCaps.variable} h-full`}
+      lang="en"
+      className={`${fraunces.variable} ${inter.variable} ${sixCaps.variable} h-full`}
     >
       <body className="min-h-full flex flex-col antialiased">
+        <OrganizationJsonLd />
         <main className="relative z-0 flex-1">{children}</main>
         <SiteFooter />
         <SiteHeader />

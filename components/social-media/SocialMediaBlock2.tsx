@@ -204,7 +204,7 @@ function ReelCard({
           onPointerDown={(e) => e.preventDefault()}
           onClick={handlePress}
           className="absolute inset-0 z-10 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-          aria-label={playing ? "Ndalo reel" : "Luaj reel"}
+          aria-label={playing ? "Pause reel" : "Play reel"}
         >
           {playing ? null : (
             <span className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 backdrop-blur-sm">
@@ -284,7 +284,7 @@ export function SocialMediaBlock2({ block2 }: { block2: Block2 }) {
                   type="button"
                   onClick={() => scrollBy(-1)}
                   className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:bg-white/10"
-                  aria-label="Reels e mëparshme"
+                  aria-label="Previous reels"
                 >
                   <ChevronLeft size={14} strokeWidth={1.5} />
                 </button>
@@ -292,7 +292,7 @@ export function SocialMediaBlock2({ block2 }: { block2: Block2 }) {
                   type="button"
                   onClick={() => scrollBy(1)}
                   className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:bg-white/10"
-                  aria-label="Reels tjetër"
+                  aria-label="Next reels"
                 >
                   <ChevronRight size={14} strokeWidth={1.5} />
                 </button>

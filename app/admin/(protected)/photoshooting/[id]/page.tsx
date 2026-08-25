@@ -21,13 +21,13 @@ export default function AdminPhotoshootingEditPage({
     if (project) setForm(project);
   }, [project]);
 
-  if (loading) return <p className="text-muted">Duke ngarkuar…</p>;
+  if (loading) return <p className="text-muted">Loading…</p>;
   if (notFound || !form) {
     return (
       <div>
-        <p className="text-muted">Projekti nuk u gjet.</p>
+        <p className="text-muted">Project not found.</p>
         <Link href="/admin/photoshooting" className="mt-4 inline-block text-accent">
-          ← Kthehu
+          ← Back
         </Link>
       </div>
     );
@@ -37,23 +37,23 @@ export default function AdminPhotoshootingEditPage({
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl">Ndrysho projektin</h1>
+          <h1 className="text-3xl">Edit project</h1>
           <p className="mt-1 text-sm text-muted">{form.clientName}</p>
         </div>
         <Link
           href={`/photoshooting/${form.slug}`}
           className="text-sm text-muted hover:text-foreground"
         >
-          Shiko faqen →
+          View page →
         </Link>
       </div>
       {saved ? (
-        <p className="mb-4 text-sm text-emerald-300">U ruajt.</p>
+        <p className="mb-4 text-sm text-emerald-300">Saved.</p>
       ) : null}
       <PhotoshootingEditorForm
         value={form}
         onChange={(next) => setForm({ ...form, ...next })}
-        submitLabel="Ruaj"
+        submitLabel="Save"
         onSubmit={async (next) => {
           await getPhotoshootingRepository().update(form.id, {
             title: next.title,

@@ -10,19 +10,19 @@ import { AdminUploadDropzone } from "./AdminUploadDropzone";
 import { uploadMedia } from "@/lib/media";
 
 const SECTION_TYPES: { type: BrandingSectionType; label: string }[] = [
-  { type: "text", label: "Tekst" },
+  { type: "text", label: "Text" },
   { type: "logo", label: "Logo" },
-  { type: "image", label: "Imazh" },
-  { type: "fullWidthImage", label: "Imazh full-width" },
+  { type: "image", label: "Image" },
+  { type: "fullWidthImage", label: "Full-width image" },
   { type: "imageGrid2", label: "Grid 2" },
   { type: "imageGrid3", label: "Grid 3" },
-  { type: "typography", label: "Tipografi" },
-  { type: "colorPalette", label: "Paleta" },
+  { type: "typography", label: "Typography" },
+  { type: "colorPalette", label: "Palette" },
   { type: "video", label: "Video" },
-  { type: "brandApplication", label: "Aplikim marke" },
+  { type: "brandApplication", label: "Brand application" },
   { type: "mockup", label: "Mockup" },
-  { type: "spacer", label: "Hapësirë" },
-  { type: "gallery", label: "Galeri seksioni" },
+  { type: "spacer", label: "Spacer" },
+  { type: "gallery", label: "Section gallery" },
 ];
 
 function Field({
@@ -69,14 +69,14 @@ function SectionEditor({
     case "text":
       return (
         <div className="space-y-2">
-          <Field label="Titulli">
+          <Field label="Title">
             <input
               className={inputClass}
               value={String(c.heading ?? "")}
               onChange={(e) => set({ heading: e.target.value })}
             />
           </Field>
-          <Field label="Teksti">
+          <Field label="Body">
             <textarea
               className={inputClass}
               rows={3}
@@ -94,13 +94,13 @@ function SectionEditor({
       return (
         <div className="space-y-2">
           <AdminUploadDropzone
-            label="Ngarko imazh"
+            label="Upload image"
             hint="JPG / PNG / WebP"
             onFiles={(files) =>
               void handleFile(files?.[0], (mediaId) => set({ mediaId }))
             }
           />
-          <Field label="ose URL e jashtme">
+          <Field label="or external URL">
             <input
               className={inputClass}
               value={String(c.imageUrl ?? "")}
@@ -148,9 +148,9 @@ function SectionEditor({
         <div className="space-y-3">
           {(["A", "B"] as const).map((key) => (
             <div key={key} className="space-y-1 rounded border border-border/60 p-2">
-              <p className="text-xs text-muted">Imazh {key}</p>
+              <p className="text-xs text-muted">Image {key}</p>
               <AdminUploadDropzone
-                label={`Ngarko imazh ${key}`}
+                label={`Upload image ${key}`}
                 className="min-h-[4.25rem] py-3"
                 onFiles={(files) =>
                   void handleFile(files?.[0], (mediaId) =>
@@ -173,9 +173,9 @@ function SectionEditor({
         <div className="space-y-3">
           {(["A", "B", "C"] as const).map((key) => (
             <div key={key} className="space-y-1 rounded border border-border/60 p-2">
-              <p className="text-xs text-muted">Imazh {key}</p>
+              <p className="text-xs text-muted">Image {key}</p>
               <AdminUploadDropzone
-                label={`Ngarko imazh ${key}`}
+                label={`Upload image ${key}`}
                 className="min-h-[4.25rem] py-3"
                 onFiles={(files) =>
                   void handleFile(files?.[0], (mediaId) =>
@@ -214,7 +214,7 @@ function SectionEditor({
       );
     case "spacer":
       return (
-        <Field label="Lartësia (px)">
+        <Field label="Height (px)">
           <input
             type="number"
             className={inputClass}
@@ -227,11 +227,11 @@ function SectionEditor({
     case "colorPalette":
       return (
         <p className="text-xs text-muted">
-          Përdor të dhënat e tipografisë / ngjyrave të projektit.
+          Uses the project typography / color data.
         </p>
       );
     default:
-      return <p className="text-xs text-muted">Nuk ka cilësime shtesë.</p>;
+      return <p className="text-xs text-muted">No extra settings.</p>;
   }
 }
 
@@ -261,8 +261,8 @@ export function SectionManager({
 
   async function remove(id: string) {
     const ok = await confirm(
-      "Fshi seksionin?",
-      "Ky veprim nuk mund të zhbëhet.",
+      "Delete section?",
+      "This action cannot be undone.",
     );
     if (!ok) return;
     onChange(
@@ -287,7 +287,7 @@ export function SectionManager({
     <div>
       {dialog}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-medium">Seksione</h3>
+        <h3 className="text-sm font-medium">Sections</h3>
         <div className="flex items-center gap-2">
           <select
             value={addType}
@@ -305,7 +305,7 @@ export function SectionManager({
             onClick={add}
             className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs"
           >
-            <Plus size={12} /> Shto seksion
+            <Plus size={12} /> Add section
           </button>
         </div>
       </div>

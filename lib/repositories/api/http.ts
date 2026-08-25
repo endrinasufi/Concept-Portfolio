@@ -42,7 +42,7 @@ export async function apiUpload<T>(
     });
   } catch {
     throw new Error(
-      "Nuk u lidh me serverin (Failed to fetch). Kontrollo që MySQL/XAMPP është ndezur dhe që npm run dev po punon.",
+      "Could not reach the server (Failed to fetch). Check that MySQL/XAMPP is running and that npm run dev is working.",
     );
   }
   return parseJson<T>(res);

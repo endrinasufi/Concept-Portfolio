@@ -6,6 +6,7 @@ import {
   revalidatePublicPaths,
 } from "@/lib/server/api";
 import { getServerWebDesignRepository } from "@/lib/repositories/server";
+import { enrichNestedSeo } from "@/lib/seo/enrich";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -23,10 +24,16 @@ export async function PATCH(request: Request, ctx: Ctx) {
   if (isErrorResponse(session)) return session;
   const { id } = await ctx.params;
   try {
-    const updated = await getServerWebDesignRepository().update(
-      id,
-      await request.json(),
+    const existing = await getServerWebDesignRepository().getById(id);
+    const patch = await request.json();
+    const merged = await enrichNestedSeo(
+      { ...(existing ?? {}), ...patch },
+      "web-design",
     );
+    const updated = await getServerWebDesignRepository().update(id, {
+      ...patch,
+      seo: merged.seo as { metaTitle?: string; metaDescription?: string },
+    });
     revalidatePublicPaths([`/web-design/${updated.slug}`]);
     return NextResponse.json(updated);
   } catch (err) {

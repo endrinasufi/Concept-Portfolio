@@ -1,3 +1,5 @@
+import "server-only";
+
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getSession, type AdminUser } from "@/lib/server/auth";

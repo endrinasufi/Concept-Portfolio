@@ -4,7 +4,7 @@ import { ImagePlus } from "lucide-react";
 import { useId, useRef, useState } from "react";
 
 export function AdminUploadDropzone({
-  label = "Ngarko",
+  label = "Upload",
   hint,
   accept = "image/*",
   multiple = false,
@@ -30,7 +30,7 @@ export function AdminUploadDropzone({
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const isDisabled = disabled || busy;
-  const text = busy ? "Duke ngarkuar…" : label;
+  const text = busy ? "Loading…" : label;
 
   function handleFiles(files: FileList | null) {
     if (isDisabled) return;

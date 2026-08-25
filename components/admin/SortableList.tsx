@@ -54,7 +54,7 @@ export function SortableItem({
               ? "absolute left-0.5 top-0.5 z-10 cursor-grab touch-none rounded border border-border/60 bg-background/90 p-0.5 text-muted shadow-sm hover:text-foreground active:cursor-grabbing"
               : "absolute left-1.5 top-1.5 z-10 cursor-grab touch-none rounded-md border border-border/60 bg-background/90 p-1 text-muted shadow-sm hover:text-foreground active:cursor-grabbing"
           }
-          aria-label="Zvarrite për të rirenditur"
+          aria-label="Drag to reorder"
           {...attributes}
           {...listeners}
         >

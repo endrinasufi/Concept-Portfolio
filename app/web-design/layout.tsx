@@ -1,17 +1,18 @@
-import { Outfit } from "next/font/google";
+import { Inter } from "next/font/google";
 
-const outfit = Outfit({
+const inter = Inter({
   variable: "--font-wd-sans",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export default function WebDesignLayout({
   children,
-}: LayoutProps<"/web-design">) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className={`${outfit.variable} [font-family:var(--font-wd-sans)]`}>
+    <div className={`${inter.variable} [font-family:var(--font-wd-sans)]`}>
       {children}
     </div>
   );

@@ -30,6 +30,8 @@ export interface PhotoshootingProject {
   order: number;
   featured: boolean;
   cells: PhotoshootingCell[];
+  metaTitle?: string;
+  metaDescription?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -161,13 +161,13 @@ function CellVisual({ cell }: { cell: PhotoshootingCell }) {
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-muted">
           <ImagePlus size={20} />
-          <span className="text-[11px]">Kliko për foto</span>
+          <span className="text-[11px]">Click for photo</span>
         </div>
       )}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition group-hover:bg-black/45 group-hover:opacity-100">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-medium text-black">
           <Upload size={12} />
-          Ndrysho foto
+          Change photo
         </span>
       </div>
     </div>
@@ -273,7 +273,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
   function applyTemplate(templateId: string) {
     if (photoCells.length > 0) {
       const ok = window.confirm(
-        "Layout-i i ri zëvendëson fotot aktuale. Vazhdon?",
+        "The new layout replaces current photos. Continue?",
       );
       if (!ok) return;
     }
@@ -330,10 +330,10 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 className="text-xs uppercase tracking-[0.2em] text-muted">
-            Grid foto
+            Photo grid
           </h2>
           <p className="mt-0.5 text-xs text-muted">
-            Kliko një foto për ta ndryshuar. Dominancë vertikale.
+            Click a photo to change it. Vertical-dominant layout.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
@@ -349,7 +349,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
           ))}
           <label className="admin-upload-btn">
             <Upload size={12} />
-            {busy ? "…" : "Shto foto"}
+            {busy ? "…" : "Add photos"}
             <input
               ref={multiFileRef}
               type="file"
@@ -384,7 +384,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
         {photoCells.length === 0 ? (
           <div className="admin-upload-empty flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-xl text-center">
             <ImagePlus size={20} className="text-muted" />
-            <p className="text-xs text-muted">Zgjidh layout ose shto foto</p>
+            <p className="text-xs text-muted">Pick a layout or add photos</p>
           </div>
         ) : (
           <div style={{ height: scaledHeight }}>
@@ -450,7 +450,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
           onClick={addPhoto}
           className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1.5 text-[11px] hover:bg-white/15"
         >
-          <ImagePlus size={12} /> Foto bosh
+          <ImagePlus size={12} /> Empty photo
         </button>
       </div>
 
@@ -458,7 +458,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
         <div className="admin-card p-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-muted">
-              Foto · {selected.colSpan}×{selected.rowSpan}
+              Photo · {selected.colSpan}×{selected.rowSpan}
             </p>
             <div className="flex items-center gap-1">
               <button
@@ -466,7 +466,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
                 disabled={selectedIndex <= 0}
                 onClick={() => moveSelected(-1)}
                 className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border disabled:opacity-30"
-                aria-label="Lëviz majtas"
+                aria-label="Move left"
               >
                 <ChevronLeft size={14} />
               </button>
@@ -477,7 +477,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
                 }
                 onClick={() => moveSelected(1)}
                 className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border disabled:opacity-30"
-                aria-label="Lëviz djathtas"
+                aria-label="Move right"
               >
                 <ChevronRight size={14} />
               </button>
@@ -486,7 +486,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
                 onClick={removeSelected}
                 className="inline-flex items-center gap-1 rounded-full border border-red-400/30 px-2 py-1 text-[11px] text-red-300/90"
               >
-                <Trash2 size={12} /> Fshi
+                <Trash2 size={12} /> Delete
               </button>
             </div>
           </div>
@@ -526,7 +526,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
               className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] hover:bg-white/5 disabled:opacity-50"
             >
               <Upload size={12} />
-              {busy ? "Duke ngarkuar…" : "Ndrysho foto"}
+              {busy ? "Loading…" : "Change photo"}
             </button>
             <input
               className="min-w-0 flex-1 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs outline-none focus:border-accent"
@@ -537,7 +537,7 @@ export function PhotoshootingVisualGridEditor({ cells, onChange }: Props) {
                   mediaId: e.target.value ? undefined : selected.mediaId,
                 })
               }
-              placeholder="ose vendos URL…"
+              placeholder="or paste a URL…"
             />
           </div>
         </div>

@@ -177,17 +177,17 @@ export function WebDesignListClient({
               Web Design
             </p>
             <h1 className="font-display mt-4 text-5xl leading-[0.92] tracking-tight md:text-6xl lg:text-7xl">
-              Projektet
+              Projects
             </h1>
           </div>
         </FadeIn>
 
         {loading ? (
-          <p className="mt-16 text-white/45">Duke ngarkuar projektet…</p>
+          <p className="mt-16 text-white/45">Loading projects…</p>
         ) : error ? (
           <p className="mt-16 text-red-400">{error}</p>
         ) : projects.length === 0 ? (
-          <p className="mt-16 text-white/45">Nuk ka projekte ende.</p>
+          <p className="mt-16 text-white/45">No projects yet.</p>
         ) : (
           <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 md:mt-16 md:grid-cols-3 md:gap-x-10 md:gap-y-16 lg:gap-x-12 lg:gap-y-20">
             {projects.map((project, i) => (

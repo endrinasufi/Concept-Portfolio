@@ -48,7 +48,7 @@ function NavArrow({
       type="button"
       onClick={onClick}
       className={`absolute ${side} z-30 p-2 text-white/45 transition-opacity duration-200 hover:text-white/90 hover:opacity-100`}
-      aria-label={dir === "prev" ? "Fotoja e mëparshme" : "Fotoja tjetër"}
+      aria-label={dir === "prev" ? "Previous photo" : "Next photo"}
     >
       <LightboxArrowIcon dir={dir} />
     </button>
@@ -66,7 +66,7 @@ function MiniPalette({ colors }: { colors: BrandColor[] }) {
     <div
       className="flex h-3.5 items-stretch gap-1"
       role="list"
-      aria-label="Paleta"
+      aria-label="Palette"
     >
       {sorted.map((c) => (
         <span
@@ -189,14 +189,14 @@ export function GalleryLightbox({
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90"
       role="dialog"
       aria-modal="true"
-      aria-label="Galeria"
+      aria-label="Gallery"
       onClick={onClose}
     >
       <button
         type="button"
         onClick={onClose}
         className="absolute right-4 top-4 z-30 rounded-full border border-white/10 bg-white/5 p-2 text-white/80 transition hover:bg-white/10 hover:text-white md:right-6 md:top-6"
-        aria-label="Mbyll"
+        aria-label="Close"
       >
         <X size={18} />
       </button>

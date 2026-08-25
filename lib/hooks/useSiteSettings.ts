@@ -2,15 +2,19 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { getSettingsRepository } from "@/lib/repositories";
-import type { SiteSettings } from "@/types/settings";
+import type {
+  PublicSiteSettings,
+  SettingsUpdatePatch,
+  SiteSettings,
+} from "@/types/settings";
 import { DEFAULT_SITE_SETTINGS } from "@/types/settings";
 
 export function useSiteSettings(options?: {
-  initial?: SiteSettings;
+  initial?: PublicSiteSettings | SiteSettings;
   enabled?: boolean;
 }) {
   const enabled = options?.enabled !== false;
-  const [settings, setSettings] = useState<SiteSettings>(
+  const [settings, setSettings] = useState<PublicSiteSettings>(
     options?.initial ?? DEFAULT_SITE_SETTINGS,
   );
   const [loading, setLoading] = useState(enabled);
@@ -43,7 +47,7 @@ export function useSiteSettings(options?: {
     };
   }, [enabled]);
 
-  const update = useCallback(async (patch: Partial<Omit<SiteSettings, "id">>) => {
+  const update = useCallback(async (patch: SettingsUpdatePatch) => {
     const next = await getSettingsRepository().update(patch);
     setSettings(next);
     return next;

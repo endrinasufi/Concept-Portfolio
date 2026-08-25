@@ -25,7 +25,7 @@ export function ContentManagersEditor() {
       cache: "no-store",
     });
     const data = (await res.json()) as { users?: ManagedUser[]; error?: string };
-    if (!res.ok) throw new Error(data.error || "Nuk u lexuan përdoruesit");
+    if (!res.ok) throw new Error(data.error || "Could not load users");
     setUsers(data.users ?? []);
   }, []);
 
@@ -36,7 +36,7 @@ export function ContentManagersEditor() {
         await refresh();
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Gabim");
+          setError(err instanceof Error ? err.message : "Error");
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -60,20 +60,20 @@ export function ContentManagersEditor() {
         body: JSON.stringify({ email, password }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
-      if (!res.ok) throw new Error(data.error || "Krijimi dështoi");
+      if (!res.ok) throw new Error(data.error || "Create failed");
       setEmail("");
       setPassword("");
-      setMessage("Content Manager u krijua.");
+      setMessage("Content Manager created.");
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gabim");
+      setError(err instanceof Error ? err.message : "Error");
     } finally {
       setBusy(false);
     }
   }
 
   async function removeUser(id: string) {
-    if (!window.confirm("Fshi këtë Content Manager?")) return;
+    if (!window.confirm("Delete this Content Manager?")) return;
     setBusy(true);
     setMessage(null);
     setError(null);
@@ -83,18 +83,18 @@ export function ContentManagersEditor() {
         credentials: "include",
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
-      if (!res.ok) throw new Error(data.error || "Fshirja dështoi");
-      setMessage("Përdoruesi u fshi.");
+      if (!res.ok) throw new Error(data.error || "Delete failed");
+      setMessage("User deleted.");
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gabim");
+      setError(err instanceof Error ? err.message : "Error");
     } finally {
       setBusy(false);
     }
   }
 
   async function resetPassword(id: string) {
-    const next = window.prompt("Fjalëkalimi i ri (min. 8 karaktere)");
+    const next = window.prompt("New password (min. 8 characters)");
     if (!next) return;
     setBusy(true);
     setMessage(null);
@@ -107,10 +107,10 @@ export function ContentManagersEditor() {
         body: JSON.stringify({ password: next }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
-      if (!res.ok) throw new Error(data.error || "Ndryshimi dështoi");
-      setMessage("Fjalëkalimi u përditësua.");
+      if (!res.ok) throw new Error(data.error || "Update failed");
+      setMessage("Password updated.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gabim");
+      setError(err instanceof Error ? err.message : "Error");
     } finally {
       setBusy(false);
     }
@@ -121,7 +121,7 @@ export function ContentManagersEditor() {
       <div>
         <h2 className="text-sm font-medium">Content Manager</h2>
         <p className="mt-0.5 text-xs text-muted">
-          Mund të menaxhojnë përmbajtjen, por jo Settings, Analitikën dhe Median.
+          Can manage content, but not Settings, Analytics, or Media.
         </p>
       </div>
 
@@ -141,7 +141,7 @@ export function ContentManagersEditor() {
           type="password"
           required
           minLength={8}
-          placeholder="Fjalëkalimi (min. 8)"
+          placeholder="Password (min. 8)"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm"
@@ -151,7 +151,7 @@ export function ContentManagersEditor() {
           disabled={busy}
           className="inline-flex items-center justify-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-xs text-background disabled:opacity-60"
         >
-          <UserPlus size={13} /> Shto
+          <UserPlus size={13} /> Add
         </button>
       </form>
 
@@ -160,9 +160,9 @@ export function ContentManagersEditor() {
 
       <ul className="space-y-2">
         {loading ? (
-          <li className="text-xs text-muted">Duke ngarkuar…</li>
+          <li className="text-xs text-muted">Loading…</li>
         ) : users.length === 0 ? (
-          <li className="text-xs text-muted">Nuk ka Content Manager ende.</li>
+          <li className="text-xs text-muted">No Content Manager yet.</li>
         ) : (
           users.map((user) => (
             <li
@@ -180,7 +180,7 @@ export function ContentManagersEditor() {
                   onClick={() => void resetPassword(user.id)}
                   className="rounded-full border border-border px-2.5 py-1 text-[11px] disabled:opacity-50"
                 >
-                  Rivendos fjalëkalimin
+                  Reset password
                 </button>
                 <button
                   type="button"
@@ -188,7 +188,7 @@ export function ContentManagersEditor() {
                   onClick={() => void removeUser(user.id)}
                   className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] disabled:opacity-50"
                 >
-                  <Trash2 size={11} /> Fshi
+                  <Trash2 size={11} /> Delete
                 </button>
               </div>
             </li>

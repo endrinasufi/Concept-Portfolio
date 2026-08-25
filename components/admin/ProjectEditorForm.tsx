@@ -43,7 +43,7 @@ export function emptyProjectForm(): ProjectFormValue {
     servicesBackgroundColor: "#1c1c20",
     coverHeadline: "",
     coverStat1Value: "",
-    coverStat1Label: "VITI",
+    coverStat1Label: "YEAR",
     coverStat2Value: "",
     coverStat2Label: "",
     aboutPuzzleMediaIds: ["", "", ""],
@@ -115,14 +115,14 @@ export function ProjectEditorForm({
       mosaicMediaIds: normalizeMosaicMediaIds(form.mosaicMediaIds),
     };
     if (payload.brandColors.length < 2 || payload.brandColors.length > 5) {
-      setMessage("Paleta duhet të ketë 2–5 ngjyra.");
+      setMessage("Palette must have 2–5 colors.");
       return;
     }
     try {
       await onSave(payload);
-      setMessage("U ruajt.");
+      setMessage("Saved.");
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Gabim në ruajtje");
+      setMessage(err instanceof Error ? err.message : "Save failed");
     }
   }
 
@@ -131,7 +131,7 @@ export function ProjectEditorForm({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl">
-            {initial.id ? "Edito projektin" : "Projekt i ri"}
+            {initial.id ? "Edit project" : "New project"}
           </h1>
           {form.slug ? (
             <p className="mt-1 text-sm text-muted">/{form.slug}</p>
@@ -152,7 +152,7 @@ export function ProjectEditorForm({
             disabled={saving}
             className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background disabled:opacity-50"
           >
-            <Save size={14} /> {saving ? "Duke ruajtur…" : "Ruaj"}
+            <Save size={14} /> {saving ? "Saving…" : "Save"}
           </button>
         </div>
       </div>
@@ -165,7 +165,7 @@ export function ProjectEditorForm({
         <h2 className="text-sm font-medium uppercase tracking-wider text-muted">Meta</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block text-xs text-muted sm:col-span-2">
-            Titulli
+            Title
             <input
               required
               className={`${inputClass} mt-1`}
@@ -189,7 +189,7 @@ export function ProjectEditorForm({
             />
           </label>
           <label className="block text-xs text-muted">
-            Klienti
+            Client
             <input
               className={`${inputClass} mt-1`}
               value={form.client}
@@ -197,7 +197,7 @@ export function ProjectEditorForm({
             />
           </label>
           <label className="block text-xs text-muted">
-            Industria
+            Industry
             <input
               className={`${inputClass} mt-1`}
               value={form.industry}
@@ -205,7 +205,7 @@ export function ProjectEditorForm({
             />
           </label>
           <label className="block text-xs text-muted">
-            Viti
+            Year
             <input
               type="number"
               className={`${inputClass} mt-1`}
@@ -214,35 +214,35 @@ export function ProjectEditorForm({
             />
           </label>
           <label className="block text-xs text-muted sm:col-span-2">
-            Përshkrim i shkurtër
+            Short description
             <textarea
               className={`${inputClass} mt-1`}
               rows={2}
               value={form.shortDescription}
               onChange={(e) => patch({ shortDescription: e.target.value })}
-              placeholder="Identitet vizual me ** fokusë bold** për theks…"
+              placeholder="Visual identity with **bold emphasis**…"
             />
             <span className="mt-1 block text-[11px] text-muted/80">
-              Për bold në mosaik: vendos fjalët mes dy yjesh, p.sh.{" "}
-              <code className="text-foreground/70">**fjalë**</code> ose{" "}
-              <code className="text-foreground/70">**disa fjalë bashkë**</code>
+              For bold in the mosaic: wrap words in double asterisks, e.g.{" "}
+              <code className="text-foreground/70">**word**</code> ose{" "}
+              <code className="text-foreground/70">**several words**</code>
             </span>
           </label>
           <label className="block text-xs text-muted sm:col-span-2">
-            Tekst shpjegues i brandit
+            Brand about text
             <textarea
               className={`${inputClass} mt-1`}
               rows={5}
               value={form.brandAbout ?? ""}
               onChange={(e) => patch({ brandAbout: e.target.value })}
-              placeholder="Shpjegim më i gjatë për markën — shfaqet poshtë fotove…"
+              placeholder="Longer brand story — shown below the photos…"
             />
             <span className="mt-1 block text-[11px] text-muted/80">
-              Shfaqet poshtë përshkrimit të shkurtër, majtas, gjerësi e plotë.
+              Shown below the short description, left-aligned, full width.
             </span>
           </label>
           <label className="block text-xs text-muted sm:col-span-2">
-            Shërbimet (ndara me presje)
+            Services (comma-separated)
             <input
               className={`${inputClass} mt-1`}
               value={servicesRaw}
@@ -250,7 +250,7 @@ export function ProjectEditorForm({
             />
           </label>
           <label className="block text-xs text-muted">
-            Sfondi 1
+            Background 1
             <div className="mt-1 flex gap-2">
               <input
                 type="color"
@@ -266,7 +266,7 @@ export function ProjectEditorForm({
             </div>
           </label>
           <label className="block text-xs text-muted">
-            Sfondi 2
+            Background 2
             <div className="mt-1 flex gap-2">
               <input
                 type="color"
@@ -398,14 +398,14 @@ export function ProjectEditorForm({
 
       <div className="flex justify-end gap-3 pb-10">
         <Link href="/admin/branding" className="rounded-full border border-border px-5 py-2 text-sm">
-          Anulo
+          Cancel
         </Link>
         <button
           type="submit"
           disabled={saving}
           className="rounded-full bg-foreground px-6 py-2 text-sm font-medium text-background disabled:opacity-50"
         >
-          {saving ? "Duke ruajtur…" : "Ruaj projektin"}
+          {saving ? "Saving…" : "Save project"}
         </button>
       </div>
     </form>

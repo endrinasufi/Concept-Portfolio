@@ -21,7 +21,7 @@ export function ClientLogosEditor() {
     if (!files?.length) return;
     const images = Array.from(files).filter((f) => f.type.startsWith("image/"));
     if (!images.length) {
-      setMessage("Ngarko imazhe (PNG, SVG, WebP, JPG).");
+      setMessage("Upload images (PNG, SVG, WebP, JPG).");
       return;
     }
 
@@ -42,11 +42,11 @@ export function ClientLogosEditor() {
       await update({ clientLogos: [...logos, ...added] });
       setMessage(
         added.length === 1
-          ? "Logo u shtua."
-          : `${added.length} logo u shtuan.`,
+          ? "Logo added."
+          : `${added.length} logos added.`,
       );
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Gabim në ngarkim");
+      setMessage(err instanceof Error ? err.message : "Upload error");
     } finally {
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -65,7 +65,7 @@ export function ClientLogosEditor() {
       } catch {
         /* ignore */
       }
-      setMessage("Logo u hoq.");
+      setMessage("Logo removed.");
     } finally {
       setBusy(false);
     }
@@ -75,10 +75,10 @@ export function ClientLogosEditor() {
     <section className="space-y-3 rounded-2xl bg-white/70 p-3">
       <div>
         <h2 className="text-[11px] font-medium uppercase tracking-wider text-muted">
-          Logo klientësh
+          Client logos
         </h2>
         <p className="mt-0.5 text-[11px] text-muted">
-          Logot shfaqen poshtë kartave të Web Design në homepage.
+          Logos appear below the Web Design cards on the homepage.
         </p>
       </div>
 
@@ -91,7 +91,7 @@ export function ClientLogosEditor() {
             >
               <MediaImage
                 mediaId={logo.mediaId}
-                alt="Logo klienti"
+                alt="Client logo"
                 fit="contain"
                 className="h-full w-full"
               />
@@ -100,7 +100,7 @@ export function ClientLogosEditor() {
                 disabled={busy}
                 onClick={() => void removeLogo(logo)}
                 className="absolute right-0.5 top-0.5 inline-flex rounded-full bg-white/90 p-1 opacity-0 transition group-hover:opacity-100 disabled:opacity-50"
-                aria-label="Hiq logon"
+                aria-label="Remove logo"
               >
                 <Trash2 size={10} />
               </button>
@@ -108,7 +108,7 @@ export function ClientLogosEditor() {
           ))}
         </ul>
       ) : (
-        <p className="text-xs text-muted">Nuk ka logo klientësh ende.</p>
+        <p className="text-xs text-muted">No client logos yet.</p>
       )}
 
       <div
@@ -143,9 +143,9 @@ export function ClientLogosEditor() {
       >
         <ImagePlus className="text-muted" size={18} />
         <p className="text-center text-xs text-foreground/85">
-          Drop logo ose kliko
+          Drop logos or click
         </p>
-        {busy ? <p className="text-[11px] text-muted">Duke ngarkuar…</p> : null}
+        {busy ? <p className="text-[11px] text-muted">Loading…</p> : null}
       </div>
 
       <button
@@ -154,7 +154,7 @@ export function ClientLogosEditor() {
         onClick={() => inputRef.current?.click()}
         className="rounded-full bg-foreground px-3 py-1 text-[11px] font-medium text-background disabled:opacity-50"
       >
-        Shto logo
+        Add logo
       </button>
 
       {message ? (

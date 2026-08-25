@@ -88,7 +88,7 @@ function ColorPickerField({
             onClick={() => onChange(hex)}
             className="h-7 w-7 rounded-full border border-border"
             style={{ backgroundColor: hex }}
-            aria-label={`Përdor ${hex}`}
+            aria-label={`Use ${hex}`}
           />
         ))}
       </div>
@@ -168,14 +168,14 @@ function Slot({
           onClick={() => inputRef.current?.click()}
           className="rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium text-black disabled:opacity-50"
         >
-          {busy ? "Duke ngarkuar…" : mediaId ? "Ndrysho" : "Ngarko"}
+          {busy ? "Loading…" : mediaId ? "Change" : "Upload"}
         </button>
         {mediaId ? (
           <button
             type="button"
             onClick={onClear}
             className="rounded-full bg-black/70 p-2 text-white"
-            aria-label={`Hiq ${label}`}
+            aria-label={`Remove ${label}`}
           >
             <Trash2 size={14} />
           </button>
@@ -203,7 +203,7 @@ export function BentoMediaEditor({
   servicesBackgroundColor = DEFAULT_PANEL,
   coverHeadline = "",
   coverStat1Value = "",
-  coverStat1Label = "VITI",
+  coverStat1Label = "YEAR",
   coverStat2Value = "",
   coverStat2Label = "",
   brandColors = [],
@@ -228,7 +228,7 @@ export function BentoMediaEditor({
   ];
 
   const previewProject = {
-    title: title || "Titulli i projektit",
+    title: title || "Project title",
     coverHeadline,
     coverStat1Value,
     coverStat1Label,
@@ -244,10 +244,10 @@ export function BentoMediaEditor({
     <div className="space-y-6">
       <div>
         <h2 className="text-sm font-medium uppercase tracking-wider text-muted">
-          Foto hero (bento)
+          Hero photos (bento)
         </h2>
         <p className="mt-1 text-xs text-muted">
-          Këto hapësira shfaqen në krye të faqes së projektit. Kliko për të ngarkuar.
+          These slots appear at the top of the project page. Click to upload.
         </p>
       </div>
 
@@ -255,7 +255,7 @@ export function BentoMediaEditor({
         <div className="flex flex-col gap-3 sm:col-span-4 lg:col-span-3">
           <Slot
             label="Logo"
-            hint="Paneli sipër majtas"
+            hint="Top-left panel"
             mediaId={logoMediaId}
             fit="contain"
             className="aspect-[4/3] min-h-0"
@@ -266,7 +266,7 @@ export function BentoMediaEditor({
           />
           <Slot
             label="Mockup"
-            hint="Paneli poshtë majtas"
+            hint="Bottom-left panel"
             mediaId={mockupMediaId}
             fit="cover"
             className="min-h-[12rem] flex-1"
@@ -313,7 +313,7 @@ export function BentoMediaEditor({
                 type="button"
                 onClick={() => onChange({ coverMediaId: undefined })}
                 className="rounded-full bg-black/70 p-2 text-white"
-                aria-label="Hiq cover"
+                aria-label="Remove cover"
               >
                 <Trash2 size={14} />
               </button>
@@ -324,20 +324,20 @@ export function BentoMediaEditor({
 
       <div className="space-y-3 rounded-[var(--radius-md)] border border-border bg-background/40 p-4">
         <h3 className="text-xs font-medium uppercase tracking-wider text-muted">
-          Teksti i cover
+          Cover text
         </h3>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block text-xs text-muted sm:col-span-2">
-            Headline (nëse bosh → titulli)
+            Headline (if empty → title)
             <input
               className={`${inputClass} mt-1`}
               value={coverHeadline}
-              placeholder={title || "Titulli i projektit"}
+              placeholder={title || "Project title"}
               onChange={(e) => onChange({ coverHeadline: e.target.value })}
             />
           </label>
           <label className="block text-xs text-muted">
-            Stat 1 — vlera
+            Stat 1 — value
             <input
               className={`${inputClass} mt-1`}
               value={coverStat1Value}
@@ -354,7 +354,7 @@ export function BentoMediaEditor({
             />
           </label>
           <label className="block text-xs text-muted">
-            Stat 2 — vlera
+            Stat 2 — value
             <input
               className={`${inputClass} mt-1`}
               value={coverStat2Value}
@@ -376,23 +376,23 @@ export function BentoMediaEditor({
 
       <div className="space-y-4 rounded-[var(--radius-md)] border border-border bg-background/40 p-4">
         <h3 className="text-xs font-medium uppercase tracking-wider text-muted">
-          Sfonde panele
+          Panel backgrounds
         </h3>
         <div className="grid gap-4 sm:grid-cols-3">
           <ColorPickerField
-            label="Sfondi i logos"
+            label="Logo background"
             value={logoBackgroundColor}
             swatches={swatches}
             onChange={(hex) => onChange({ logoBackgroundColor: hex })}
           />
           <ColorPickerField
-            label="Sfondi Industria"
+            label="Industry background"
             value={industryBackgroundColor}
             swatches={swatches}
             onChange={(hex) => onChange({ industryBackgroundColor: hex })}
           />
           <ColorPickerField
-            label="Sfondi Shërbimet"
+            label="Services background"
             value={servicesBackgroundColor}
             swatches={swatches}
             onChange={(hex) => onChange({ servicesBackgroundColor: hex })}
@@ -411,7 +411,7 @@ export function BentoMediaEditor({
               className="text-[10px] uppercase tracking-[0.2em]"
               style={{ color: mutedInk(industryBackgroundColor) }}
             >
-              Industria
+              Industry
             </p>
             <p className="mt-1">{industry || "—"}</p>
           </div>
@@ -426,7 +426,7 @@ export function BentoMediaEditor({
               className="text-[10px] uppercase tracking-[0.2em]"
               style={{ color: mutedInk(servicesBackgroundColor) }}
             >
-              Shërbimet
+              Services
             </p>
             <p className="mt-1 opacity-90">
               {services.length ? services.join(" · ") : "—"}

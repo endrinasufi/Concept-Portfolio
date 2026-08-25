@@ -23,21 +23,21 @@ export type SocialMediaProjectFormValue = Omit<
 
 export function emptySocialMediaProjectForm(): SocialMediaProjectFormValue {
   return {
-    slug: "emri-klientit",
-    title: "Emri i projektit",
-    clientName: "Emri i klientit",
+    slug: "client-name",
+    title: "Project name",
+    clientName: "Client name",
     serviceLabel: "Social Media Management",
     usernames: [
       {
         id: createId(),
-        label: "@klienti",
-        url: "https://instagram.com/klienti",
+        label: "@client",
+        url: "https://instagram.com/client",
         order: 0,
       },
       {
         id: createId(),
-        label: "@klienti",
-        url: "https://tiktok.com/@klienti",
+        label: "@client",
+        url: "https://tiktok.com/@client",
         order: 1,
       },
     ],
@@ -50,20 +50,20 @@ export function emptySocialMediaProjectForm(): SocialMediaProjectFormValue {
     block2: {
       title: "Project overview",
       audience:
-        "Përshkruaj audiencën e markës — kush janë, çfarë kërkojnë dhe ku i gjen në social media.",
+        "Describe the brand audience — who they are, what they want, and where you reach them on social media.",
       projectChallenge:
-        "Cili ishte problemi ose sfida e projektit që duhej zgjidhur me përmbajtje në rrjetet sociale.",
+        "What problem or challenge did this project need to solve with social content.",
       result:
-        "Çfarë u arrit: rritje engagement, identitet më i qartë, ose një sistem i rregullt postimesh.",
+        "What was achieved: higher engagement, clearer identity, or a steady posting system.",
       backgroundColors: ["#141018", "#2a1820", "#0a0c12"],
       grainStrength: 0.55,
       reels: [],
     },
     block3: { stories: [] },
     seo: {
-      metaTitle: "Emri i projektit — Social Media | Concept Marketing",
+      metaTitle: "Project name — Social Media | Concept Marketing",
       metaDescription:
-        "Menaxhim i rrjeteve sociale: feed, reels dhe stories për këtë markë.",
+        "Social media management: feed, reels, and stories for this brand.",
     },
   };
 }
@@ -138,10 +138,10 @@ export function SocialMediaProjectEditorForm({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl">
-            {isNew ? "Projekt Social Media i ri" : "Edito projektin"}
+            {isNew ? "New Social Media project" : "Edit project"}
           </h1>
           <p className="mt-1 text-sm text-muted">
-            3 blloqe · CMS i izoluar nga Branding
+            3 blocks · CMS isolated from Branding
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -159,7 +159,7 @@ export function SocialMediaProjectEditorForm({
             disabled={saving}
             className="rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background disabled:opacity-60"
           >
-            {saving ? "Duke ruajtur…" : "Ruaj"}
+            {saving ? "Saving…" : "Save"}
           </button>
         </div>
       </div>
@@ -289,10 +289,10 @@ export function SocialMediaProjectEditorForm({
         <div className="grid gap-5 lg:grid-cols-3 lg:gap-0">
           <div className="min-w-0 lg:border-r lg:border-[#1a1a1a]/10 lg:pr-5">
             <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted">
-              Cover (lista /social-media)
+              Cover (listing /social-media)
             </h2>
             <p className="mt-1 text-[11px] leading-snug text-muted">
-              Fotoja që shfaqet te karta e projektit në faqen e listës.
+              Image shown on the project card in the listing page.
             </p>
             <div className="mt-3">
               <WebDesignMediaSlot
@@ -324,7 +324,7 @@ export function SocialMediaProjectEditorForm({
               Block 1 — Hero
             </h2>
             <p className="mt-1 text-[11px] leading-snug text-muted">
-              Dy telefonat që shfaqen në krye të faqes së projektit.
+              The two phones shown at the top of the project page.
             </p>
             <div className="mt-3 flex flex-wrap gap-3">
               {([1, 2] as const).map((slot) => {
@@ -534,7 +534,7 @@ export function SocialMediaProjectEditorForm({
           disabled={saving}
           className="rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background disabled:opacity-60"
         >
-          {saving ? "Duke ruajtur…" : "Ruaj projektin"}
+          {saving ? "Saving…" : "Save project"}
         </button>
       </div>
     </form>

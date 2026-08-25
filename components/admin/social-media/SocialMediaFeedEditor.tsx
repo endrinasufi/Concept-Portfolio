@@ -54,12 +54,12 @@ export function SocialMediaFeedEditor({
         <div>
           <h3 className="text-sm font-medium">Feed posts</h3>
           <p className="text-xs text-muted">
-            4:5 · 9 për rresht · zvarris me ikonën ≡
+            4:5 · 9 per row · drag with the ≡ icon
           </p>
         </div>
         <AdminUploadDropzone
           variant="button"
-          label="Ngarko foto"
+          label="Upload photos"
           multiple
           onFiles={(files) => void upload(files)}
         />
@@ -86,7 +86,7 @@ export function SocialMediaFeedEditor({
                     type="button"
                     onClick={() => remove(post.id)}
                     className="absolute right-0.5 top-0.5 inline-flex rounded border border-red-500/40 bg-background/90 p-0.5 text-red-400 hover:bg-red-500/15"
-                    aria-label="Fshi"
+                    aria-label="Delete"
                   >
                     <Trash2 size={10} />
                   </button>
@@ -101,7 +101,7 @@ export function SocialMediaFeedEditor({
             </SortableItem>
           ))}
           <AdminUploadDropzone
-            label="Shto"
+            label="Add"
             hint="JPG / PNG"
             multiple
             className="aspect-[4/5] min-h-0 px-1 py-2 text-[10px]"

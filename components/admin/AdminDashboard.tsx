@@ -158,12 +158,12 @@ export function AdminDashboard() {
         const data = (await res.json()) as AnalyticsSummary & { error?: string };
         if (cancelled) return;
         if (!res.ok) {
-          setAnalyticsError(data.error || "Nuk u lexuan vizitat");
+          setAnalyticsError(data.error || "Could not load visits");
           return;
         }
         setAnalytics(data);
       } catch {
-        if (!cancelled) setAnalyticsError("Nuk u lexuan vizitat");
+        if (!cancelled) setAnalyticsError("Could not load visits");
       }
     })();
     return () => {
@@ -289,13 +289,13 @@ export function AdminDashboard() {
 
   const headerBars = [
     {
-      label: "Vizita",
+      label: "Views",
       value: todayViews,
       max: maxWeek,
       tone: "dark" as const,
     },
     {
-      label: "Unikë",
+      label: "Unique",
       value: todayVisitors,
       max: Math.max(1, todayViews),
       tone: "yellow" as const,
@@ -318,9 +318,9 @@ export function AdminDashboard() {
     <div className="space-y-5">
       <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <h1>Mirë se erdhe</h1>
+          <h1>Welcome</h1>
           <p className="mt-2 text-sm text-muted">
-            Vizitat e faqes dhe projektet e ngarkuara.
+            Site visits and uploaded projects.
           </p>
         </div>
         <div className="flex flex-1 flex-col gap-5 xl:max-w-3xl xl:flex-row xl:items-end xl:justify-end">
@@ -358,19 +358,19 @@ export function AdminDashboard() {
               <p className="text-3xl font-semibold tracking-tight">
                 {analytics ? todayViews : "…"}
               </p>
-              <p className="text-[11px] text-muted">Vizita sot</p>
+              <p className="text-[11px] text-muted">Views today</p>
             </div>
             <div>
               <p className="text-3xl font-semibold tracking-tight">
                 {analytics ? todayVisitors : "…"}
               </p>
-              <p className="text-[11px] text-muted">Unikë</p>
+              <p className="text-[11px] text-muted">Unique</p>
             </div>
             <div>
               <p className="text-3xl font-semibold tracking-tight">
                 {anyLoading ? "…" : total}
               </p>
-              <p className="text-[11px] text-muted">Projekte</p>
+              <p className="text-[11px] text-muted">Projects</p>
             </div>
           </div>
         </div>
@@ -384,8 +384,8 @@ export function AdminDashboard() {
         <section className="admin-card p-5 lg:col-span-5">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm font-medium">Vizita javore</p>
-              <p className="mt-1 text-xs text-muted">7 ditët e fundit</p>
+              <p className="text-sm font-medium">Weekly views</p>
+              <p className="mt-1 text-xs text-muted">Last 7 days</p>
             </div>
             <div className="text-right">
               <p className="text-2xl font-semibold tracking-tight">
@@ -397,7 +397,7 @@ export function AdminDashboard() {
                 href="/admin/analytics"
                 className="text-xs text-muted hover:text-foreground"
               >
-                Analitika →
+                Analytics →
               </Link>
             </div>
           </div>
@@ -407,7 +407,7 @@ export function AdminDashboard() {
         </section>
 
         <section className="admin-card flex flex-col items-center justify-center p-5 lg:col-span-3">
-          <p className="mb-2 text-sm font-medium">Vizita sot</p>
+          <p className="mb-2 text-sm font-medium">Views today</p>
           <ProgressRing
             percent={uniqueShare || (analytics ? 8 : 0)}
             center={analytics ? String(todayViews) : "…"}
@@ -415,13 +415,13 @@ export function AdminDashboard() {
           />
           <p className="mt-2 text-xs text-muted">
             {analytics
-              ? `${deltaPct(todayViews, analytics.yesterdayViews)} nga dje · ${todayVisitors} unikë`
-              : analyticsError || "Duke lexuar statistikat"}
+              ? `${deltaPct(todayViews, analytics.yesterdayViews)} vs yesterday · ${todayVisitors} unique`
+              : analyticsError || "Loading stats"}
           </p>
         </section>
 
         <section className="admin-card p-5 lg:col-span-7">
-          <p className="text-sm font-medium">Projekte të ngarkuara</p>
+          <p className="text-sm font-medium">Uploaded projects</p>
           <div className="mt-4 space-y-4">
             {services.map((s) => {
               const Icon = s.icon;
@@ -436,7 +436,7 @@ export function AdminDashboard() {
                       <div>
                         <p className="text-sm font-medium">{s.label}</p>
                         <p className="text-[11px] text-muted">
-                          {s.published} publikuar · {s.drafts} draft
+                          {s.published} published · {s.drafts} draft
                         </p>
                       </div>
                     </div>
@@ -458,7 +458,7 @@ export function AdminDashboard() {
 
         <section className="rounded-[2rem] bg-[#1a1a1a] p-5 text-white shadow-[0_12px_40px_rgba(26,26,26,0.12)] lg:col-span-5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium">Faqet më të vizituara</p>
+            <p className="text-sm font-medium">Top pages</p>
             <span className="rounded-full bg-[#FDD85D] px-2.5 py-0.5 text-[11px] font-medium text-[#1a1a1a]">
               {analytics?.topPages.length ?? 0}/8
             </span>
@@ -467,7 +467,7 @@ export function AdminDashboard() {
             {analytics ? analytics.monthVisitors : "…"}
           </p>
           <p className="text-sm text-white/50">
-            vizitorë unikë këtë muaj · {analytics?.monthViews ?? 0} views
+            unique visitors this month · {analytics?.monthViews ?? 0} views
           </p>
           <div className="mt-5 space-y-3">
             {(analytics?.topPages.length ? analytics.topPages : []).map(
@@ -495,20 +495,20 @@ export function AdminDashboard() {
             )}
             {!analytics?.topPages.length ? (
               <p className="text-sm text-white/50">
-                Vizitat fillojnë të numërohen sapo dikush hap faqen publike.
+                Visits start counting once someone opens the public site.
               </p>
             ) : null}
           </div>
           <div className="mt-6 flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs text-white/45">
               <FileEdit size={13} />
-              {publishedRatio}% e projekteve janë live
+              {publishedRatio}% of projects are live
             </div>
             <Link
               href="/admin/analytics"
               className="inline-flex items-center gap-1 text-sm font-medium text-white"
             >
-              Analitika <ArrowUpRight size={14} />
+              Analytics <ArrowUpRight size={14} />
             </Link>
           </div>
         </section>

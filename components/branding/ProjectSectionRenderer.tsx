@@ -154,7 +154,7 @@ export function ProjectSectionRenderer({
     case "colorPalette":
       return (
         <div>
-          <p className="mb-4 text-xs uppercase tracking-[0.22em] text-muted">Paleta</p>
+          <p className="mb-4 text-xs uppercase tracking-[0.22em] text-muted">Palette</p>
           <ColorPills
             colors={project.brandColors}
             orientation="horizontal"
@@ -178,7 +178,7 @@ export function ProjectSectionRenderer({
             </div>
           ) : (
             <div className="flex aspect-video items-center justify-center text-muted">
-              Nuk ka video
+              No video
             </div>
           )}
           {asString(c.caption) ? (
@@ -243,7 +243,7 @@ export function EditorialGallery({ project }: { project: BrandingProject }) {
                     setLightboxIndex(indexByItemId.get(item.id) ?? 0)
                   }
                   className="group relative aspect-[4/3] overflow-hidden rounded-[1.35rem] bg-surface text-left md:rounded-[1.6rem]"
-                  aria-label="Hap foton në lightbox"
+                  aria-label="Open photo in lightbox"
                 >
                   <MediaImage
                     mediaId={item.mediaId}

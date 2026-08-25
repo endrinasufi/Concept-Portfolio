@@ -40,7 +40,7 @@ export function PhotoshootingProjectPageClient({
   if (loading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center text-muted">
-        Duke ngarkuar…
+        Loading…
       </div>
     );
   }
@@ -56,9 +56,9 @@ export function PhotoshootingProjectPageClient({
   if (notFound || !project) {
     return (
       <div className="mx-auto max-w-xl px-5 py-24 text-center">
-        <h1 className="font-display text-3xl">Projekti nuk u gjet</h1>
+        <h1 className="font-display text-3xl">Project not found</h1>
         <Link href="/photoshooting" className="mt-8 inline-block text-accent hover:underline">
-          ← Kthehu te Photoshooting
+          ← Back to Photoshooting
         </Link>
       </div>
     );

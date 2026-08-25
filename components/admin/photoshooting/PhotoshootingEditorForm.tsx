@@ -39,7 +39,7 @@ export function PhotoshootingEditorForm({
       const asset = await uploadMedia(file);
       patch({ coverMediaId: asset.id, coverImageUrl: undefined });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Ngarkimi dështoi");
+      setError(e instanceof Error ? e.message : "Upload failed");
     } finally {
       setUploadingCover(false);
     }
@@ -48,7 +48,7 @@ export function PhotoshootingEditorForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!value.title.trim() || !value.clientName.trim()) {
-      setError("Titulli dhe klienti janë të detyrueshëm.");
+      setError("Title and client are required.");
       return;
     }
     const next = {
@@ -61,7 +61,7 @@ export function PhotoshootingEditorForm({
     try {
       await onSubmit(next);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gabim në ruajtje");
+      setError(err instanceof Error ? err.message : "Save failed");
     } finally {
       setSaving(false);
     }
@@ -70,10 +70,10 @@ export function PhotoshootingEditorForm({
   return (
     <form onSubmit={(e) => void handleSubmit(e)} className="space-y-10">
       <section className="space-y-4 admin-card p-5">
-        <h2 className="text-xs uppercase tracking-[0.2em] text-muted">Projekti</h2>
+        <h2 className="text-xs uppercase tracking-[0.2em] text-muted">Project</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
-            <span className="text-xs uppercase tracking-[0.2em] text-muted">Titulli</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-muted">Title</span>
             <input
               className="mt-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
               value={value.title}
@@ -96,7 +96,7 @@ export function PhotoshootingEditorForm({
             />
           </label>
           <label className="block">
-            <span className="text-xs uppercase tracking-[0.2em] text-muted">Klienti</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-muted">Client</span>
             <input
               className="mt-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
               value={value.clientName}
@@ -105,7 +105,7 @@ export function PhotoshootingEditorForm({
             />
           </label>
           <label className="block">
-            <span className="text-xs uppercase tracking-[0.2em] text-muted">Viti</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-muted">Year</span>
             <input
               type="number"
               className="mt-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
@@ -116,7 +116,7 @@ export function PhotoshootingEditorForm({
             />
           </label>
           <label className="block">
-            <span className="text-xs uppercase tracking-[0.2em] text-muted">Statusi</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-muted">Status</span>
             <select
               className="mt-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
               value={value.status}
@@ -130,7 +130,7 @@ export function PhotoshootingEditorForm({
           </label>
           <label className="block md:col-span-2">
             <span className="text-xs uppercase tracking-[0.2em] text-muted">
-              Përshkrim i shkurtër
+              Short description
             </span>
             <textarea
               className="mt-2 min-h-[72px] w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
@@ -154,7 +154,7 @@ export function PhotoshootingEditorForm({
               />
               <AdminUploadDropzone
                 variant="button"
-                label={uploadingCover ? "Duke ngarkuar…" : "Ngarko"}
+                label={uploadingCover ? "Loading…" : "Upload"}
                 busy={uploadingCover}
                 onFiles={(files) => void uploadCover(files?.[0])}
               />
@@ -183,7 +183,7 @@ export function PhotoshootingEditorForm({
         disabled={saving}
         className="rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background disabled:opacity-60"
       >
-        {saving ? "Duke ruajtur…" : submitLabel}
+        {saving ? "Saving…" : submitLabel}
       </button>
     </form>
   );

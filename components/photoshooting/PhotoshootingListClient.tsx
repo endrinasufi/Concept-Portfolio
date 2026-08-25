@@ -82,17 +82,17 @@ export function PhotoshootingListClient({
               Photoshooting
             </p>
             <h1 className="font-display mt-4 text-5xl leading-[0.92] tracking-tight md:text-6xl lg:text-7xl">
-              Projekte
+              Projects
             </h1>
           </div>
         </FadeIn>
 
         {loading ? (
-          <p className="mt-16 text-muted">Duke ngarkuar…</p>
+          <p className="mt-16 text-muted">Loading…</p>
         ) : error ? (
           <p className="mt-16 text-red-400">{error}</p>
         ) : projects.length === 0 ? (
-          <p className="mt-16 text-muted">Nuk ka projekte ende.</p>
+          <p className="mt-16 text-muted">No projects yet.</p>
         ) : (
           <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-14 sm:grid-cols-2 md:mt-16 md:gap-x-14 md:gap-y-20">
             {projects.map((project, i) => (

@@ -19,7 +19,7 @@ export async function DELETE(_request: Request, ctx: Ctx) {
     await deleteContentManager(id);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    return jsonError(err instanceof Error ? err.message : "Fshirja dështoi", 400);
+    return jsonError(err instanceof Error ? err.message : "Delete failed", 400);
   }
 }
 
@@ -33,7 +33,7 @@ export async function PATCH(request: Request, ctx: Ctx) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     return jsonError(
-      err instanceof Error ? err.message : "Ndryshimi dështoi",
+      err instanceof Error ? err.message : "Update failed",
       400,
     );
   }

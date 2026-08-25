@@ -7,15 +7,13 @@ import { useSiteSettings } from "@/lib/hooks/useSiteSettings";
 export function SiteFavicon() {
   const { settings } = useSiteSettings();
   const url = useMediaUrl(settings.faviconMediaId);
-  const hadCustom = useRef(false);
+  const lastHref = useRef<string | null>(null);
 
   useEffect(() => {
-    if (url) {
-      hadCustom.current = true;
-      applyIcon(url);
-      return;
-    }
-    if (hadCustom.current) applyIcon("/icon");
+    const href = url || "/icon";
+    if (lastHref.current === href) return;
+    lastHref.current = href;
+    applyIcon(href);
   }, [url]);
 
   return null;
@@ -33,6 +31,8 @@ function applyIcon(href: string) {
     return;
   }
   links.forEach((link) => {
-    link.href = href;
+    if (link.href !== href && !link.href.endsWith(href)) {
+      link.href = href;
+    }
   });
 }

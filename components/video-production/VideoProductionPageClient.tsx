@@ -105,7 +105,7 @@ function VideoLightbox({
         type="button"
         onClick={onClose}
         className="absolute right-5 top-5 text-white/50 transition hover:text-white"
-        aria-label="Mbyll"
+        aria-label="Close"
       >
         <X size={22} />
       </button>
@@ -181,7 +181,7 @@ export function VideoProductionPageClient({
   if (loading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center text-muted">
-        Duke ngarkuar…
+        Loading…
       </div>
     );
   }
@@ -191,8 +191,8 @@ export function VideoProductionPageClient({
       {filtered.length === 0 ? (
         <p className={`mt-16 text-muted ${inter.className}`}>
           {view === "social"
-            ? "Nuk ka video social media ende."
-            : "Nuk ka video production ende."}
+            ? "No social media videos yet."
+            : "No video production yet."}
         </p>
       ) : (
         <>
@@ -221,7 +221,7 @@ export function VideoProductionPageClient({
                 onClick={loadMore}
                 className={`text-sm text-muted transition hover:text-accent ${inter.className}`}
               >
-                Më shumë
+                More
               </button>
             </div>
           ) : null}

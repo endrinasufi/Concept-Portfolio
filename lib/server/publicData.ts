@@ -1,3 +1,5 @@
+import "server-only";
+
 import { getSession } from "@/lib/server/auth";
 import {
   getServerProjectRepository,
@@ -13,8 +15,12 @@ import type { SocialMediaProject } from "@/types/social-media";
 import type { WebDesignProject } from "@/types/web-design";
 import type { PhotoshootingProject } from "@/types/photoshooting";
 import type { VideoProductionItem } from "@/types/video-production";
-import type { SiteSettings } from "@/types/settings";
-import { DEFAULT_SITE_SETTINGS } from "@/types/settings";
+import {
+  DEFAULT_SITE_SETTINGS,
+  sanitizeSettingsForPublic,
+  type PublicSiteSettings,
+  type SiteSettings,
+} from "@/types/settings";
 
 async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
   try {
@@ -53,7 +59,20 @@ export async function loadPublishedVideo(): Promise<VideoProductionItem[]> {
   return safe(() => getServerVideoProductionRepository().list(), []);
 }
 
-export async function loadSiteSettings(): Promise<SiteSettings> {
+export async function loadSiteSettings(): Promise<PublicSiteSettings> {
+  return safe(
+    async () =>
+      sanitizeSettingsForPublic(await getServerSettingsRepository().get()),
+    {
+      ...DEFAULT_SITE_SETTINGS,
+      updatedAt: new Date().toISOString(),
+      hasOpenaiApiKey: false,
+    },
+  );
+}
+
+/** Vetëm server — përfshin secrets (p.sh. OpenAI). */
+export async function loadSiteSettingsRaw(): Promise<SiteSettings> {
   return safe(
     () => getServerSettingsRepository().get(),
     { ...DEFAULT_SITE_SETTINGS, updatedAt: new Date().toISOString() },

@@ -39,7 +39,7 @@ function LogoSlot({
 
   async function applyFile(file: File | undefined) {
     if (!file || !isAllowedImage(file)) {
-      setMessage("Ngarko një imazh (PNG, SVG, WebP, JPG ose ICO).");
+      setMessage("Upload an image (PNG, SVG, WebP, JPG, or ICO).");
       return;
     }
     setBusy(true);
@@ -56,10 +56,10 @@ function LogoSlot({
         }
       }
       setMessage(
-        field === "faviconMediaId" ? "Favicon u ruajt." : "Logo u ruajt.",
+        field === "faviconMediaId" ? "Favicon saved." : "Logo saved.",
       );
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Gabim në ngarkim");
+      setMessage(err instanceof Error ? err.message : "Upload error");
     } finally {
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -80,7 +80,7 @@ function LogoSlot({
         }
       }
       setMessage(
-        field === "faviconMediaId" ? "Favicon u hoq." : "Logo u hoq.",
+        field === "faviconMediaId" ? "Favicon removed." : "Logo removed.",
       );
     } finally {
       setBusy(false);
@@ -140,7 +140,7 @@ function LogoSlot({
           </>
         )}
 
-        {busy ? <p className="text-[11px] text-muted">Duke ngarkuar…</p> : null}
+        {busy ? <p className="text-[11px] text-muted">Loading…</p> : null}
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">
@@ -150,7 +150,7 @@ function LogoSlot({
           onClick={() => inputRef.current?.click()}
           className="rounded-full bg-foreground px-3 py-1 text-[11px] font-medium text-background disabled:opacity-50"
         >
-          Zgjidh
+          Choose
         </button>
         {currentId ? (
           <button
@@ -159,7 +159,7 @@ function LogoSlot({
             onClick={() => void clearLogo()}
             className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-[11px] disabled:opacity-50"
           >
-            <Trash2 size={11} /> Hiq
+            <Trash2 size={11} /> Remove
           </button>
         ) : null}
       </div>
@@ -184,27 +184,27 @@ export function SiteLogoSettings() {
     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <LogoSlot
         field="logoMediaId"
-        title="Logo e faqes (e bardhë)"
-        hint="Për faqet me sfond të errët: homepage, branding, video, etj."
-        emptyLabel="Drop logon e bardhë këtu"
+        title="Site logo (light)"
+        hint="For dark backgrounds: homepage, branding, video, etc."
+        emptyLabel="Drop the light logo here"
       />
       <LogoSlot
         field="logoDarkMediaId"
-        title="Logo e faqes (e zezë)"
-        hint="Për faqet me sfond të bardhë, p.sh. projektet e Social Media."
-        emptyLabel="Drop logon e zezë këtu"
+        title="Site logo (dark)"
+        hint="For light backgrounds, e.g. Social Media projects."
+        emptyLabel="Drop the dark logo here"
       />
       <LogoSlot
         field="adminLogoMediaId"
-        title="Logo e dashboard-it"
-        hint="Shfaqet në sidebar dhe në faqen e login-it të adminit. Nuk ndikon te faqja publike."
-        emptyLabel="Drop logon e dashboard-it këtu"
+        title="Dashboard logo"
+        hint="Shown in the sidebar and admin login page. Does not affect the public site."
+        emptyLabel="Drop the dashboard logo here"
       />
       <LogoSlot
         field="faviconMediaId"
         title="Favicon"
-        hint="Ikona e tab-it në shfletues. PNG, SVG ose ICO, 32×32 ose 64×64."
-        emptyLabel="Drop favicon këtu"
+        hint="Browser tab icon. PNG, SVG, or ICO, 32×32 or 64×64."
+        emptyLabel="Drop favicon here"
       />
     </div>
   );

@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Web Design",
-  description: "Projekte Web Design — Concept Marketing Albania.",
+  description: "Web Design projects — Concept Marketing Albania.",
 };
 
 export default async function WebDesignPage() {

@@ -25,18 +25,18 @@ import {
 } from "@/components/admin/ProjectSlideshow";
 
 const MONTHS = [
-  "jan",
-  "shk",
-  "mar",
-  "pri",
-  "maj",
-  "qer",
-  "korr",
-  "gush",
-  "sht",
-  "tet",
-  "nën",
-  "dhj",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 type FlatProject = {
@@ -339,7 +339,7 @@ export function ContentManagerDashboard() {
 
   const headerBars = [
     {
-      label: "Publikuar",
+      label: "Published",
       value: published,
       max: Math.max(1, total),
       tone: "yellow" as const,
@@ -351,7 +351,7 @@ export function ContentManagerDashboard() {
       tone: "muted" as const,
     },
     {
-      label: "Ky muaj",
+      label: "This month",
       value: addedThisMonth,
       max: Math.max(1, addedThisMonth, addedPrevMonth, 1),
       tone: "dark" as const,
@@ -368,9 +368,9 @@ export function ContentManagerDashboard() {
     <div className="space-y-5">
       <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <h1>Mirë se erdhe</h1>
+          <h1>Welcome</h1>
           <p className="mt-2 text-sm text-muted">
-            Përmbledhje e projekteve, kategorive dhe aktiviteteve të fundit.
+            Overview of projects, categories, and recent activity.
           </p>
         </div>
         <div className="flex flex-1 flex-col gap-5 xl:max-w-3xl xl:flex-row xl:items-end xl:justify-end">
@@ -408,7 +408,7 @@ export function ContentManagerDashboard() {
               <p className="text-3xl font-semibold tracking-tight">
                 {anyLoading ? "…" : published}
               </p>
-              <p className="text-[11px] text-muted">Publikuar</p>
+              <p className="text-[11px] text-muted">Published</p>
             </div>
             <div>
               <p className="text-3xl font-semibold tracking-tight">
@@ -420,7 +420,7 @@ export function ContentManagerDashboard() {
               <p className="text-3xl font-semibold tracking-tight">
                 {anyLoading ? "…" : addedThisMonth}
               </p>
-              <p className="text-[11px] text-muted">Shtuar këtë muaj</p>
+              <p className="text-[11px] text-muted">Added this month</p>
             </div>
           </div>
         </div>
@@ -434,8 +434,8 @@ export function ContentManagerDashboard() {
         <section className="admin-card p-5 lg:col-span-5">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm font-medium">Projekte të reja sipas muajit</p>
-              <p className="mt-1 text-xs text-muted">6 muajt e fundit</p>
+              <p className="text-sm font-medium">New projects by month</p>
+              <p className="mt-1 text-xs text-muted">Last 6 months</p>
             </div>
             <div className="text-right">
               <p className="text-2xl font-semibold tracking-tight">
@@ -443,8 +443,8 @@ export function ContentManagerDashboard() {
               </p>
               <p className="text-xs text-muted">
                 {addedPrevMonth > 0
-                  ? `${addedThisMonth - addedPrevMonth >= 0 ? "+" : ""}${addedThisMonth - addedPrevMonth} nga muaji kaluar`
-                  : "ky muaj"}
+                  ? `${addedThisMonth - addedPrevMonth >= 0 ? "+" : ""}${addedThisMonth - addedPrevMonth} vs last month`
+                  : "this month"}
               </p>
             </div>
           </div>
@@ -454,22 +454,22 @@ export function ContentManagerDashboard() {
         </section>
 
         <section className="admin-card flex flex-col items-center justify-center p-5 lg:col-span-3">
-          <p className="mb-2 text-sm font-medium">Statusi live</p>
+          <p className="mb-2 text-sm font-medium">Live status</p>
           <ProgressRing
             percent={publishedRatio || (anyLoading ? 0 : 8)}
             center={anyLoading ? "…" : `${publishedRatio}%`}
-            caption="publikuar"
+            caption="published"
           />
           <p className="mt-2 text-xs text-muted">
             {anyLoading
-              ? "Duke lexuar…"
+              ? "Loading…"
               : `${published} live · ${drafts} draft`}
           </p>
         </section>
 
         <section className="admin-card p-5 lg:col-span-7">
-          <p className="text-sm font-medium">Projekte sipas kategorisë</p>
-          <p className="mt-0.5 text-xs text-muted">Total / publikuar / draft</p>
+          <p className="text-sm font-medium">Projects by category</p>
+          <p className="mt-0.5 text-xs text-muted">Total / published / draft</p>
           <div className="mt-4 space-y-4">
             {services.map((s) => {
               const Icon = s.icon;
@@ -484,7 +484,7 @@ export function ContentManagerDashboard() {
                       <div>
                         <p className="text-sm font-medium">{s.label}</p>
                         <p className="text-[11px] text-muted">
-                          {s.published} publikuar · {s.drafts} draft
+                          {s.published} published · {s.drafts} draft
                         </p>
                       </div>
                     </div>
@@ -506,7 +506,7 @@ export function ContentManagerDashboard() {
 
         <section className="rounded-[2rem] bg-[#1a1a1a] p-5 text-white shadow-[0_12px_40px_rgba(26,26,26,0.12)] lg:col-span-5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium">Projektet e fundit</p>
+            <p className="text-sm font-medium">Recent projects</p>
             <span className="rounded-full bg-[#FDD85D] px-2.5 py-0.5 text-[11px] font-medium text-[#1a1a1a]">
               {Math.min(recent.length, 8)}/8
             </span>
@@ -515,7 +515,7 @@ export function ContentManagerDashboard() {
             {anyLoading ? "…" : total}
           </p>
           <p className="text-sm text-white/50">
-            projekte gjithsej · {published} live
+            projects total · {published} live
           </p>
           <div className="mt-5 space-y-3">
             {recent.map((item, i) => (
@@ -541,27 +541,27 @@ export function ContentManagerDashboard() {
                   <p className="truncate text-sm text-white/80">{item.title}</p>
                   <p className="text-[11px] text-white/40">
                     {item.service} ·{" "}
-                    {item.status === "published" ? "publikuar" : "draft"}
+                    {item.status === "published" ? "published" : "draft"}
                   </p>
                 </div>
               </Link>
             ))}
             {!recent.length ? (
               <p className="text-sm text-white/50">
-                Nuk ka projekte ende.
+                No projects yet.
               </p>
             ) : null}
           </div>
           <div className="mt-6 flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs text-white/45">
               <FileEdit size={13} />
-              {publishedRatio}% janë live
+              {publishedRatio}% are live
             </div>
             <Link
               href="/admin/branding"
               className="inline-flex items-center gap-1 text-sm font-medium text-white"
             >
-              Hap projektet <ArrowUpRight size={14} />
+              Open projects <ArrowUpRight size={14} />
             </Link>
           </div>
         </section>
@@ -570,12 +570,12 @@ export function ContentManagerDashboard() {
           <section className="admin-card p-5 lg:col-span-12">
             <div className="mb-3 flex items-end justify-between gap-3">
               <div>
-                <p className="text-sm font-medium">Draft që presin</p>
+                <p className="text-sm font-medium">Drafts waiting</p>
                 <p className="mt-0.5 text-xs text-muted">
-                  Më të vjetrit që nuk janë publikuar ende
+                  Oldest ones that are not published yet
                 </p>
               </div>
-              <span className="text-xs text-muted">{drafts} draft gjithsej</span>
+              <span className="text-xs text-muted">{drafts} drafts total</span>
             </div>
             <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {oldestDrafts.map((item) => (

@@ -16,7 +16,7 @@ export function ServiceProjectRenderer({
     default:
       return (
         <div className="mx-auto max-w-3xl px-5 py-24 text-center text-muted">
-          Ky shërbim nuk është i disponueshëm ende.
+          This service is not available yet.
         </div>
       );
   }

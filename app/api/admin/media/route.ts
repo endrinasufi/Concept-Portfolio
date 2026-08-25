@@ -27,13 +27,13 @@ export async function POST(request: Request) {
     if (!(file instanceof File)) return jsonError("file is required");
     if (file.size > 10 * 1024 * 1024) {
       return jsonError(
-        "Fotoja është mbi 10 MB (limiti i Cloudinary). Zvogëloje ose përdor JPG/WebP.",
+        "Image is over 10 MB (Cloudinary limit). Reduce the size or use JPG/WebP.",
       );
     }
     const mime = sniffMimeType(file.name, file.type);
     if (!ALLOWED_MIME.has(mime)) {
       return jsonError(
-        `Formati nuk lejohet (${mime || file.type || "i panjohur"}). Përdor JPG, PNG, WebP, GIF, SVG ose ICO.`,
+        `Format not allowed (${mime || file.type || "unknown"}). Use JPG, PNG, WebP, GIF, SVG, or ICO.`,
       );
     }
     const id = String(form.get("id") || "") || undefined;
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     const raw = errorMessage(err, "Upload failed");
     if (/file size too large/i.test(raw)) {
       return jsonError(
-        "Fotoja është shumë e madhe për Cloudinary (max 10 MB). Provo sërish — tani kompresohet automatikisht.",
+        "Image is too large for Cloudinary (max 10 MB). Try again — it is now compressed automatically.",
         400,
       );
     }

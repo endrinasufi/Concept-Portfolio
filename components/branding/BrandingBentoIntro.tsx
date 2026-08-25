@@ -66,7 +66,7 @@ export function BrandingBentoIntro({ project }: { project: BrandingProject }) {
                 className="text-xs uppercase tracking-[0.2em]"
                 style={{ color: mutedInk(industryBg) }}
               >
-                Industria
+                Industry
               </p>
               <p className="mt-2 text-lg">{project.industry}</p>
             </div>
@@ -81,7 +81,7 @@ export function BrandingBentoIntro({ project }: { project: BrandingProject }) {
                 className="text-xs uppercase tracking-[0.2em]"
                 style={{ color: mutedInk(servicesBg) }}
               >
-                Shërbimet
+                Services
               </p>
               <p className="mt-2 text-sm leading-relaxed opacity-90">
                 {project.services.join(" · ")}

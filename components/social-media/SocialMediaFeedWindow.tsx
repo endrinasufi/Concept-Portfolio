@@ -32,7 +32,7 @@ export function SocialMediaFeedWindow({
   if (!ordered.length) {
     return (
       <div className="w-full rounded-lg border border-dashed border-neutral-400/40 bg-neutral-200/30 p-8 text-center text-sm text-neutral-500 lg:ml-auto">
-        Nuk ka postime në feed. Shto nga admin.
+        No posts in the feed yet. Add them from admin.
       </div>
     );
   }
@@ -79,7 +79,7 @@ export function SocialMediaFeedWindow({
               onClick={() => move(-STEP)}
               disabled={safeOffset <= 0}
               className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-900/12 bg-white/60 text-neutral-800 transition hover:border-neutral-900/25 hover:bg-white disabled:opacity-25"
-              aria-label="Lart"
+              aria-label="Up"
             >
               <ChevronUp size={14} strokeWidth={1.5} />
             </button>
@@ -88,7 +88,7 @@ export function SocialMediaFeedWindow({
               onClick={() => move(STEP)}
               disabled={safeOffset >= maxOffset}
               className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-900/12 bg-white/60 text-neutral-800 transition hover:border-neutral-900/25 hover:bg-white disabled:opacity-25"
-              aria-label="Poshtë"
+              aria-label="Down"
             >
               <ChevronDown size={14} strokeWidth={1.5} />
             </button>
@@ -99,7 +99,7 @@ export function SocialMediaFeedWindow({
               onClick={() => move(-STEP)}
               disabled={safeOffset <= 0}
               className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-900/12 bg-white/60 text-neutral-800 transition hover:border-neutral-900/25 hover:bg-white disabled:opacity-25"
-              aria-label="Lart"
+              aria-label="Up"
             >
               <ChevronUp size={14} strokeWidth={1.5} />
             </button>
@@ -108,7 +108,7 @@ export function SocialMediaFeedWindow({
               onClick={() => move(STEP)}
               disabled={safeOffset >= maxOffset}
               className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-900/12 bg-white/60 text-neutral-800 transition hover:border-neutral-900/25 hover:bg-white disabled:opacity-25"
-              aria-label="Poshtë"
+              aria-label="Down"
             >
               <ChevronDown size={14} strokeWidth={1.5} />
             </button>

@@ -26,7 +26,7 @@ export function WebDesignProjectPageClient({
   if (loading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center bg-[#0B0B0C] text-white/40">
-        Duke ngarkuar projektin…
+        Loading project…
       </div>
     );
   }
@@ -43,18 +43,18 @@ export function WebDesignProjectPageClient({
     return (
       <div className="mx-auto max-w-xl bg-[#0B0B0C] px-5 py-24 text-center text-white">
         <h1 className="text-3xl font-extrabold tracking-[-0.04em]">
-          Projekti nuk u gjet
+          Project not found
         </h1>
         <p className="mt-3 text-white/45">
           {isPreview
-            ? "Nuk ekziston asnjë projekt web design me këtë slug."
-            : "Ky projekt nuk është publik ose nuk ekziston. Nëse është draft, hapeni me ?preview=true nga admin."}
+            ? "No web design project exists with this slug."
+            : "This project is not published or does not exist. If it is a draft, open it with ?preview=true from admin."}
         </p>
         <Link
           href="/web-design"
           className="mt-8 inline-block text-white underline underline-offset-4"
         >
-          ← Kthehu te Web Design
+          ← Back to Web Design
         </Link>
       </div>
     );

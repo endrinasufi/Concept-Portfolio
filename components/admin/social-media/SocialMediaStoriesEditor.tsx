@@ -43,7 +43,7 @@ export function SocialMediaStoriesEditor({
       }
       onChange(next.map((s, i) => ({ ...s, order: i })));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Ngarkimi i story dështoi");
+      setError(e instanceof Error ? e.message : "Story upload failed");
     } finally {
       setBusy(false);
     }
@@ -70,12 +70,12 @@ export function SocialMediaStoriesEditor({
         <div>
           <h3 className="text-sm font-medium">Stories</h3>
           <p className="text-xs text-muted">
-            9:16 · JPG/PNG/WebP · zgjidh disa skedarë njëherësh · zvarris me ≡
+            9:16 · JPG/PNG/WebP · select multiple files at once · drag with ≡
           </p>
         </div>
         <AdminUploadDropzone
           variant="button"
-          label="Ngarko stories"
+          label="Upload stories"
           multiple
           busy={busy}
           form=""
@@ -92,7 +92,7 @@ export function SocialMediaStoriesEditor({
       <SortableList ids={ordered.map((s) => s.id)} onReorder={reorder} strategy="grid">
         <div className="flex flex-wrap gap-3">
           <AdminUploadDropzone
-            label="Shto story"
+            label="Add story"
             hint="9:16"
             multiple
             busy={busy}

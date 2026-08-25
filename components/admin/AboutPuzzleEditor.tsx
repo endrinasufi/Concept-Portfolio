@@ -5,7 +5,7 @@ import { uploadMedia } from "@/lib/media";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 
-const SLOT_LABELS = ["1 — e gjatë", "2 — sipër", "3 — poshtë"];
+const SLOT_LABELS = ["1 — tall", "2 — top", "3 — bottom"];
 
 function PuzzleSlot({
   label,
@@ -56,14 +56,14 @@ function PuzzleSlot({
           onClick={() => inputRef.current?.click()}
           className="rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-medium text-black disabled:opacity-50"
         >
-          {busy ? "…" : mediaId ? "Ndrysho" : "Ngarko"}
+          {busy ? "…" : mediaId ? "Change" : "Upload"}
         </button>
         {mediaId ? (
           <button
             type="button"
             onClick={onClear}
             className="rounded-full bg-black/70 p-1.5 text-white"
-            aria-label={`Hiq ${label}`}
+            aria-label={`Remove ${label}`}
           >
             <Trash2 size={12} />
           </button>
@@ -103,10 +103,10 @@ export function AboutPuzzleEditor({
     <div>
       <div className="mb-3">
         <h2 className="text-sm font-medium uppercase tracking-wider text-muted">
-          Puzzle (tekst + 3 foto)
+          Puzzle (text + 3 photos)
         </h2>
         <p className="mt-1 text-xs text-muted">
-          Kolona djathtas e seksionit poshtë hero. Teksti vjen nga përshkrimi i shkurtër.
+          Right column of the section below the hero. Text comes from the short description.
         </p>
       </div>
 

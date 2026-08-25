@@ -35,11 +35,11 @@ export function AdminMediaView() {
         <div>
           <h1 className="text-3xl">Media</h1>
           <p className="mt-1 text-sm text-muted">
-            Imazhet ruhen në Cloudinary; metadata në MySQL.
+            Images are stored in Cloudinary; metadata in MySQL.
           </p>
         </div>
         <label className="cursor-pointer rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background">
-          Ngarko
+          Upload
           <input
             type="file"
             accept="image/*"
@@ -60,7 +60,7 @@ export function AdminMediaView() {
       </div>
 
       {loading ? (
-        <p className="text-muted">Duke ngarkuar…</p>
+        <p className="text-muted">Loading…</p>
       ) : (
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-5 md:grid-cols-7 xl:grid-cols-9">
           {items.map((item) => (
@@ -86,7 +86,7 @@ export function AdminMediaView() {
                       .then(refresh)
                   }
                 >
-                  Fshi
+                  Delete
                 </button>
               </div>
             </div>
@@ -95,7 +95,7 @@ export function AdminMediaView() {
       )}
 
       {!loading && !items.length ? (
-        <p className="text-muted">Nuk ka media të ngarkuar ende.</p>
+        <p className="text-muted">No media uploaded yet.</p>
       ) : null}
     </div>
   );

@@ -141,7 +141,7 @@ export function LiquidVideoSwitcher({ active }: { active: VideoPageView }) {
         ref={trackRef}
         className="relative flex items-center rounded-full bg-white/[0.06] p-1"
         role="tablist"
-        aria-label="Lloji i videos"
+        aria-label="Video type"
       >
         <div
           className="pointer-events-none absolute inset-0 overflow-hidden rounded-full"

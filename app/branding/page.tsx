@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Branding",
-  description: "Lista e projekteve branding nga Concept Marketing Albania.",
+  description: "Branding projects from Concept Marketing Albania.",
 };
 
 export default async function BrandingPage() {

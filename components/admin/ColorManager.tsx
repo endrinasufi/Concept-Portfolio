@@ -43,14 +43,14 @@ export function ColorManager({
   return (
     <div>
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-medium">Ngjyrat e markës (2–5)</h3>
+        <h3 className="text-sm font-medium">Brand colors (2–5)</h3>
         <button
           type="button"
           onClick={add}
           disabled={colors.length >= 5}
           className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs disabled:opacity-40"
         >
-          <Plus size={12} /> Shto
+          <Plus size={12} /> Add
         </button>
       </div>
       <SortableList ids={sorted.map((c) => c.id)} onReorder={reorder}>
@@ -75,7 +75,7 @@ export function ColorManager({
                   onClick={() => remove(c.id)}
                   disabled={colors.length <= 2}
                   className="rounded p-1.5 text-muted hover:text-red-400 disabled:opacity-30"
-                  aria-label="Fshi ngjyrën"
+                  aria-label="Delete color"
                 >
                   <Trash2 size={14} />
                 </button>
@@ -85,7 +85,7 @@ export function ColorManager({
         </div>
       </SortableList>
       {colors.length < 2 ? (
-        <p className="mt-2 text-xs text-amber-400">Shtoni të paktën 2 ngjyra.</p>
+        <p className="mt-2 text-xs text-amber-400">Add at least 2 colors.</p>
       ) : null}
     </div>
   );

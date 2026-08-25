@@ -27,7 +27,7 @@ export function AnimatedBrandPalette({
     <div
       className={`flex h-3.5 items-stretch gap-1.5 ${className}`}
       role="list"
-      aria-label="Paleta e markës"
+      aria-label="Brand palette"
       onMouseLeave={() => setHoverId(null)}
     >
       {sorted.map((c, i) => {

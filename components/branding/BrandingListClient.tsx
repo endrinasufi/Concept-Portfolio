@@ -24,7 +24,7 @@ function ColorStrip({ colors }: { colors: BrandColor[] }) {
   if (!sorted.length) return null;
 
   return (
-    <div className="flex h-2.5 w-full gap-1.5 md:h-3" aria-label="Paleta">
+    <div className="flex h-2.5 w-full gap-1.5 md:h-3" aria-label="Palette">
       {sorted.map((c, i) => (
         <motion.span
           key={c.id}
@@ -163,17 +163,17 @@ export function BrandingListClient({
               Branding
             </p>
             <h1 className="font-display mt-4 text-5xl leading-[0.92] tracking-tight md:text-6xl lg:text-7xl">
-              Projektet
+              Projects
             </h1>
           </div>
         </FadeIn>
 
         {loading ? (
-          <p className="mt-16 text-muted">Duke ngarkuar projektet…</p>
+          <p className="mt-16 text-muted">Loading projects…</p>
         ) : error ? (
           <p className="mt-16 text-red-400">{error}</p>
         ) : projects.length === 0 ? (
-          <p className="mt-16 text-muted">Nuk ka projekte ende.</p>
+          <p className="mt-16 text-muted">No projects yet.</p>
         ) : (
           <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2 md:mt-16 md:gap-x-14 md:gap-y-20 lg:gap-x-16 lg:gap-y-24">
             {projects.map((project, i) => (

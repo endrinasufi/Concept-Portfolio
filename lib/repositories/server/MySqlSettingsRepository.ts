@@ -1,6 +1,9 @@
 import {
   DEFAULT_SITE_SETTINGS,
+  normalizeContactChannels,
+  normalizeContactLocation,
   normalizeHomeFeatured,
+  type SettingsUpdatePatch,
   type SiteSettings,
 } from "@/types/settings";
 import { nowIso } from "@/lib/utils/id";
@@ -28,21 +31,47 @@ export class MySqlSettingsRepository {
       ...data,
       id: "site",
       clientLogos: data.clientLogos ?? [],
+      contactChannels: normalizeContactChannels(data.contactChannels),
+      contactLocation: normalizeContactLocation(data.contactLocation),
+      contactNotifyEmail:
+        data.contactNotifyEmail?.trim() ||
+        DEFAULT_SITE_SETTINGS.contactNotifyEmail,
       homeFeatured: normalizeHomeFeatured(data.homeFeatured),
       updatedAt: fromMysqlDateTime(row.updated_at),
     };
   }
 
-  async update(patch: Partial<Omit<SiteSettings, "id">>): Promise<SiteSettings> {
+  async update(patch: SettingsUpdatePatch): Promise<SiteSettings> {
     const current = await this.get();
     const next: SiteSettings = {
       ...current,
       ...patch,
       id: "site",
       clientLogos: patch.clientLogos ?? current.clientLogos,
+      contactChannels: normalizeContactChannels(
+        patch.contactChannels ?? current.contactChannels,
+      ),
+      contactLocation:
+        "contactLocation" in patch
+          ? normalizeContactLocation(patch.contactLocation)
+          : current.contactLocation,
+      contactNotifyEmail:
+        "contactNotifyEmail" in patch
+          ? patch.contactNotifyEmail?.trim() ||
+            DEFAULT_SITE_SETTINGS.contactNotifyEmail
+          : current.contactNotifyEmail ||
+            DEFAULT_SITE_SETTINGS.contactNotifyEmail,
       homeFeatured: normalizeHomeFeatured(
         patch.homeFeatured ?? current.homeFeatured,
       ),
+      openaiApiKey:
+        "openaiApiKey" in patch
+          ? patch.openaiApiKey || undefined
+          : current.openaiApiKey,
+      smtpPass:
+        "smtpPass" in patch
+          ? patch.smtpPass || undefined
+          : current.smtpPass,
       updatedAt: nowIso(),
     };
     if ("logoMediaId" in patch && !patch.logoMediaId) {
@@ -56,6 +85,18 @@ export class MySqlSettingsRepository {
     }
     if ("faviconMediaId" in patch && !patch.faviconMediaId) {
       delete next.faviconMediaId;
+    }
+    if ("openaiApiKey" in patch && !patch.openaiApiKey) {
+      delete next.openaiApiKey;
+    }
+    if ("smtpPass" in patch && !patch.smtpPass) {
+      delete next.smtpPass;
+    }
+    if ("openaiSeoModel" in patch && !patch.openaiSeoModel) {
+      delete next.openaiSeoModel;
+    }
+    if ("contactLocation" in patch && !next.contactLocation) {
+      delete next.contactLocation;
     }
     await execute(
       `INSERT INTO site_settings (id, data_json, updated_at)

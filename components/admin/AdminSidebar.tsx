@@ -18,12 +18,14 @@ import {
   Settings,
   ArrowLeft,
   LogOut,
+  Mail,
 } from "lucide-react";
 
 const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/homepage", label: "Homepage", icon: Home },
-  { href: "/admin/analytics", label: "Analitika", icon: BarChart3 },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/admin/contact", label: "Contact", icon: Mail },
   { href: "/admin/branding", label: "Branding", icon: Palette },
   { href: "/admin/social-media", label: "Social Media", icon: Share2 },
   { href: "/admin/web-design", label: "Web Design", icon: Monitor },
@@ -124,14 +126,14 @@ export function AdminSidebar({
           href="/"
           className="flex items-center gap-2 rounded-full px-3 py-2 text-sm text-muted hover:bg-white/50 hover:text-foreground"
         >
-          <ArrowLeft size={14} /> Faqja publike
+          <ArrowLeft size={14} /> Public site
         </Link>
         <button
           type="button"
           onClick={() => void logout()}
           className="flex w-full items-center gap-2 rounded-full px-3 py-2 text-left text-sm text-muted hover:bg-white/50 hover:text-foreground"
         >
-          <LogOut size={14} /> Dil
+          <LogOut size={14} /> Log out
         </button>
       </div>
     </aside>

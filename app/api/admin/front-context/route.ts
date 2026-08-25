@@ -34,7 +34,7 @@ async function resolveEditHref(
       if (project) {
         return {
           href: `/admin/branding/${project.id}`,
-          label: "Edito projektin",
+          label: "Edit project",
         };
       }
     }
@@ -46,7 +46,7 @@ async function resolveEditHref(
       if (project) {
         return {
           href: `/admin/social-media/${project.id}`,
-          label: "Edito projektin",
+          label: "Edit project",
         };
       }
     }
@@ -55,7 +55,7 @@ async function resolveEditHref(
       if (project) {
         return {
           href: `/admin/web-design/${project.id}`,
-          label: "Edito projektin",
+          label: "Edit project",
         };
       }
     }
@@ -67,7 +67,7 @@ async function resolveEditHref(
       if (project) {
         return {
           href: `/admin/photoshooting/${project.id}`,
-          label: "Edito projektin",
+          label: "Edit project",
         };
       }
     }

@@ -23,6 +23,7 @@ const navLinks = [
   { href: "/web-design", label: "Web Design" },
   { href: "/video-production", label: "Video" },
   { href: "/photoshooting", label: "Photoshooting" },
+  { href: "/kontakt", label: "Contact" },
 ] as const;
 
 const PILL_STROKE: CSSProperties = {
@@ -210,7 +211,7 @@ export function SiteHeader() {
             }}
             aria-expanded={menuOpen}
             aria-controls="mobile-nav"
-            aria-label={menuOpen ? "Mbyll menunë" : "Hap menunë"}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((v) => !v)}
           >
             {menuOpen ? <X size={18} strokeWidth={1.8} /> : <Menu size={18} strokeWidth={1.8} />}

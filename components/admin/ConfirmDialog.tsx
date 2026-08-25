@@ -6,7 +6,7 @@ export function ConfirmDialog({
   open,
   title,
   message,
-  confirmLabel = "Fshi",
+  confirmLabel = "Delete",
   onConfirm,
   onCancel,
 }: {
@@ -29,7 +29,7 @@ export function ConfirmDialog({
             onClick={onCancel}
             className="rounded-full border border-border px-4 py-2 text-sm"
           >
-            Anulo
+            Cancel
           </button>
           <button
             type="button"

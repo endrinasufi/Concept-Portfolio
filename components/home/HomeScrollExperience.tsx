@@ -99,14 +99,14 @@ import type { Project } from "@/types/branding";
 import type { SocialMediaProject } from "@/types/social-media";
 import type { VideoProductionItem } from "@/types/video-production";
 import type { WebDesignProject } from "@/types/web-design";
-import type { SiteSettings } from "@/types/settings";
+import type { PublicSiteSettings } from "@/types/settings";
 
 type HomeScrollExperienceProps = {
   initialBrandingProjects?: Project[];
   initialSocialProjects?: SocialMediaProject[];
   initialVideoItems?: VideoProductionItem[];
   initialWebDesignProjects?: WebDesignProject[];
-  initialSettings?: SiteSettings;
+  initialSettings?: PublicSiteSettings;
 };
 
 export function HomeScrollExperience({
@@ -171,7 +171,7 @@ export function HomeScrollExperience({
     ? (initialWebDesignProjects ?? [])
     : hookWeb.projects;
   const settings = hasServerData
-    ? (initialSettings as SiteSettings)
+    ? (initialSettings as PublicSiteSettings)
     : hookSettings.settings;
 
   const brandingLoading = hasServerData ? false : hookBranding.loading;
@@ -991,14 +991,15 @@ export function HomeScrollExperience({
       ctx.revert();
     };
   }, [
-    brandingCards,
-    socialCards,
-    webCards,
+    brandingCards.length,
+    socialCards.length,
+    webCards.length,
     brandingLoading,
     socialLoading,
     videoLoading,
     webDesignLoading,
     settingsLoading,
+    vw,
   ]);
 
   if (
@@ -1011,7 +1012,7 @@ export function HomeScrollExperience({
   ) {
     return (
       <div className="flex min-h-[100svh] items-center justify-center text-muted">
-        Duke ngarkuar…
+        Loading…
       </div>
     );
   }
@@ -1019,9 +1020,9 @@ export function HomeScrollExperience({
   if (!brandingCards.length) {
     return (
       <div className="flex min-h-[100svh] flex-col items-center justify-center gap-4 px-5 text-center">
-        <p className="text-muted">Shto projekte branding për të shfaqur kartat.</p>
+        <p className="text-muted">Add branding projects to show the cards.</p>
         <Link href="/admin" className="text-accent hover:underline">
-          Hap admin →
+          Open admin →
         </Link>
       </div>
     );
@@ -1085,13 +1086,13 @@ export function HomeScrollExperience({
                   : "text-[1.7rem] sm:text-4xl md:text-[2.65rem] lg:text-[3.05rem]"
               }`}
             >
-              Qoftë një film që kërkon ritëm
+              Whether a film that needs rhythm
               <br />
-              ose një markë që kërkon histori{" "}
-              <span className="text-[#7dccb3]">unik</span>
+              or a brand that needs a{" "}
+              <span className="text-[#7dccb3]">unique</span> story
               <br />
               <span className="text-[0.62em] font-medium text-foreground/40">
-                në video — imazh që lëviz.
+                in video — moving image.
               </span>
             </p>
           </div>
@@ -1189,11 +1190,11 @@ export function HomeScrollExperience({
                   </div>
                   <div>
                     <h3 className="font-display text-[1.05rem] leading-[1.12] tracking-tight md:text-[1.45rem]">
-                      Ku arti takon tregun
+                      Where art meets the market
                     </h3>
                     <p className="mt-2 text-[10px] leading-relaxed text-black/55 md:text-[13px]">
-                      Identitete vizuale dhe drejtim artistik për markat që duan
-                      të dallohet.
+                      Visual identities and art direction for brands that want
+                      to stand out.
                     </p>
                   </div>
                 </div>
@@ -1218,26 +1219,26 @@ export function HomeScrollExperience({
                 ref={marketLine2Ref}
                 className="font-display mt-1.5 text-[1.2rem] leading-[1.1] tracking-tight sm:mt-3 sm:text-3xl md:text-5xl"
               >
-                Shfaq, krijo dhe
+                Show, create, and
                 <br />
-                <span className="text-foreground/55">ndani historitë.</span>
+                <span className="text-foreground/55">share the stories.</span>
               </h2>
               <p
                 ref={marketLine3Ref}
                 className="mt-2 text-[11px] leading-relaxed text-muted sm:mt-4 sm:text-sm md:text-base"
               >
-                Përmbajtje dhe strategji që rritin markën në rrjete — për
-                komunitete që duan të dëgjohen.
+                Content and strategy that grow the brand on social — for
+                communities that want to be heard.
               </p>
               <div
                 ref={marketSupportRef}
                 className={`mt-3 flex flex-wrap gap-2 sm:mt-5 sm:gap-3 ${mobile ? "justify-center" : ""}`}
               >
                 <span className="rounded-full bg-foreground px-4 py-1.5 text-[10px] font-medium text-background sm:px-5 sm:py-2 sm:text-xs">
-                  Eksploro projektet
+                  Explore projects
                 </span>
                 <span className="rounded-full border border-border px-4 py-1.5 text-[10px] text-muted sm:px-5 sm:py-2 sm:text-xs">
-                  Lexo më shumë
+                  Read more
                 </span>
               </div>
             </div>
@@ -1254,7 +1255,7 @@ export function HomeScrollExperience({
       >
         <div className="mx-auto max-w-7xl">
           <h2 className="font-display max-w-3xl text-4xl leading-tight md:text-5xl">
-            Vazhdoni të eksploroni projektet tona.
+            Keep exploring our projects.
           </h2>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link

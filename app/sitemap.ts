@@ -23,12 +23,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/social-media",
     "/web-design",
     "/photoshooting",
+    "/video-production",
     "/video-production/social",
     "/video-production/production",
+    "/kontakt",
   ].map((path) => ({
     url: absoluteUrl(path || "/"),
-    changeFrequency: "weekly",
-    priority: path === "" ? 1 : 0.7,
+    changeFrequency: path === "/kontakt" ? "monthly" : "weekly",
+    priority: path === "" ? 1 : path === "/kontakt" ? 0.5 : 0.7,
   }));
 
   const dynamicRoutes: MetadataRoute.Sitemap = [

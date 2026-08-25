@@ -12,15 +12,15 @@ export default function AdminPhotoshootingNewPage() {
 
   return (
     <div>
-      <h1 className="text-3xl">Projekt i ri</h1>
+      <h1 className="text-3xl">New project</h1>
       <p className="mt-2 text-sm text-muted">
-        Krijo një photoshooting me grid bento.
+        Create a photoshooting project with a bento grid.
       </p>
       <div className="mt-8">
         <PhotoshootingEditorForm
           value={form}
           onChange={setForm}
-          submitLabel="Krijo"
+          submitLabel="Create"
           onSubmit={async (next) => {
             const created = await getPhotoshootingRepository().create(next);
             router.push(`/admin/photoshooting/${created.id}`);

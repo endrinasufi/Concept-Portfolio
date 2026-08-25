@@ -12,13 +12,13 @@ export default function AdminVideoProductionNewPage() {
 
   return (
     <div>
-      <h1 className="text-3xl">Video e re</h1>
-      <p className="mt-2 text-sm text-muted">Shto një video YouTube në portfolio.</p>
+      <h1 className="text-3xl">New video</h1>
+      <p className="mt-2 text-sm text-muted">Add a YouTube video to the portfolio.</p>
       <div className="mt-8">
         <VideoProductionEditorForm
           value={form}
           onChange={setForm}
-          submitLabel="Krijo"
+          submitLabel="Create"
           onSubmit={async (next) => {
             const created = await getVideoProductionRepository().create(next);
             router.push(`/admin/video-production/${created.id}`);

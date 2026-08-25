@@ -86,7 +86,7 @@ export function WebDesignGalleryCarousel({
               }}
               className={`group relative h-[min(68vw,22rem)] shrink-0 cursor-pointer snap-start overflow-hidden rounded-xl bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 ${frame.aspectClass}`}
               style={{ aspectRatio: frame.aspect }}
-              aria-label={`Hap ${item.alt || "screenshot"}`}
+              aria-label={`Open ${item.alt || "screenshot"}`}
             >
               <MediaImage
                 mediaId={item.mediaId}

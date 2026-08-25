@@ -61,7 +61,7 @@ export function VideoProductionEditorForm({
       patch(next);
       setError(null);
     } else if (youtubeInput.trim()) {
-      setError("URL ose ID e YouTube nuk është e vlefshme.");
+      setError("YouTube URL or ID is not valid.");
     }
   }
 
@@ -69,11 +69,11 @@ export function VideoProductionEditorForm({
     e.preventDefault();
     const id = extractYoutubeId(youtubeInput) ?? value.youtubeId;
     if (!id) {
-      setError("Vendos një URL ose ID të vlefshme YouTube.");
+      setError("Enter a valid YouTube URL or ID.");
       return;
     }
     if (!value.title.trim() || !value.clientName.trim()) {
-      setError("Titulli dhe klienti janë të detyrueshëm.");
+      setError("Title and client are required.");
       return;
     }
     const next = {
@@ -87,7 +87,7 @@ export function VideoProductionEditorForm({
     try {
       await onSubmit(next);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gabim në ruajtje");
+      setError(err instanceof Error ? err.message : "Save failed");
     } finally {
       setSaving(false);
     }
@@ -101,7 +101,7 @@ export function VideoProductionEditorForm({
         <div className="space-y-4">
           <label className="block">
             <span className="text-xs uppercase tracking-[0.2em] text-muted">
-              Tipi
+              Type
             </span>
             <select
               className="mt-2 block w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
@@ -116,13 +116,13 @@ export function VideoProductionEditorForm({
               <option value="landscape">Production (Horizontal)</option>
             </select>
             <p className="mt-1.5 text-xs text-muted">
-              Social Media = vertikal. Production = horizontal. Nuk është shërbimi
-              Social Media i portfolio-s.
+              Social Media = vertical. Production = landscape. This is not the
+              Social Media portfolio service.
             </p>
           </label>
           <label className="block">
             <span className="text-xs uppercase tracking-[0.2em] text-muted">
-              Titulli
+              Title
             </span>
             <input
               className="mt-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
@@ -133,7 +133,7 @@ export function VideoProductionEditorForm({
           </label>
           <label className="block">
             <span className="text-xs uppercase tracking-[0.2em] text-muted">
-              Klienti
+              Client
             </span>
             <input
               className="mt-2 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
@@ -151,13 +151,13 @@ export function VideoProductionEditorForm({
               value={youtubeInput}
               onChange={(e) => setYoutubeInput(e.target.value)}
               onBlur={onYoutubeBlur}
-              placeholder="https://www.youtube.com/watch?v=… ose /shorts/…"
+              placeholder="https://www.youtube.com/watch?v=… or /shorts/…"
               required
             />
           </label>
           <label className="block">
             <span className="text-xs uppercase tracking-[0.2em] text-muted">
-              Përshkrim
+              Description
             </span>
             <textarea
               className="mt-2 min-h-[100px] w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
@@ -168,7 +168,7 @@ export function VideoProductionEditorForm({
           <div className="flex flex-wrap gap-4">
             <label className="block">
               <span className="text-xs uppercase tracking-[0.2em] text-muted">
-                Ngjyra aksenti
+                Accent color
               </span>
               <input
                 type="color"
@@ -179,7 +179,7 @@ export function VideoProductionEditorForm({
             </label>
             <label className="block">
               <span className="text-xs uppercase tracking-[0.2em] text-muted">
-                Statusi
+                Status
               </span>
               <select
                 className="mt-2 block rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
@@ -215,7 +215,7 @@ export function VideoProductionEditorForm({
               />
             ) : (
               <div className="flex h-full items-center justify-center text-xs text-muted">
-                Vendos YouTube URL
+                Enter YouTube URL
               </div>
             )}
           </div>
@@ -229,7 +229,7 @@ export function VideoProductionEditorForm({
         disabled={saving}
         className="rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background disabled:opacity-60"
       >
-        {saving ? "Duke ruajtur…" : submitLabel}
+        {saving ? "Saving…" : submitLabel}
       </button>
     </form>
   );

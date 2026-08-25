@@ -18,7 +18,7 @@
   --header-offset-compact: calc(var(--header-top) + var(--header-h) + 0.75rem);
   --project-bg: #0f0f10;
   --font-display: var(--font-fraunces), Georgia, serif;
-  --font-sans: var(--font-outfit), system-ui, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-hero-caps: var(--font-six-caps), sans-serif;
 }
 
@@ -77,6 +77,12 @@ img {
 
 .font-hero-caps {
   font-family: var(--font-hero-caps);
+}
+
+/* Google Maps embed → pamje e zezë */
+.contact-map-dark {
+  filter: grayscale(1) invert(1) contrast(0.88) brightness(0.72);
+  pointer-events: auto;
 }
 
 .admin-ui {

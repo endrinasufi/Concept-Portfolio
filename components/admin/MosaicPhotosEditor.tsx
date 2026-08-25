@@ -73,7 +73,7 @@ function MosaicUploadSlot({
           }}
           className="pointer-events-auto rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-medium text-black disabled:opacity-50"
         >
-          {busy ? "…" : mediaId ? "Ndrysho" : "Ngarko"}
+          {busy ? "…" : mediaId ? "Change" : "Upload"}
         </button>
         {mediaId ? (
           <button
@@ -83,7 +83,7 @@ function MosaicUploadSlot({
               onClear();
             }}
             className="pointer-events-auto rounded-full bg-black/70 p-1.5 text-white"
-            aria-label={`Hiq ${label}`}
+            aria-label={`Remove ${label}`}
           >
             <Trash2 size={12} />
           </button>
@@ -168,11 +168,11 @@ export function MosaicPhotosEditor({
     <div>
       <div className="mb-3">
         <h2 className="text-sm font-medium uppercase tracking-wider text-muted">
-          Mosaiku (7 foto)
+          Mosaic (7 photos)
         </h2>
         <p className="mt-1 text-xs text-muted">
-          Kliko një kuti të mosaikut, pastaj zgjidh foton poshtë. Logoja mbetet
-          ajo e projektit.
+          Click a mosaic cell, then pick a photo below. The logo stays
+          the project logo.
         </p>
       </div>
 
@@ -194,7 +194,7 @@ export function MosaicPhotosEditor({
                   />
                 ) : (
                   <p className="px-1 text-center text-[10px] text-white/50">
-                    Logoja e projektit
+                    Project logo
                   </p>
                 )}
               </div>
@@ -204,7 +204,7 @@ export function MosaicPhotosEditor({
           return (
             <MosaicUploadSlot
               key={slot.photoIndex}
-              label={`Foto ${slot.photoIndex + 1}`}
+              label={`Photo ${slot.photoIndex + 1}`}
               mediaId={ids[slot.photoIndex] || undefined}
               selected={activeIndex === slot.photoIndex}
               className={slot.className}
@@ -218,7 +218,7 @@ export function MosaicPhotosEditor({
 
       <div className="mt-4 rounded-2xl border border-border bg-background p-3">
         <p className="text-[11px] text-muted">
-          Foto për kutizën e verdhë (Foto {activeIndex + 1})
+          Photo for the highlighted cell (Photo {activeIndex + 1})
         </p>
         {library.length ? (
           <div className="mt-2 flex flex-wrap gap-2">
@@ -234,7 +234,7 @@ export function MosaicPhotosEditor({
                       ? "ring-2 ring-[#FDD85D] ring-offset-2 ring-offset-background"
                       : "ring-1 ring-[#1a1a1a]/10 hover:ring-[#1a1a1a]/35"
                   }`}
-                  aria-label="Vendos këtë foto në kutizën e zgjedhur"
+                  aria-label="Place this photo in the selected cell"
                 >
                   <MediaImage mediaId={photo.mediaId} alt="" fit="cover" />
                 </button>
@@ -243,8 +243,8 @@ export function MosaicPhotosEditor({
           </div>
         ) : (
           <p className="mt-2 text-xs text-muted">
-            Nuk ka foto të tjera në projekt. Ngarko një foto te kutiza, ose shto
-            foto te galeria.
+            No other photos in this project. Upload into a cell, or add
+            photos in the gallery.
           </p>
         )}
       </div>

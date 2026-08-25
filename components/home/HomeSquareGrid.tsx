@@ -161,7 +161,7 @@ export function HomeSquareGrid() {
   if (projectsLoading || settingsLoading) {
     return (
       <div className="flex min-h-[100svh] items-center justify-center text-muted">
-        Duke ngarkuar…
+        Loading…
       </div>
     );
   }

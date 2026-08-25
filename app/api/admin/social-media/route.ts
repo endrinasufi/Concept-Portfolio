@@ -6,6 +6,7 @@ import {
   revalidatePublicPaths,
 } from "@/lib/server/api";
 import { getServerSocialMediaRepository } from "@/lib/repositories/server";
+import { enrichNestedSeo } from "@/lib/seo/enrich";
 
 export async function GET(request: Request) {
   const session = await requireApiSession();
@@ -21,9 +22,8 @@ export async function POST(request: Request) {
   const session = await requireApiSession();
   if (isErrorResponse(session)) return session;
   try {
-    const created = await getServerSocialMediaRepository().create(
-      await request.json(),
-    );
+    const body = await enrichNestedSeo(await request.json(), "social-media");
+    const created = await getServerSocialMediaRepository().create(body);
     revalidatePublicPaths([`/social-media/${created.slug}`]);
     return NextResponse.json(created, { status: 201 });
   } catch (err) {

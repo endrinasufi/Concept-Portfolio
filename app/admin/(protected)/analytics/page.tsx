@@ -5,7 +5,7 @@ import { getSession } from "@/lib/server/auth";
 import { isAdminRole } from "@/lib/permissions";
 
 export const metadata: Metadata = {
-  title: "Analitika",
+  title: "Analytics",
 };
 
 export default async function AdminAnalyticsPage() {

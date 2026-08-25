@@ -11,16 +11,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 const GRAINS: { key: AnalyticsGrain; label: string }[] = [
-  { key: "day", label: "Ditë" },
-  { key: "week", label: "Javë" },
-  { key: "month", label: "Muaj" },
-  { key: "year", label: "Vit" },
+  { key: "day", label: "Day" },
+  { key: "week", label: "Week" },
+  { key: "month", label: "Month" },
+  { key: "year", label: "Year" },
 ];
 
-const nf = new Intl.NumberFormat("sq-AL");
+const nf = new Intl.NumberFormat("en-US");
 
 function fmt(n: number, digits = 0): string {
-  return new Intl.NumberFormat("sq-AL", {
+  return new Intl.NumberFormat("en-US", {
     maximumFractionDigits: digits,
     minimumFractionDigits: digits,
   }).format(n);
@@ -63,14 +63,14 @@ export function AnalyticsReport() {
         const json = (await res.json()) as Report & { error?: string };
         if (cancelled) return;
         if (!res.ok) {
-          setError(json.error || "Nuk u lexuan statistikat");
+          setError(json.error || "Could not load statistics");
           if (first) setData(null);
           return;
         }
         setData(json);
         setError(null);
       } catch {
-        if (!cancelled && first) setError("Nuk u lidh me serverin");
+        if (!cancelled && first) setError("Could not connect to the server");
       } finally {
         if (!cancelled) setLoading(false);
         first = false;
@@ -90,9 +90,9 @@ export function AnalyticsReport() {
     <div className="space-y-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1>Analitika</h1>
+          <h1>Analytics</h1>
           <p className="mt-2 text-sm text-muted">
-            Vizitorë, origjina, pajisje dhe faqet më të lexuara — brenda CMS-së.
+            Visitors, origins, devices, and top pages — inside the CMS.
           </p>
         </div>
       </div>
@@ -111,11 +111,11 @@ export function AnalyticsReport() {
       <section className="admin-card p-5 md:p-6">
         <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-sm font-medium">Shikime dhe vizitorë</p>
+            <p className="text-sm font-medium">Views and visitors</p>
             <p className="mt-0.5 text-xs text-muted">
               {compare
-                ? `Krahasuar me ${data?.compareLabel ?? "periudhën e mëparshme"}`
-                : data?.periodLabel ?? "Zgjidh periudhën"}
+                ? `Compared to ${data?.compareLabel ?? "the previous period"}`
+                : data?.periodLabel ?? "Select a period"}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -141,7 +141,7 @@ export function AnalyticsReport() {
             <div className="inline-flex items-center rounded-full bg-white p-1">
               <button
                 type="button"
-                aria-label="Periudha e mëparshme"
+                aria-label="Previous period"
                 onClick={() => setOffset((v) => Math.max(-36, v - 1))}
                 className="rounded-full p-1.5 text-muted hover:bg-[#1a1a1a]/6 hover:text-foreground"
               >
@@ -152,7 +152,7 @@ export function AnalyticsReport() {
               </span>
               <button
                 type="button"
-                aria-label="Periudha tjetër"
+                aria-label="Next period"
                 disabled={offset >= 0}
                 onClick={() => setOffset((v) => Math.min(0, v + 1))}
                 className="rounded-full p-1.5 text-muted hover:bg-[#1a1a1a]/6 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
@@ -169,26 +169,26 @@ export function AnalyticsReport() {
                   : "bg-white text-muted hover:text-foreground"
               }`}
             >
-              Krahaso
+              Compare
             </button>
           </div>
         </div>
         <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
           <span className="inline-flex items-center gap-1.5">
-            <i className="h-2 w-2 rounded-full bg-[#1a1a1a]" /> Shikime
+            <i className="h-2 w-2 rounded-full bg-[#1a1a1a]" /> Views
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <i className="h-2 w-2 rounded-full bg-[#FDD85D]" /> Vizitorë
+            <i className="h-2 w-2 rounded-full bg-[#FDD85D]" /> Visitors
           </span>
           {compare ? (
             <>
               <span className="inline-flex items-center gap-1.5">
                 <i className="h-2 w-4 border-t-2 border-dashed border-[#1a1a1a]/55" />{" "}
-                Shikime · {data?.compareLabel}
+                Views · {data?.compareLabel}
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <i className="h-2 w-4 border-t-2 border-dashed border-[#c9a83a]" />{" "}
-                Vizitorë · {data?.compareLabel}
+                Visitors · {data?.compareLabel}
               </span>
             </>
           ) : null}
@@ -199,70 +199,70 @@ export function AnalyticsReport() {
       <div className="grid gap-4 lg:grid-cols-12">
         <RankCard
           className="lg:col-span-5"
-          title="Shtetet"
-          hint="Nga ku vijnë vizitorët"
+          title="Countries"
+          hint="Where visitors come from"
           rows={data?.countries ?? []}
           leading="flag"
-          empty="Shtetet shfaqen sapo të ketë vizita të reja."
+          empty="Countries appear once there are new visits."
         />
         <RankCard
           className="lg:col-span-7"
-          title="Faqet"
-          hint="Më të vizituarat"
+          title="Pages"
+          hint="Most visited"
           rows={data?.pages ?? []}
-          empty="Nuk ka shikime në këtë periudhë."
+          empty="No views in this period."
         />
         <RankCard
           className="lg:col-span-4"
-          title="Qytetet"
-          hint="Vendndodhja më e ngushtë"
+          title="Cities"
+          hint="More precise location"
           rows={data?.cities ?? []}
-          empty="Qyteti mbushet kur IP jepet nga hosti."
+          empty="City fills in when the IP is resolved by the host."
         />
         <RankCard
           className="lg:col-span-4"
-          title="Burimet e trafikut"
+          title="Traffic sources"
           hint="Direct, social, search, referral"
           rows={data?.channels ?? []}
-          empty="Nuk ka burime të klasifikuara."
+          empty="No classified sources."
         />
         <RankCard
           className="lg:col-span-4"
           title="Referrer"
-          hint="Sitet që dërgojnë trafik"
+          hint="Sites that send traffic"
           rows={data?.referrers ?? []}
-          empty="Të gjitha vizitat janë Direct."
+          empty="All visits are Direct."
         />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-12">
         <section className="admin-card p-5 lg:col-span-4">
-          <p className="text-sm font-medium">Pajisjet</p>
-          <p className="mt-0.5 text-xs text-muted">Desktop, mobil, tablet</p>
+          <p className="text-sm font-medium">Devices</p>
+          <p className="mt-0.5 text-xs text-muted">Desktop, mobile, tablet</p>
           <DeviceDonut rows={data?.devices ?? []} />
         </section>
         <RankCard
           className="lg:col-span-4"
-          title="Shfletuesit"
+          title="Browsers"
           rows={data?.browsers ?? []}
           empty="—"
         />
         <RankCard
           className="lg:col-span-4"
-          title="Sistemi operativ"
+          title="Operating system"
           rows={data?.os ?? []}
           empty="—"
         />
         {grain === "day" ? null : (
           <section className="admin-card p-5 lg:col-span-8">
-            <p className="text-sm font-medium">Ora e ditës</p>
-            <p className="mt-0.5 text-xs text-muted">Shikime sipas orës UTC</p>
+            <p className="text-sm font-medium">Time of day</p>
+            <p className="mt-0.5 text-xs text-muted">Views by hour UTC</p>
             <HourBars hours={data?.hourly ?? []} />
           </section>
         )}
         <RankCard
           className={grain === "day" ? "lg:col-span-12" : "lg:col-span-4"}
-          title="Gjuha e shfletuesit"
+          title="Browser language"
           rows={data?.languages ?? []}
           empty="—"
         />
@@ -275,22 +275,22 @@ function KpiRow({ data, loading }: { data: Report | null; loading: boolean }) {
   const cards = data
     ? [
         {
-          label: "Vizitorë",
+          label: "Visitors",
           value: fmt(data.users),
           delta: deltaPct(data.users, data.usersPrev),
-          sub: `${fmt(data.newUsers)} të rinj · ${fmt(data.returningUsers)} kthyes`,
+          sub: `${fmt(data.newUsers)} new · ${fmt(data.returningUsers)} returning`,
         },
         {
-          label: "Shikime",
+          label: "Views",
           value: fmt(data.pageviews),
           delta: deltaPct(data.pageviews, data.pageviewsPrev),
           sub: "pageviews",
         },
         {
-          label: "Sesione",
+          label: "Sessions",
           value: fmt(data.sessions),
           delta: deltaPct(data.sessions, data.sessionsPrev),
-          sub: `${fmt(data.pagesPerSession, 1)} faqe / sesion`,
+          sub: `${fmt(data.pagesPerSession, 1)} pages / session`,
         },
         {
           label: "Bounce rate",
@@ -299,13 +299,13 @@ function KpiRow({ data, loading }: { data: Report | null; loading: boolean }) {
             ...deltaPct(data.bounceRate, data.bounceRatePrev),
             up: data.bounceRate <= data.bounceRatePrev,
           },
-          sub: "vizita me 1 faqe",
+          sub: "single-page visits",
         },
       ]
     : [
-        { label: "Vizitorë", value: "…", delta: { text: "—", up: true }, sub: " " },
-        { label: "Shikime", value: "…", delta: { text: "—", up: true }, sub: " " },
-        { label: "Sesione", value: "…", delta: { text: "—", up: true }, sub: " " },
+        { label: "Visitors", value: "…", delta: { text: "—", up: true }, sub: " " },
+        { label: "Views", value: "…", delta: { text: "—", up: true }, sub: " " },
+        { label: "Sessions", value: "…", delta: { text: "—", up: true }, sub: " " },
         { label: "Bounce rate", value: "…", delta: { text: "—", up: true }, sub: " " },
       ];
 
@@ -406,11 +406,11 @@ function TrendChart({
         >
           <p className="text-[10px] text-white/55">{active.label}</p>
           <p className="whitespace-nowrap text-xs">
-            {fmt(active.views)} shikime · {fmt(active.visitors)} vizitorë
+            {fmt(active.views)} views · {fmt(active.visitors)} visitors
           </p>
           {compare ? (
             <p className="mt-0.5 whitespace-nowrap text-[10px] text-white/55">
-              Më parë: {fmt(active.viewsPrev)} · {fmt(active.visitorsPrev)}
+              Previously: {fmt(active.viewsPrev)} · {fmt(active.visitorsPrev)}
             </p>
           ) : null}
         </div>
@@ -537,7 +537,7 @@ function TrendChart({
               <button
                 key={i}
                 type="button"
-                aria-label={`${p.label}: ${p.views} shikime, ${p.visitors} vizitorë`}
+                aria-label={`${p.label}: ${p.views} views, ${p.visitors} visitors`}
                 className="h-full min-w-0 flex-1 cursor-crosshair bg-transparent"
                 onMouseEnter={() => setHover(i)}
                 onFocus={() => setHover(i)}
@@ -548,7 +548,7 @@ function TrendChart({
       </div>
       {empty ? (
         <p className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm text-muted">
-          Nuk ka të dhëna për këtë periudhë.
+          No data for this period.
         </p>
       ) : null}
     </div>
@@ -652,7 +652,7 @@ function DeviceDonut({ rows }: { rows: AnalyticsRankRow[] }) {
       </svg>
       <ul className="space-y-2 text-sm">
         {rows.length === 0 ? (
-          <li className="text-muted">Nuk ka të dhëna pajisjesh.</li>
+          <li className="text-muted">No device data.</li>
         ) : (
           rows.map((row, i) => (
             <li key={row.key} className="flex items-center gap-2">

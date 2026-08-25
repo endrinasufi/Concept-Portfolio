@@ -36,15 +36,15 @@ export function WebDesignProjectList() {
 
   async function remove(id: string, title: string) {
     const ok = await confirm(
-      "Fshi projektin?",
-      `“${title}” do të fshihet përgjithmonë nga IndexedDB (Web Design).`,
+      "Delete project?",
+      `“${title}” will be permanently deleted from IndexedDB (Web Design).`,
     );
     if (!ok) return;
     await getWebDesignProjectRepository().delete(id);
     await refresh();
   }
 
-  if (loading) return <p className="text-muted">Duke ngarkuar…</p>;
+  if (loading) return <p className="text-muted">Loading…</p>;
 
   return (
     <div>
@@ -52,13 +52,13 @@ export function WebDesignProjectList() {
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl">Web Design</h1>
-          <p className="mt-1 text-sm text-muted">Zvarris për të ndryshuar renditjen.</p>
+          <p className="mt-1 text-sm text-muted">Drag to reorder.</p>
         </div>
         <Link
           href="/admin/web-design/new"
           className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
         >
-          <Plus size={16} /> Projekt i ri
+          <Plus size={16} /> New project
         </Link>
       </div>
 
@@ -124,21 +124,21 @@ export function WebDesignProjectList() {
                     onClick={() => void toggleStatus(project.id, project.status)}
                     className="rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface-elevated"
                   >
-                    {project.status === "published" ? "Bëj draft" : "Publiko"}
+                    {project.status === "published" ? "Unpublish" : "Publish"}
                   </button>
                   <button
                     type="button"
                     onClick={() => void duplicate(project.id)}
                     className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface-elevated"
                   >
-                    <Copy size={12} /> Dupliko
+                    <Copy size={12} /> Duplicate
                   </button>
                   <button
                     type="button"
                     onClick={() => void remove(project.id, project.title)}
                     className="inline-flex items-center gap-1 rounded-full border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
                   >
-                    <Trash2 size={12} /> Fshi
+                    <Trash2 size={12} /> Delete
                   </button>
                 </div>
               </div>
@@ -148,7 +148,7 @@ export function WebDesignProjectList() {
       </SortableList>
 
       {!projects.length ? (
-        <p className="text-muted">Nuk ka projekte. Krijo një të ri.</p>
+        <p className="text-muted">No projects yet. Create one.</p>
       ) : null}
     </div>
   );

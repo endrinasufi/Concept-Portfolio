@@ -21,10 +21,10 @@ export function AdminLoginView({ nextPath }: { nextPath: string }) {
               Studio CMS
             </p>
             <h1 className="mt-3 text-[2.25rem] font-semibold leading-[1.1] tracking-tight">
-              Hyr në hapësirën e punës.
+              Enter your workspace.
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-white/50">
-              Concept Marketing Albania — menaxho projektet e portfolios.
+              Concept Marketing Albania — manage portfolio projects.
             </p>
           </div>
 
@@ -40,9 +40,9 @@ export function AdminLoginView({ nextPath }: { nextPath: string }) {
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted">
             Admin
           </p>
-          <h2 className="mt-2 text-[2.25rem] font-semibold leading-none tracking-tight">Mirë se erdhe</h2>
+          <h2 className="mt-2 text-[2.25rem] font-semibold leading-none tracking-tight">Welcome</h2>
           <p className="mt-2 text-sm text-muted">
-            Vendos kredencialet për të vazhduar.
+            Enter your credentials to continue.
           </p>
           <AdminLoginForm nextPath={nextPath} />
         </div>

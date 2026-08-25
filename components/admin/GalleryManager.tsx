@@ -127,9 +127,9 @@ export function GalleryManager({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="text-sm font-medium">Galeria</h3>
+          <h3 className="text-sm font-medium">Gallery</h3>
           <p className="mt-0.5 text-[11px] text-muted">
-            Shto rreshta, zgjidh 1–4 foto për rresht, rirendit dhe shiko preview.
+            Add rows, pick 1–4 photos per row, reorder, and preview.
           </p>
         </div>
         <button
@@ -137,14 +137,14 @@ export function GalleryManager({
           onClick={addRow}
           className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface"
         >
-          <Plus size={12} /> Shto rresht
+          <Plus size={12} /> Add row
         </button>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.75fr)] lg:items-start">
         <div className="min-w-0 space-y-4">
           {!sorted.length ? (
-            <p className="text-xs text-muted">Nuk ka rreshta. Shto një rresht për të filluar.</p>
+            <p className="text-xs text-muted">No rows yet. Add a row to get started.</p>
           ) : null}
 
           <SortableList ids={sorted.map((r) => r.id)} onReorder={reorderRows}>
@@ -159,7 +159,7 @@ export function GalleryManager({
                       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="text-[10px] uppercase tracking-[0.18em] text-muted">
-                            Rreshti {row.order + 1}
+                            Row {row.order + 1}
                           </span>
                           <div className="flex overflow-hidden rounded-full border border-border">
                             {GALLERY_COLUMN_OPTIONS.map((n) => (
@@ -172,7 +172,7 @@ export function GalleryManager({
                                     ? "bg-foreground text-background"
                                     : "text-muted hover:bg-surface"
                                 }`}
-                                title={`${n} foto në rresht`}
+                                title={`${n} photos per row`}
                               >
                                 {n}
                               </button>
@@ -183,7 +183,7 @@ export function GalleryManager({
                           type="button"
                           onClick={() => removeRow(row.id)}
                           className="rounded p-1.5 text-muted hover:bg-surface hover:text-foreground"
-                          aria-label="Fshi rreshtin"
+                          aria-label="Delete row"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -207,7 +207,7 @@ export function GalleryManager({
                                   type="button"
                                   onClick={() => movePhoto(row.id, item.id, -1)}
                                   className="rounded bg-white/15 p-1 text-white hover:bg-white/25"
-                                  aria-label="Majtas"
+                                  aria-label="Move left"
                                 >
                                   <ChevronLeft size={12} />
                                 </button>
@@ -215,7 +215,7 @@ export function GalleryManager({
                                   type="button"
                                   onClick={() => movePhoto(row.id, item.id, 1)}
                                   className="rounded bg-white/15 p-1 text-white hover:bg-white/25"
-                                  aria-label="Djathtas"
+                                  aria-label="Move right"
                                 >
                                   <ChevronRight size={12} />
                                 </button>
@@ -224,7 +224,7 @@ export function GalleryManager({
                                 type="button"
                                 onClick={() => removePhoto(row.id, item.id)}
                                 className="rounded bg-white/15 p-1 text-white hover:bg-white/25"
-                                aria-label="Fshi"
+                                aria-label="Delete"
                               >
                                 <Trash2 size={12} />
                               </button>
@@ -238,7 +238,7 @@ export function GalleryManager({
                             className="admin-upload-zone aspect-[4/3] min-h-0 px-2 py-3 text-[10px]"
                           >
                             <ImagePlus size={18} />
-                            <span className="text-[10px]">Ngarko</span>
+                            <span className="text-[10px]">Upload</span>
                             <input
                               type="file"
                               accept="image/*"
@@ -293,12 +293,12 @@ export function GalleryManager({
                   })}
                 </div>
                 <p className="mt-2 text-[10px] text-muted">
-                  {flattenGalleryRows(sorted).length} foto · {sorted.length} rreshta
+                  {flattenGalleryRows(sorted).length} photos · {sorted.length} rows
                 </p>
               </>
             ) : (
               <p className="py-6 text-center text-[11px] text-muted">
-                Preview do të shfaqet kur ngarkon foto.
+                Preview appears once you upload photos.
               </p>
             )}
           </div>

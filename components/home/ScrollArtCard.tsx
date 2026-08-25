@@ -207,7 +207,7 @@ export const ScrollArtCard = forwardRef<HTMLDivElement, Props>(
           {card.title}
         </h3>
         <span className="mt-2.5 inline-flex items-center gap-2 text-[15px] font-medium md:mt-4 md:text-lg">
-          {card.ctaLabel ?? "Shiko të gjitha"}
+          {card.ctaLabel ?? "View all"}
           <ArrowDownRight size={20} strokeWidth={2} className="md:h-6 md:w-6" />
         </span>
       </div>
@@ -238,7 +238,7 @@ export const ScrollArtCard = forwardRef<HTMLDivElement, Props>(
         <Link
           href={card.href}
           className="relative z-[1] block h-full w-full"
-          aria-label={card.title ?? card.ctaLabel ?? "Hap projektin"}
+          aria-label={card.title ?? card.ctaLabel ?? "Open project"}
         >
           {face}
         </Link>

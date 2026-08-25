@@ -11,7 +11,7 @@ export async function GET() {
   } catch (err) {
     console.error("[analytics summary]", err);
     return NextResponse.json(
-      { error: "Analytics nuk u lexuan. Kontrollo lidhjen me MySQL." },
+      { error: "Could not load analytics. Check the MySQL connection." },
       { status: 500 },
     );
   }

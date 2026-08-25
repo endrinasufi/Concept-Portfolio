@@ -23,13 +23,13 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
-        setError(data.error || "Login dështoi");
+        setError(data.error || "Login failed");
         return;
       }
       router.replace(nextPath || "/admin");
       router.refresh();
     } catch {
-      setError("Nuk u lidh me serverin");
+      setError("Could not connect to the server");
     } finally {
       setLoading(false);
     }
@@ -52,7 +52,7 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
       </label>
       <label className="block text-sm">
         <span className="text-[11px] uppercase tracking-[0.16em] text-muted">
-          Fjalëkalimi
+          Password
         </span>
         <input
           type="password"
@@ -69,7 +69,7 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
         disabled={loading}
         className="mt-2 w-full rounded-full bg-foreground px-4 py-3 text-sm font-medium text-background disabled:opacity-60"
       >
-        {loading ? "Duke hyrë…" : "Hyr në CMS"}
+        {loading ? "Signing in…" : "Sign in to CMS"}
       </button>
     </form>
   );

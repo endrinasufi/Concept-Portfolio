@@ -76,10 +76,10 @@ export function WebDesignProjectEditorForm({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl">
-            {initial.title ? "Edito projektin" : "Projekt Web Design i ri"}
+            {initial.title ? "Edit project" : "New Web Design project"}
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Tre imazhe të ndara për featured visual + carousel.
+            Three separate images for the featured visual + carousel.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -97,7 +97,7 @@ export function WebDesignProjectEditorForm({
             disabled={saving}
             className="rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background disabled:opacity-50"
           >
-            {saving ? "Duke ruajtur…" : "Ruaj"}
+            {saving ? "Saving…" : "Save"}
           </button>
         </div>
       </div>
@@ -191,7 +191,7 @@ export function WebDesignProjectEditorForm({
             />
           </label>
           <label className="md:col-span-2">
-            <span className={label}>Services (ndarë me presje)</span>
+            <span className={label}>Services (comma-separated)</span>
             <input
               className={field}
               value={value.services.join(", ")}
@@ -214,7 +214,7 @@ export function WebDesignProjectEditorForm({
             />
           </label>
           <label>
-            <span className={label}>Project number (opsionale)</span>
+            <span className={label}>Project number (optional)</span>
             <input
               type="number"
               className={field}
@@ -244,10 +244,10 @@ export function WebDesignProjectEditorForm({
         <div className="grid gap-5 lg:grid-cols-4 lg:gap-0">
           <div className="min-w-0 lg:border-r lg:border-[#1a1a1a]/10 lg:pr-5">
             <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted">
-              Cover (lista /web-design)
+              Cover (listing /web-design)
             </h2>
             <p className="mt-1 text-[11px] leading-snug text-muted">
-              Fotoja që shfaqet te karta e projektit në faqen e listës.
+              Image shown on the project card in the listing page.
             </p>
             <div className="mt-3">
               <WebDesignMediaSlot
@@ -278,7 +278,7 @@ export function WebDesignProjectEditorForm({
               Featured website presentation
             </h2>
             <p className="mt-1 text-[11px] leading-snug text-muted">
-              Tre imazhe të ndara për hero: background, desktop dhe mobile.
+              Three separate images for the hero: background, desktop, and mobile.
             </p>
             <div className="mt-3">
               <WebDesignFeaturedVisualEditor

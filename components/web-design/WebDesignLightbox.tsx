@@ -53,7 +53,7 @@ export function WebDesignLightbox({
         type="button"
         onClick={onClose}
         className="absolute right-4 top-4 z-20 rounded-full border border-white/15 bg-black/50 p-2 text-white/80 transition hover:text-white"
-        aria-label="Mbyll"
+        aria-label="Close"
       >
         <X size={18} />
       </button>

@@ -6,6 +6,7 @@ import {
   revalidatePublicPaths,
 } from "@/lib/server/api";
 import { getServerPhotoshootingRepository } from "@/lib/repositories/server";
+import { enrichPhotoshootingSeo } from "@/lib/seo/enrich";
 
 export async function GET(request: Request) {
   const session = await requireApiSession();
@@ -21,9 +22,8 @@ export async function POST(request: Request) {
   const session = await requireApiSession();
   if (isErrorResponse(session)) return session;
   try {
-    const created = await getServerPhotoshootingRepository().create(
-      await request.json(),
-    );
+    const body = await enrichPhotoshootingSeo(await request.json());
+    const created = await getServerPhotoshootingRepository().create(body);
     revalidatePublicPaths([`/photoshooting/${created.slug}`]);
     return NextResponse.json(created, { status: 201 });
   } catch (err) {

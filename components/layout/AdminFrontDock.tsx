@@ -96,14 +96,14 @@ export function AdminFrontDock() {
         {ctx.editHref ? (
           <Link
             href={ctx.editHref}
-            aria-label="Edito projektin"
+            aria-label="Edit project"
             className="group inline-flex h-11 max-w-11 items-center gap-0 overflow-hidden rounded-full bg-[#FDD85D] px-0 text-black shadow-[0_12px_32px_rgba(253,216,93,0.45)] transition-[max-width,padding,gap] duration-200 hover:max-w-[12rem] hover:gap-2 hover:px-4 hover:brightness-95"
           >
             <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center text-black">
               <Pencil size={18} strokeWidth={2.25} className="text-black" />
             </span>
             <span className="whitespace-nowrap pr-1 text-sm font-medium text-black opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              Edito projektin
+              Edit project
             </span>
           </Link>
         ) : null}
@@ -112,7 +112,7 @@ export function AdminFrontDock() {
           {openAdd ? (
             <div className="absolute bottom-0 right-full mr-2 w-48 overflow-hidden rounded-2xl bg-[#1a1a1a] shadow-[0_16px_48px_rgba(26,26,26,0.35)]">
               <p className="border-b border-white/10 px-3 py-2 text-[11px] text-white/55">
-                Shto projekt
+                Add project
               </p>
               <ul className="py-1">
                 {ADD_LINKS.map((item) => (
@@ -133,7 +133,7 @@ export function AdminFrontDock() {
           <button
             type="button"
             onClick={() => setOpenAdd((v) => !v)}
-            aria-label={openAdd ? "Mbyll" : "Shto projekt"}
+            aria-label={openAdd ? "Close" : "Add project"}
             className={`inline-flex h-11 items-center overflow-hidden rounded-full bg-[#1a1a1a] text-white shadow-[0_12px_32px_rgba(26,26,26,0.28)] transition-[max-width,padding,gap] duration-200 hover:bg-[#2a2a2a] ${
               openAdd
                 ? "max-w-[12rem] gap-2 px-4"
@@ -155,7 +155,7 @@ export function AdminFrontDock() {
                   : "opacity-0 group-hover:opacity-100"
               }`}
             >
-              {openAdd ? "Mbyll" : "Shto projekt"}
+              {openAdd ? "Close" : "Add project"}
             </span>
           </button>
         </div>

@@ -17,7 +17,7 @@ export function TypographyManager({
       {
         id: createId(),
         role: "custom",
-        fontName: "Outfit",
+        fontName: "Inter",
         fontWeight: "400",
         sampleText: "Sample text",
       },
@@ -35,13 +35,13 @@ export function TypographyManager({
   return (
     <div>
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-medium">Tipografia</h3>
+        <h3 className="text-sm font-medium">Typography</h3>
         <button
           type="button"
           onClick={add}
           className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs"
         >
-          <Plus size={12} /> Shto
+          <Plus size={12} /> Add
         </button>
       </div>
       <div className="space-y-3">

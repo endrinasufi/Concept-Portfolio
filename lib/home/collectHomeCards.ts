@@ -270,7 +270,7 @@ export function collectCategoryCards(opts: {
     id: `service-${opts.category.id}`,
     kind: "service",
     title: opts.category.label,
-    ctaLabel: "Shiko të gjitha",
+    ctaLabel: "View all",
     href: opts.category.href,
   };
 

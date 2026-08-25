@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 export function SiteFooter() {
   const pathname = usePathname();
   if (pathname?.startsWith("/admin")) return null;
+  if (pathname === "/kontakt") return null;
 
   const isSocialProject = Boolean(
     pathname?.startsWith("/social-media/"),
@@ -36,7 +37,7 @@ export function SiteFooter() {
                   : "text-muted"
             }`}
           >
-            Branding, social media, web design dhe drejtim artistik.
+            Branding, social media, web design, and art direction.
           </p>
         </div>
         <div
@@ -83,6 +84,30 @@ export function SiteFooter() {
             }
           >
             Web Design
+          </Link>
+          <Link
+            href="/photoshooting"
+            className={
+              isSocialProject
+                ? "transition hover:text-neutral-900"
+                : isDarkList
+                  ? "transition hover:text-white"
+                  : "transition hover:text-foreground"
+            }
+          >
+            Photoshooting
+          </Link>
+          <Link
+            href="/kontakt"
+            className={
+              isSocialProject
+                ? "transition hover:text-neutral-900"
+                : isDarkList
+                  ? "transition hover:text-white"
+                  : "transition hover:text-foreground"
+            }
+          >
+            Contact
           </Link>
           <Link
             href="/admin"

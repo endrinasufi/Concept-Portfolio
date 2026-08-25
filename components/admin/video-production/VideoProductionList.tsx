@@ -28,15 +28,15 @@ export function VideoProductionList() {
 
   async function remove(id: string, title: string) {
     const ok = await confirm(
-      "Fshi videon?",
-      `“${title}” do të fshihet përgjithmonë nga IndexedDB (Video Production).`,
+      "Delete video?",
+      `“${title}” will be permanently deleted from IndexedDB (Video Production).`,
     );
     if (!ok) return;
     await getVideoProductionRepository().delete(id);
     await refresh();
   }
 
-  if (loading) return <p className="text-muted">Duke ngarkuar…</p>;
+  if (loading) return <p className="text-muted">Loading…</p>;
 
   return (
     <div>
@@ -45,14 +45,14 @@ export function VideoProductionList() {
         <div>
           <h1 className="text-3xl">Video Production</h1>
           <p className="mt-1 text-sm text-muted">
-            Video Social Media (reels) dhe Production (horizontale).
+            Social Media videos (reels) and Production (landscape).
           </p>
         </div>
         <Link
           href="/admin/video-production/new"
           className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
         >
-          <Plus size={16} /> Video e re
+          <Plus size={16} /> New video
         </Link>
       </div>
 
@@ -110,7 +110,7 @@ export function VideoProductionList() {
                     onClick={() => void toggleStatus(video.id, video.status)}
                     className="rounded-full border border-border px-3 py-1.5 text-xs text-muted hover:text-foreground"
                   >
-                    {video.status === "published" ? "Bëj draft" : "Publiko"}
+                    {video.status === "published" ? "Unpublish" : "Publish"}
                   </button>
                   <a
                     href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
@@ -125,14 +125,14 @@ export function VideoProductionList() {
                     onClick={() => router.push(`/admin/video-production/${video.id}`)}
                     className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs text-muted hover:text-foreground"
                   >
-                    <Pencil size={12} /> Ndrysho
+                    <Pencil size={12} /> Edit
                   </button>
                   <button
                     type="button"
                     onClick={() => void remove(video.id, video.title)}
                     className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs text-red-300/80 hover:text-red-200"
                   >
-                    <Trash2 size={12} /> Fshi
+                    <Trash2 size={12} /> Delete
                   </button>
                 </div>
               </div>

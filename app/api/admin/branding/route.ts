@@ -6,6 +6,7 @@ import {
   revalidatePublicPaths,
 } from "@/lib/server/api";
 import { getServerProjectRepository } from "@/lib/repositories/server";
+import { enrichBrandingSeo } from "@/lib/seo/enrich";
 
 export async function GET(request: Request) {
   const session = await requireApiSession();
@@ -20,7 +21,7 @@ export async function POST(request: Request) {
   const session = await requireApiSession();
   if (isErrorResponse(session)) return session;
   try {
-    const body = await request.json();
+    const body = await enrichBrandingSeo(await request.json());
     const created = await getServerProjectRepository().create(body);
     revalidatePublicPaths([`/branding/${created.slug}`]);
     return NextResponse.json(created, { status: 201 });

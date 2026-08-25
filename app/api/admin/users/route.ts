@@ -29,6 +29,6 @@ export async function POST(request: Request) {
     );
     return NextResponse.json(user, { status: 201 });
   } catch (err) {
-    return jsonError(err instanceof Error ? err.message : "Krijimi dështoi", 400);
+    return jsonError(err instanceof Error ? err.message : "Create failed", 400);
   }
 }

@@ -6,6 +6,7 @@ import {
   revalidatePublicPaths,
 } from "@/lib/server/api";
 import { getServerPhotoshootingRepository } from "@/lib/repositories/server";
+import { enrichPhotoshootingSeo } from "@/lib/seo/enrich";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -23,10 +24,17 @@ export async function PATCH(request: Request, ctx: Ctx) {
   if (isErrorResponse(session)) return session;
   const { id } = await ctx.params;
   try {
-    const updated = await getServerPhotoshootingRepository().update(
-      id,
-      await request.json(),
-    );
+    const existing = await getServerPhotoshootingRepository().getById(id);
+    const patch = await request.json();
+    const merged = await enrichPhotoshootingSeo({
+      ...(existing ?? {}),
+      ...patch,
+    });
+    const updated = await getServerPhotoshootingRepository().update(id, {
+      ...patch,
+      metaTitle: merged.metaTitle as string | undefined,
+      metaDescription: merged.metaDescription as string | undefined,
+    });
     revalidatePublicPaths([`/photoshooting/${updated.slug}`]);
     return NextResponse.json(updated);
   } catch (err) {

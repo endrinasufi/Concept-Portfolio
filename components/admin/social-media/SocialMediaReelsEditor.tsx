@@ -127,7 +127,7 @@ export function SocialMediaReelsEditor({
         <div>
           <h3 className="text-sm font-medium">Reels</h3>
           <p className="text-xs text-muted">
-            Zvarris për të rirenditur · thumbnail auto nga video ose YouTube
+            Drag to reorder · auto thumbnail from video or YouTube
           </p>
         </div>
         <button
@@ -135,7 +135,7 @@ export function SocialMediaReelsEditor({
           onClick={() => void addReel()}
           className="admin-upload-btn"
         >
-          <Plus size={12} /> Shto reel
+          <Plus size={12} /> Add reel
         </button>
       </div>
 
@@ -162,7 +162,7 @@ export function SocialMediaReelsEditor({
                   <div className="grid gap-2 sm:grid-cols-2">
                     <AdminUploadDropzone
                       label="Thumbnail"
-                      hint="opsionale"
+                      hint="optional"
                       className="min-h-[5.5rem] py-3"
                       onFiles={(files) =>
                         void uploadThumb(reel.id, files?.[0])
@@ -181,12 +181,12 @@ export function SocialMediaReelsEditor({
                   <input
                     value={reel.videoUrl ?? ""}
                     onChange={(e) => setVideoUrl(reel.id, e.target.value)}
-                    placeholder="ose Video URL / YouTube (watch, shorts, youtu.be)"
+                    placeholder="or Video URL / YouTube (watch, shorts, youtu.be)"
                     className="w-full rounded-lg border border-border bg-background px-2 py-2 text-xs"
                   />
                   {extractYoutubeId(reel.videoUrl ?? "") ? (
                     <p className="text-[10px] text-muted">
-                      YouTube · thumbnail merret automatikisht nga linku
+                      YouTube · thumbnail is taken automatically from the link
                     </p>
                   ) : null}
                   <button
@@ -194,7 +194,7 @@ export function SocialMediaReelsEditor({
                     onClick={() => remove(reel.id)}
                     className="inline-flex items-center gap-1 rounded-full border border-red-500/30 px-3 py-1.5 text-xs text-red-400"
                   >
-                    <Trash2 size={12} /> Fshi
+                    <Trash2 size={12} /> Delete
                   </button>
                 </div>
               </div>

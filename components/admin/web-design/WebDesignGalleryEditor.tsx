@@ -61,11 +61,11 @@ export function WebDesignGalleryEditor({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="text-sm font-medium">Additional screenshots</h3>
-          <p className="text-xs text-muted">Zvarris për të rirenditur</p>
+          <p className="text-xs text-muted">Drag to reorder</p>
         </div>
         <AdminUploadDropzone
           variant="button"
-          label="Ngarko foto"
+          label="Upload photos"
           multiple
           onFiles={(files) => void upload(files)}
         />
@@ -95,7 +95,7 @@ export function WebDesignGalleryEditor({
                     <input
                       value={item.alt}
                       onChange={(e) => update(item.id, { alt: e.target.value })}
-                      placeholder="Emri"
+                      placeholder="Name"
                       className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
                     />
                     <select
@@ -118,7 +118,7 @@ export function WebDesignGalleryEditor({
                       onClick={() => remove(item.id)}
                       className="inline-flex items-center gap-1 rounded-full border border-red-500/30 px-2.5 py-1 text-[11px] text-red-400"
                     >
-                      <Trash2 size={11} /> Fshi
+                      <Trash2 size={11} /> Delete
                     </button>
                   </div>
                 </div>

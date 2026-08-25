@@ -22,9 +22,9 @@ export function ProjectVideoEditor({
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="text-sm font-medium">Video (opsionale)</h3>
+        <h3 className="text-sm font-medium">Video (optional)</h3>
         <p className="mt-0.5 text-[11px] text-muted">
-          Ngarko një video — shfaqet në fund të faqes së projektit.
+          Upload a video — shown at the bottom of the project page.
         </p>
       </div>
 
@@ -37,11 +37,11 @@ export function ProjectVideoEditor({
           />
           <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2">
             <span className="flex items-center gap-1.5 text-[11px] text-muted">
-              <Film size={12} /> Video e ngarkuar
+              <Film size={12} /> Video uploaded
             </span>
             <div className="flex gap-2">
               <label className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] hover:bg-surface">
-                <Upload size={11} /> Ndrysho
+                <Upload size={11} /> Change
                 <input
                   type="file"
                   accept="video/*"
@@ -57,7 +57,7 @@ export function ProjectVideoEditor({
                 onClick={() => onChange(undefined)}
                 className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] text-muted hover:bg-surface hover:text-foreground"
               >
-                <Trash2 size={11} /> Hiq
+                <Trash2 size={11} /> Remove
               </button>
             </div>
           </div>
@@ -65,7 +65,7 @@ export function ProjectVideoEditor({
       ) : (
         <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#1a1a1a]/30 bg-[#fdd85d]/16 px-4 py-10 text-[#1a1a1a]/80 transition hover:border-[#1a1a1a]/45 hover:bg-[#fdd85d]/28">
           <Upload size={20} />
-          <span className="text-xs font-semibold">Ngarko video (mp4, webm…)</span>
+          <span className="text-xs font-semibold">Upload video (mp4, webm…)</span>
           <input
             type="file"
             accept="video/*"

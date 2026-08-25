@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Concept Marketing Albania",
   description:
-    "Portfolio e Concept Marketing Albania — branding, social media, web design, video dhe photoshooting.",
+    "Concept Marketing Albania portfolio — branding, social media, web design, video, and photoshooting.",
 };
 
 export default async function HomePage() {
