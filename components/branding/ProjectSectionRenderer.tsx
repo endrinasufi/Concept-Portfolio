@@ -28,7 +28,7 @@ function TextBlock({
   return (
     <div className="mx-auto max-w-3xl py-4">
       {heading ? (
-        <h2 className="font-display text-3xl md:text-4xl tracking-tight">{heading}</h2>
+        <h2 className="font-page-title text-3xl md:text-4xl">{heading}</h2>
       ) : null}
       {body ? (
         <p className="mt-4 text-lg leading-relaxed text-muted">{body}</p>

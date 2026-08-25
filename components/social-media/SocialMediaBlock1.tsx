@@ -5,6 +5,11 @@ import { socialMediaContentClass } from "@/lib/social-media/layout";
 import { sortByOrder } from "@/lib/utils/id";
 import { SocialMediaFeedWindow } from "./SocialMediaFeedWindow";
 import { SocialMediaPhoneMockup } from "./SocialMediaPhoneMockup";
+import { SocialNetworkIcon } from "./SocialNetworkIcon";
+import {
+  displayHandleLabel,
+  resolveNetwork,
+} from "@/lib/social-media/networks";
 
 export function SocialMediaBlock1({
   project,
@@ -14,6 +19,10 @@ export function SocialMediaBlock1({
   onOpenFeed: (post: SocialMediaFeedPost, index: number) => void;
 }) {
   const handles = sortByOrder(project.usernames);
+  const name = (project.clientName || project.title || "").trim();
+  const nameParts = name.split(/\s+/).filter(Boolean);
+  const titleFirst = nameParts[0] ?? "";
+  const titleRest = nameParts.slice(1).join(" ");
 
   const mockups = [
     {
@@ -31,14 +40,17 @@ export function SocialMediaBlock1({
   return (
     <section className="relative z-10 overflow-visible pb-12 pt-[calc(var(--header-offset))] md:pb-16 lg:pb-20">
       <div className={`${socialMediaContentClass} overflow-visible`}>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-neutral-600 md:text-xs">
-          {project.serviceLabel}
-        </p>
-
-        <div className="mt-3 grid items-start gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-stretch lg:gap-8 xl:gap-12">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-stretch lg:gap-8 xl:gap-12">
           <div className="flex min-w-0 flex-col lg:h-full">
-            <h1 className="text-[clamp(2.75rem,5.5vw,5rem)] font-extrabold uppercase leading-[0.92] tracking-[-0.03em] text-neutral-950 [font-family:var(--font-sm-display)]">
-              {project.clientName}
+            <h1 className="font-page-title flex flex-col gap-[0.12em] text-[clamp(4rem,11vw,8rem)] leading-none text-neutral-950">
+              {titleRest ? (
+                <>
+                  <span>{titleFirst}</span>
+                  <span>{titleRest}</span>
+                </>
+              ) : (
+                titleFirst
+              )}
             </h1>
 
             {handles.length ? (
@@ -49,9 +61,10 @@ export function SocialMediaBlock1({
                       href={handle.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm font-medium text-neutral-700 underline decoration-neutral-400/60 underline-offset-4 transition hover:text-neutral-950 hover:decoration-neutral-900"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-neutral-700 transition hover:text-neutral-950"
                     >
-                      {handle.label}
+                      <SocialNetworkIcon network={resolveNetwork(handle)} />
+                      <span>{displayHandleLabel(handle.label)}</span>
                     </a>
                   </li>
                 ))}

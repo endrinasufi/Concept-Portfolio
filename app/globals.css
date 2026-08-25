@@ -85,6 +85,14 @@ img {
   pointer-events: auto;
 }
 
+.font-page-title {
+  font-family: var(--font-hero-caps);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.82;
+  text-transform: uppercase;
+}
+
 .admin-ui {
   font-family: var(--font-admin-sans), ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.011em;
@@ -99,6 +107,7 @@ img {
 
 .admin-ui .font-display,
 .admin-ui .font-hero-caps,
+.admin-ui .font-page-title,
 .admin-ui .admin-serif {
   font-family: inherit;
   font-weight: 600;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AdminFooterView } from "@/components/admin/AdminFooterView";
 import { AdminSubNav } from "@/components/admin/AdminSubNav";
 import { ContactInfoSettingsEditor } from "@/components/admin/ContactInfoSettingsEditor";
 import { ContentManagersEditor } from "@/components/admin/ContentManagersEditor";
@@ -13,6 +14,7 @@ type SettingsTab =
   | "logo"
   | "contact"
   | "mail"
+  | "footer"
   | "seo"
   | "team"
   | "password";
@@ -21,6 +23,7 @@ const TABS: { id: SettingsTab; label: string }[] = [
   { id: "logo", label: "Brand & logos" },
   { id: "contact", label: "Contact & map" },
   { id: "mail", label: "Form email" },
+  { id: "footer", label: "Footer" },
   { id: "seo", label: "SEO & OpenAI" },
   { id: "team", label: "Team" },
   { id: "password", label: "Password" },
@@ -33,7 +36,7 @@ export function AdminSettingsView() {
     <div className="space-y-5">
       <div>
         <h1>Settings</h1>
-        <p>Site branding, contact, mail, SEO, team, and account security.</p>
+        <p>Site branding, contact, mail, footer, SEO, team, and account security.</p>
       </div>
 
       <div className="flex flex-col gap-5 lg:flex-row lg:gap-8">
@@ -50,6 +53,7 @@ export function AdminSettingsView() {
           {tab === "logo" ? <SiteLogoSettings /> : null}
           {tab === "contact" ? <ContactInfoSettingsEditor /> : null}
           {tab === "mail" ? <MailSettingsEditor /> : null}
+          {tab === "footer" ? <AdminFooterView /> : null}
           {tab === "seo" ? (
             <>
               <OpenAiSettingsEditor />

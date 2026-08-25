@@ -29,11 +29,8 @@ const TABS: { id: VideoPageView; label: string; href: string }[] = [
 export function VideoPageHeader({ active }: { active: VideoPageView }) {
   return (
     <div className="border-b border-white/[0.08] pb-12 md:pb-16">
-      <p className="text-[11px] uppercase tracking-[0.32em] text-accent">
+      <h1 className="font-page-title text-6xl md:text-7xl lg:text-8xl">
         Video
-      </p>
-      <h1 className="font-display mt-4 text-5xl leading-[0.92] tracking-tight md:text-6xl lg:text-7xl">
-        {active === "social" ? "Social Media" : "Production"}
       </h1>
       <div className="mt-8 md:mt-9">
         <LiquidVideoSwitcher active={active} />

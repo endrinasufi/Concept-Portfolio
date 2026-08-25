@@ -70,6 +70,7 @@ export function revalidatePublicPaths(paths: string[] = []) {
     "/video-production",
     "/video-production/social",
     "/video-production/production",
+    "/contact",
     "/icon",
   ];
   for (const path of [...base, ...paths]) {

@@ -37,14 +37,16 @@ export function createSeedSocialMediaProjects(): SocialMediaProject[] {
       usernames: [
         {
           id: createId(),
-          label: "@aurora.cafe",
+          label: "aurora.cafe",
           url: "https://instagram.com/",
+          network: "instagram",
           order: 0,
         },
         {
           id: createId(),
-          label: "@auroracafe",
+          label: "auroracafe",
           url: "https://tiktok.com/",
+          network: "tiktok",
           order: 1,
         },
       ],

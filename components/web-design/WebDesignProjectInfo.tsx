@@ -25,7 +25,7 @@ export function WebDesignProjectInfo({
           <span className="ml-2.5 text-white/55">{project.serviceLabel}</span>
         </p>
 
-        <h1 className="mt-3 text-[clamp(2.25rem,4vw,3.85rem)] font-extrabold leading-[0.95] tracking-[-0.045em] text-white">
+        <h1 className="font-page-title mt-3 text-[clamp(2.25rem,4vw,3.85rem)] text-white">
           {project.title}
         </h1>
       </div>

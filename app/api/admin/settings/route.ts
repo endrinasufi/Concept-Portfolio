@@ -35,7 +35,10 @@ export async function PATCH(request: Request) {
 
     if (!isAdminRole(session.role)) {
       const keys = Object.keys(body);
-      if (keys.length === 0 || keys.some((k) => k !== "homeFeatured")) {
+      const allowed =
+        keys.length > 0 &&
+        keys.every((k) => k === "homeFeatured" || k.startsWith("footer"));
+      if (!allowed) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
     }

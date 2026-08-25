@@ -56,15 +56,13 @@ export function SocialMediaProjectRenderer({
         title: post.caption,
       };
     }
-    const storyIndex = stories.findIndex((s) => s.id === viewer.story.id);
     return {
       type: "image",
       mediaId: viewer.story.mediaId,
       imageUrl: viewer.story.imageUrl,
       alt: viewer.story.alt,
-      title: storyIndex >= 0 ? `Story ${storyIndex + 1}` : viewer.story.title,
     };
-  }, [viewer, feed, stories]);
+  }, [viewer, feed]);
 
   return (
     <div

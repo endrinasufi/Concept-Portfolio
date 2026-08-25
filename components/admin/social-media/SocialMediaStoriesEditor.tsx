@@ -37,7 +37,6 @@ export function SocialMediaStoriesEditor({
           mediaId: asset.id,
           imageUrl: previewUrl(asset),
           alt: file.name,
-          title: `Story ${next.length + 1}`,
           order: next.length,
         });
       }
@@ -58,10 +57,6 @@ export function SocialMediaStoriesEditor({
   function reorder(ids: string[]) {
     const map = new Map(ordered.map((s) => [s.id, s]));
     onChange(ids.map((id, i) => ({ ...map.get(id)!, order: i })));
-  }
-
-  function update(id: string, patch: Partial<SocialMediaStory>) {
-    onChange(ordered.map((s) => (s.id === id ? { ...s, ...patch } : s)));
   }
 
   return (
@@ -110,18 +105,11 @@ export function SocialMediaStoriesEditor({
                     alt={story.alt}
                     fit="cover"
                   />
-                </div>
-                <div className="space-y-1 p-2">
-                  <input
-                    value={story.title ?? ""}
-                    onChange={(e) => update(story.id, { title: e.target.value })}
-                    placeholder="Title"
-                    className="w-full rounded border border-border bg-background px-1 py-1 text-[10px]"
-                  />
                   <button
                     type="button"
                     onClick={() => remove(story.id)}
-                    className="inline-flex w-full items-center justify-center gap-1 rounded border border-red-500/30 py-1 text-[10px] text-red-400"
+                    className="absolute right-1 top-1 inline-flex rounded border border-red-500/40 bg-background/90 p-0.5 text-red-400"
+                    aria-label="Fshi story"
                   >
                     <Trash2 size={10} />
                   </button>
