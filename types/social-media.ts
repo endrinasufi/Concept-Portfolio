@@ -1,10 +1,21 @@
 export type SocialMediaProjectStatus = "draft" | "published";
 
+export type SocialMediaNetwork =
+  | "instagram"
+  | "tiktok"
+  | "facebook"
+  | "youtube"
+  | "linkedin"
+  | "x"
+  | "pinterest"
+  | "threads";
+
 export interface SocialMediaUsername {
   id: string;
   label: string;
   url: string;
   order: number;
+  network?: SocialMediaNetwork;
 }
 
 export interface SocialMediaFeedPost {

@@ -1216,7 +1216,7 @@ export function HomeScrollExperience({
               </p>
               <h2
                 ref={marketLine2Ref}
-                className="font-display mt-1.5 text-[1.2rem] leading-[1.1] tracking-tight sm:mt-3 sm:text-3xl md:text-5xl"
+                className="font-page-title mt-1.5 text-[1.2rem] sm:mt-3 sm:text-3xl md:text-5xl"
               >
                 Shfaq, krijo dhe
                 <br />
@@ -1253,7 +1253,7 @@ export function HomeScrollExperience({
         className="relative border-t border-border bg-background px-5 py-16 md:px-8 md:py-32"
       >
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-display max-w-3xl text-4xl leading-tight md:text-5xl">
+          <h2 className="font-page-title max-w-3xl text-4xl md:text-5xl">
             Vazhdoni të eksploroni projektet tona.
           </h2>
           <div className="mt-8 flex flex-wrap gap-4">

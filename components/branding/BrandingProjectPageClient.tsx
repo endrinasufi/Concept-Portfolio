@@ -39,7 +39,7 @@ export function BrandingProjectPageClient({
   if (notFound || !project) {
     return (
       <div className="mx-auto max-w-xl px-5 py-24 text-center">
-        <h1 className="font-display text-3xl">Projekti nuk u gjet</h1>
+        <h1 className="font-page-title text-3xl">Projekti nuk u gjet</h1>
         <p className="mt-3 text-muted">
           {isPreview
             ? "Nuk ekziston asnjë projekt me këtë slug."

@@ -18,11 +18,13 @@ import {
   Settings,
   ArrowLeft,
   LogOut,
+  FileEdit,
 } from "lucide-react";
 
 const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/homepage", label: "Homepage", icon: Home },
+  { href: "/admin/footer", label: "Footer", icon: FileEdit },
   { href: "/admin/analytics", label: "Analitika", icon: BarChart3 },
   { href: "/admin/branding", label: "Branding", icon: Palette },
   { href: "/admin/social-media", label: "Social Media", icon: Share2 },

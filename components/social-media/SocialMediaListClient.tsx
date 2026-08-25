@@ -22,18 +22,10 @@ function coverOf(project: SocialMediaProject) {
 
 function SocialMediaProjectCard({
   project,
-  index,
 }: {
   project: SocialMediaProject;
-  index: number;
 }) {
   const cover = coverOf(project);
-  const meta = [
-    String(index + 1).padStart(2, "0"),
-    project.serviceLabel,
-  ]
-    .filter(Boolean)
-    .join(" · ");
 
   return (
     <Link href={`/social-media/${project.slug}`} className="group flex flex-col">
@@ -53,11 +45,7 @@ function SocialMediaProjectCard({
       </div>
 
       <div className="mt-3.5 md:mt-4">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-white/40">
-          {meta}
-        </p>
-
-        <h2 className="mt-2 text-lg font-semibold leading-[1.15] tracking-tight text-white transition duration-300 group-hover:text-white/75 md:text-xl">
+        <h2 className="text-lg font-semibold leading-[1.15] tracking-tight text-white transition duration-300 group-hover:text-white/75 md:text-xl">
           {project.clientName || project.title}
         </h2>
 
@@ -103,11 +91,8 @@ export function SocialMediaListClient({
       <div className="relative z-[1] mx-auto max-w-7xl px-5 pb-24 pt-[var(--header-offset)] md:px-8">
         <FadeIn>
           <div className="max-w-3xl border-b border-white/[0.08] pb-12 md:pb-16">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">
+            <h1 className="font-page-title text-6xl md:text-7xl lg:text-8xl">
               Social Media
-            </p>
-            <h1 className="font-display mt-4 text-5xl leading-[0.92] tracking-tight md:text-6xl lg:text-7xl">
-              Projektet
             </h1>
           </div>
         </FadeIn>
@@ -123,7 +108,7 @@ export function SocialMediaListClient({
             {projects.map((project, i) => (
               <Reveal key={project.id} delay={Math.min(i * 0.05, 0.2)}>
                 <div className="h-full border-b border-white/[0.08] pb-6 md:pb-8">
-                  <SocialMediaProjectCard project={project} index={i} />
+                  <SocialMediaProjectCard project={project} />
                 </div>
               </Reveal>
             ))}

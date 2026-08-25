@@ -56,7 +56,7 @@ export function PhotoshootingProjectPageClient({
   if (notFound || !project) {
     return (
       <div className="mx-auto max-w-xl px-5 py-24 text-center">
-        <h1 className="font-display text-3xl">Projekti nuk u gjet</h1>
+        <h1 className="font-page-title text-3xl">Projekti nuk u gjet</h1>
         <Link href="/photoshooting" className="mt-8 inline-block text-accent hover:underline">
           ← Kthehu te Photoshooting
         </Link>
@@ -81,7 +81,7 @@ export function PhotoshootingProjectPageClient({
             <p className="text-[11px] uppercase tracking-[0.32em] text-accent">
               Photoshooting
             </p>
-            <h1 className="font-display mt-4 text-4xl leading-[0.95] tracking-tight md:text-6xl lg:text-7xl">
+            <h1 className="font-page-title mt-4 text-4xl md:text-6xl lg:text-7xl">
               {project.title}
             </h1>
             <p className={`mt-4 text-sm text-muted md:text-base ${inter.className}`}>

@@ -44,7 +44,8 @@ export function AdminSettingsView() {
       <div>
         <h1>Settings</h1>
         <p>
-          Logo, favicon, logo klientësh, Content Manager dhe fjalëkalimi.
+          Logo, favicon, logo klientësh, Content Manager dhe fjalëkalimi. Footer
+          ndryshohet te seksioni Footer.
         </p>
       </div>
 

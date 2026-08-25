@@ -31,7 +31,7 @@ export function SocialMediaBlock3({
     <section className="relative z-10 pb-16 pt-10 md:pb-20 md:pt-14 lg:pt-16">
       <div className={socialMediaContentClass}>
         <div className="mb-5 flex items-end justify-between gap-4 md:mb-6">
-          <h2 className="text-[clamp(1.5rem,2.2vw,2.75rem)] font-bold uppercase tracking-[-0.02em] text-neutral-950 [font-family:var(--font-sm-display)]">
+          <h2 className="font-page-title text-[clamp(1.5rem,2.2vw,2.75rem)] text-neutral-950">
             Stories
           </h2>
           {ordered.length > 5 ? (
@@ -60,7 +60,7 @@ export function SocialMediaBlock3({
           ref={scrollerRef}
           className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-4 [&::-webkit-scrollbar]:hidden"
         >
-          {ordered.map((story, i) => (
+          {ordered.map((story) => (
             <button
               key={story.id}
               type="button"
@@ -76,9 +76,6 @@ export function SocialMediaBlock3({
                   fit="cover"
                   className="transition duration-500 group-hover:scale-[1.03] motion-reduce:group-hover:scale-100"
                 />
-                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-3 pb-3 pt-8 text-left text-[11px] text-white">
-                  Story {i + 1}
-                </span>
               </div>
             </button>
           ))}

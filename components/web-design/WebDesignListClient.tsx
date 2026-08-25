@@ -10,10 +10,8 @@ import type { WebDesignProject } from "@/types/web-design";
 
 function WebDesignProjectCard({
   project,
-  index,
 }: {
   project: WebDesignProject;
-  index: number;
 }) {
   const reduce = useReducedMotion();
   const [hovering, setHovering] = useState(false);
@@ -54,14 +52,6 @@ function WebDesignProjectCard({
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
   }, [hovering, reduce, hasDesktop]);
-
-  const meta = [
-    String(project.projectNumber ?? index + 1).padStart(2, "0"),
-    project.year,
-    project.client,
-  ]
-    .filter(Boolean)
-    .join(" · ");
 
   const showScroll = hovering && hasDesktop;
 
@@ -123,11 +113,7 @@ function WebDesignProjectCard({
       </div>
 
       <div className="mt-5 md:mt-6">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">
-          {meta || project.serviceLabel}
-        </p>
-
-        <h2 className="mt-3 text-lg font-semibold leading-[1.15] tracking-tight text-white transition duration-300 group-hover:text-white/75 md:text-xl">
+        <h2 className="text-lg font-semibold leading-[1.15] tracking-tight text-white transition duration-300 group-hover:text-white/75 md:text-xl">
           {project.title}
         </h2>
 
@@ -173,11 +159,8 @@ export function WebDesignListClient({
       <div className="relative z-[1] mx-auto max-w-7xl px-5 pb-24 pt-[var(--header-offset)] md:px-8">
         <FadeIn>
           <div className="max-w-3xl border-b border-white/[0.08] pb-12 md:pb-16">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">
-              Web Design
-            </p>
-            <h1 className="font-display mt-4 text-5xl leading-[0.92] tracking-tight md:text-6xl lg:text-7xl">
-              Projektet
+            <h1 className="font-page-title text-6xl md:text-7xl lg:text-8xl">
+              Website
             </h1>
           </div>
         </FadeIn>
@@ -193,7 +176,7 @@ export function WebDesignListClient({
             {projects.map((project, i) => (
               <Reveal key={project.id} delay={Math.min(i * 0.05, 0.2)}>
                 <div className="h-full border-b border-white/[0.08] pb-10 md:pb-12">
-                  <WebDesignProjectCard project={project} index={i} />
+                  <WebDesignProjectCard project={project} />
                 </div>
               </Reveal>
             ))}

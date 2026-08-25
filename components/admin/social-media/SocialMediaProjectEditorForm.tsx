@@ -30,14 +30,16 @@ export function emptySocialMediaProjectForm(): SocialMediaProjectFormValue {
     usernames: [
       {
         id: createId(),
-        label: "@klienti",
+        label: "klienti",
         url: "https://instagram.com/klienti",
+        network: "instagram",
         order: 0,
       },
       {
         id: createId(),
-        label: "@klienti",
+        label: "klienti",
         url: "https://tiktok.com/@klienti",
+        network: "tiktok",
         order: 1,
       },
     ],

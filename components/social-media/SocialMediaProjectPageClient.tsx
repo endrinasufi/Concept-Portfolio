@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useSocialMediaProjectBySlug } from "@/lib/hooks/useSocialMediaProjects";
 import { SocialMediaProjectRenderer } from "./SocialMediaProjectRenderer";
 
@@ -18,6 +19,16 @@ export function SocialMediaProjectPageClient({
     isPreview,
     initialProject,
   );
+
+  const pageBg = project?.pageAppearance.backgroundColor || "#EAEAEA";
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--project-bg", pageBg);
+    return () => {
+      root.style.removeProperty("--project-bg");
+    };
+  }, [pageBg]);
 
   if (loading) {
     return (
@@ -38,7 +49,7 @@ export function SocialMediaProjectPageClient({
   if (notFound || !project) {
     return (
       <div className="mx-auto max-w-xl bg-[#EAEAEA] px-5 py-24 text-center text-neutral-900">
-        <h1 className="text-3xl font-bold uppercase [font-family:var(--font-sm-display)]">
+        <h1 className="font-page-title text-3xl">
           Projekti nuk u gjet
         </h1>
         <p className="mt-3 text-neutral-500">

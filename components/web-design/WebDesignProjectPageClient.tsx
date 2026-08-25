@@ -42,7 +42,7 @@ export function WebDesignProjectPageClient({
   if (notFound || !project) {
     return (
       <div className="mx-auto max-w-xl bg-[#0B0B0C] px-5 py-24 text-center text-white">
-        <h1 className="text-3xl font-extrabold tracking-[-0.04em]">
+        <h1 className="font-page-title text-3xl">
           Projekti nuk u gjet
         </h1>
         <p className="mt-3 text-white/45">

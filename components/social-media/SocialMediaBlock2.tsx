@@ -250,7 +250,7 @@ export function SocialMediaBlock2({ block2 }: { block2: Block2 }) {
 
         <div className="relative grid gap-6 p-8 sm:p-10 md:grid-cols-12 md:gap-x-12 md:p-12 lg:gap-x-16 lg:p-14 xl:p-16">
           <div className="md:col-span-5 md:row-start-1 md:max-w-[min(100%,26rem)] lg:max-w-[min(100%,30rem)]">
-            <h2 className="text-[clamp(2rem,3.2vw,3.75rem)] font-bold uppercase leading-[1.02] tracking-[-0.02em] [font-family:var(--font-sm-display)] md:pt-12">
+            <h2 className="font-page-title text-[clamp(2rem,3.2vw,3.75rem)] md:pt-12">
               {block2.title || "Project overview"}
             </h2>
 
