@@ -24,6 +24,8 @@ export type HomeCard = {
   mediaId?: string;
   imageUrl?: string;
   href?: string;
+  /** Thumbnail presentation — laptop mockup for Web Design */
+  frame?: "laptop";
 };
 
 function padRepeat(items: HomeCard[], count: number): HomeCard[] {
@@ -190,17 +192,18 @@ function webDesignProjectCards(
     const galleryFirst = [...(project.gallery ?? [])].sort(
       (a, b) => a.order - b.order,
     )[0];
+    // Prefer desktop screen art for laptop frame thumbnails
     const mediaId =
       thumbnailMediaId ??
-      project.coverMediaId ??
       fv?.desktopMediaId ??
+      project.coverMediaId ??
       fv?.backgroundMediaId ??
       fv?.mobileMediaId ??
       galleryFirst?.mediaId;
     const imageUrl = thumbnailMediaId
       ? undefined
-      : project.coverImageUrl ??
-        fv?.desktopImageUrl ??
+      : fv?.desktopImageUrl ??
+        project.coverImageUrl ??
         fv?.backgroundImageUrl ??
         fv?.mobileImageUrl ??
         galleryFirst?.imageUrl;
@@ -217,6 +220,7 @@ function webDesignProjectCards(
       mediaId,
       imageUrl,
       href: `/web-design/${project.slug}`,
+      frame: "laptop",
     });
   }
   return cards;

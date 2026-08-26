@@ -323,6 +323,11 @@ img {
   z-index: 1000 !important;
 }
 
+/* Karta “Web Design / View all” — gjithmonë sipër projektëve */
+.scroll-card-pin-top {
+  z-index: 1200 !important;
+}
+
 .editorial-grain {
   position: relative;
   isolation: isolate;

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MediaImage } from "@/components/branding/MediaImage";
+import { HomeLaptopFrame } from "@/components/home/HomeLaptopFrame";
 import type { HomeCard } from "@/lib/home/collectHomeCards";
 import gsap from "gsap";
 import { ArrowDownRight } from "lucide-react";
@@ -73,11 +74,21 @@ type Props = {
   largeTag?: boolean;
   /** Celular: titulli brenda kartës (nuk ka hover për tag) */
   showInlineTitle?: boolean;
+  /** Mbaj këtë kartë gjithmonë sipër të tjerave (p.sh. Web Design View all) */
+  pinOnTop?: boolean;
 };
 
 export const ScrollArtCard = forwardRef<HTMLDivElement, Props>(
   function ScrollArtCard(
-    { card, width, height, interactive = true, largeTag = false, showInlineTitle = false },
+    {
+      card,
+      width,
+      height,
+      interactive = true,
+      largeTag = false,
+      showInlineTitle = false,
+      pinOnTop = false,
+    },
     ref,
   ) {
     const reduceMotion = useReducedMotion();
@@ -148,6 +159,10 @@ export const ScrollArtCard = forwardRef<HTMLDivElement, Props>(
 
     const isService = card.kind === "service";
     const clientLabel = card.client?.replace(/^@/, "").trim();
+    const titleLabel = card.title?.trim();
+    const tagText = clientLabel
+      ? `@${clientLabel}`
+      : titleLabel || undefined;
     const tagSeed = hashId(card.id);
     const tagBg = pickTagColor(card.tagColors, tagSeed);
     const tagFg = luminance(tagBg) > 0.55 ? "#0a0a0b" : "#ffffff";
@@ -159,7 +174,7 @@ export const ScrollArtCard = forwardRef<HTMLDivElement, Props>(
     const tagLift = largeTag ? 16 : 12;
 
     const clientTag =
-      !isService && clientLabel && !showInlineTitle ? (
+      !isService && tagText && !showInlineTitle ? (
       <span
         className="pointer-events-none absolute top-0 z-20 origin-bottom-left opacity-0 transition duration-300 ease-out group-hover/card:opacity-100"
         style={{
@@ -184,7 +199,7 @@ export const ScrollArtCard = forwardRef<HTMLDivElement, Props>(
             }
             style={{ color: tagFg }}
           >
-            @{clientLabel}
+            {tagText}
           </span>
           <span
             className={
@@ -216,13 +231,23 @@ export const ScrollArtCard = forwardRef<HTMLDivElement, Props>(
         className="relative h-full w-full overflow-hidden rounded-[1.6rem] bg-surface md:rounded-[2rem]"
         style={{ width, height }}
       >
-        <MediaImage
-          mediaId={card.mediaId}
-          imageUrl={card.imageUrl}
-          alt={card.title ?? ""}
-          fit="cover"
-          className="pointer-events-none h-full w-full"
-        />
+        {card.frame === "laptop" ? (
+          <HomeLaptopFrame
+            mediaId={card.mediaId}
+            imageUrl={card.imageUrl}
+            alt={card.title ?? ""}
+            seed={card.id}
+            accentColors={card.tagColors}
+          />
+        ) : (
+          <MediaImage
+            mediaId={card.mediaId}
+            imageUrl={card.imageUrl}
+            alt={card.title ?? ""}
+            fit="cover"
+            className="pointer-events-none h-full w-full"
+          />
+        )}
         {showInlineTitle && (card.title || clientLabel) ? (
           <div className="card-inline-title pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-3.5 pb-3.5 pt-10 opacity-0">
             <p className="text-[18px] font-medium leading-tight text-white">
@@ -249,7 +274,7 @@ export const ScrollArtCard = forwardRef<HTMLDivElement, Props>(
     return (
       <div
         ref={setOuterRef}
-        className={`group/card absolute left-1/2 top-1/2 cursor-pointer overflow-visible will-change-transform${hovered ? " scroll-card-hover" : ""}`}
+        className={`group/card absolute left-1/2 top-1/2 cursor-pointer overflow-visible will-change-transform${hovered ? " scroll-card-hover" : ""}${pinOnTop ? " scroll-card-pin-top" : ""}`}
         style={{
           width,
           height,

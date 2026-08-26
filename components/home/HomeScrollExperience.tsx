@@ -1141,6 +1141,7 @@ export function HomeScrollExperience({
                     height={cardH}
                     largeTag
                     showInlineTitle={mobile}
+                    pinOnTop={i === 0 || card.kind === "service"}
                   />
                 ))}
                 <div
