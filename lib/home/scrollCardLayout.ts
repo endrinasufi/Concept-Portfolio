@@ -6,7 +6,7 @@ export type CardPose = {
   zIndex: number;
 };
 
-/** Raporti lartësi/gjerësi — karta katrore */
+/** Raporti lartësi/gjerësi — karta katrore për të gjitha kategoritë */
 export const CARD_ASPECT = 1;
 
 export const MOBILE_MAX = 639;
@@ -23,18 +23,16 @@ export function homeEarlyCardCount(vw: number): number {
   return isMobileHome(vw) ? 5 : 7;
 }
 
-/** Zmadhim i kartave vetëm në scene 1 (intro / fan) */
+/** Shkalla e unifikuar — Branding / Social / Web njësoj */
 export const SCENE1_CARD_SCALE = 1.13;
-
-/** Zmadhim i kartave vetëm në scene 2 (scroll spread) */
-export const SCENE2_CARD_SCALE = 1.3;
+export const SCENE2_CARD_SCALE = 1.13;
 
 function scene1Scale(vw: number): number {
-  return isMobileHome(vw) ? 0.92 : SCENE1_CARD_SCALE;
+  return isMobileHome(vw) ? 1 : SCENE1_CARD_SCALE;
 }
 
 function scene2Scale(vw: number): number {
-  return isMobileHome(vw) ? 1 : SCENE2_CARD_SCALE;
+  return scene1Scale(vw);
 }
 
 export function cardWidth(vw: number): number {
@@ -44,7 +42,6 @@ export function cardWidth(vw: number): number {
 }
 
 export function cardHeight(vw: number): number {
-  if (isMobileHome(vw)) return Math.round(cardWidth(vw) * 1.3);
   return Math.round(cardWidth(vw) * CARD_ASPECT);
 }
 
@@ -61,7 +58,7 @@ export function deckPile(total: number, vw: number): CardPose[] {
     x: (i - (total - 1) / 2) * 0.35 * s,
     y: i * -0.45 * s,
     rotate: -9 + i * 0.25,
-    scale: (1 - i * 0.013) * s,
+    scale: s,
     zIndex: total - i,
   }));
 }
@@ -98,7 +95,7 @@ export function deckFan(total: number, vw: number): CardPose[] {
       x: offset * spacing,
       y: depth * arc + behindLift,
       rotate: offset * rotateStep,
-      scale: (1 - depth * (mobile ? 0.018 : 0.025)) * s,
+      scale: s,
       zIndex: total - depth,
     };
   });
@@ -111,7 +108,7 @@ export function deckStacked(total: number, vw: number): CardPose[] {
     x: i * 0.45 * s,
     y: i * -0.55 * s,
     rotate: -7 + i * 0.28,
-    scale: (0.97 - i * 0.011) * s,
+    scale: s,
     zIndex: total - i,
   }));
 }
@@ -130,7 +127,7 @@ function deckSpreadMobile(total: number, vw: number): CardPose[] {
       x: offset * spacing,
       y: 12 * s + depth * arc,
       rotate: offset * 2.6,
-      scale: s * 0.96,
+      scale: s,
       zIndex: total - depth,
     };
   });
@@ -138,7 +135,7 @@ function deckSpreadMobile(total: number, vw: number): CardPose[] {
 
 /** Skena 3a — kartat mblidhen plotësisht mbi tekst (një grumbull) */
 export function deckTextStack(total: number, vw: number): CardPose[] {
-  const s = isMobileHome(vw) ? 0.9 : 1.05;
+  const s = scene1Scale(vw);
   return Array.from({ length: total }, (_, i) => ({
     x: 0,
     y: i * -0.4,
@@ -151,7 +148,7 @@ export function deckTextStack(total: number, vw: number): CardPose[] {
 /** Skena 3b — hapje si tifoz, pivot poshtë në qendër, drejt majtas */
 export function deckTextFan(total: number, vw: number): CardPose[] {
   const mobile = isMobileHome(vw);
-  const s = mobile ? 0.9 : 1.05;
+  const s = scene1Scale(vw);
   const hy = (cardHeight(vw) * s) / 2;
   const front = mobile ? 10 : 14;
   const step = mobile ? 9.5 : 11.2;
@@ -163,7 +160,7 @@ export function deckTextFan(total: number, vw: number): CardPose[] {
       x: hy * Math.sin(θ),
       y: hy * (1 - Math.cos(θ)),
       rotate,
-      scale: s * (1 - i * 0.01),
+      scale: s,
       zIndex: total - i,
     };
   });
@@ -178,8 +175,8 @@ export function scene3Center(
   const mobile = isMobileHome(vw);
   const header = mobile ? 56 : 80;
   const gap = mobile ? 12 : 16;
-  const baseScale = mobile ? 0.88 : vw < 1024 ? 0.74 : 0.8;
-  const peakScale = mobile ? 1.14 : vw < 1024 ? 0.98 : 1.14;
+  const baseScale = scene1Scale(vw);
+  const peakScale = scene1Scale(vw);
   const cardH = cardHeight(vw) * peakScale;
   const amplitude = mobile ? 32 : 48;
   const groupH = wrapHeight + gap + cardH + amplitude * 0.35;
@@ -230,7 +227,7 @@ export function deckWave(
       x: (t - 0.5) * 2 * radiusX,
       y: -wave * amplitude + yBias,
       rotate: slope * (mobile ? 9 : 14),
-      scale: isFront ? peakScale : baseScale * (1 - depth * 0.12),
+      scale: peakScale,
       zIndex: isFront ? 40 : Math.round(8 + (1 - depth) * 18),
     };
   });
@@ -305,7 +302,7 @@ export function deckMobileStack(
         x: side * spread,
         y: depth * arc,
         rotate: side * 7.5,
-        scale: 1 - depth * 0.03,
+        scale: 1,
         zIndex: total - depth,
       };
     });
@@ -319,7 +316,7 @@ export function deckMobileStack(
       x: i * stepX,
       y: i * stepY,
       rotate: i * 1.6,
-      scale: 1 - i * 0.018,
+      scale: 1,
       zIndex: total - i,
     }));
   }

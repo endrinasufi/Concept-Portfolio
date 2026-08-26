@@ -75,10 +75,30 @@ function WebDesignProjectCard({
       onBlur={() => setHovering(false)}
     >
       <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[1.5rem] bg-white/[0.04] md:rounded-[1.75rem]">
-        {/* Cover — fade out on hover */}
+        {/* Desktop mockup — under cover when idle so it never bleeds over */}
+        {hasDesktop ? (
+          <div
+            ref={scrollRef}
+            className={`absolute inset-0 overflow-y-auto overscroll-none transition-[opacity,visibility] duration-700 ease-in-out [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+              showScroll
+                ? "z-[2] visible opacity-100"
+                : "pointer-events-none invisible z-0 opacity-0"
+            }`}
+            aria-hidden={!showScroll}
+          >
+            <MediaImage
+              mediaId={v.desktopMediaId}
+              imageUrl={v.desktopImageUrl}
+              alt=""
+              className="block h-auto w-full max-w-none"
+            />
+          </div>
+        ) : null}
+
+        {/* Cover — always above mockup when not hovering */}
         <div
-          className={`absolute inset-0 z-[1] transition-opacity duration-700 ease-in-out ${
-            showScroll ? "opacity-0" : "opacity-100"
+          className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+            showScroll ? "z-[1] opacity-0" : "z-[2] opacity-100"
           }`}
         >
           {hasCover || hasDesktop ? (
@@ -101,25 +121,11 @@ function WebDesignProjectCard({
           )}
         </div>
 
-        {/* Desktop mockup — fade in + auto scroll */}
-        {hasDesktop ? (
-          <div
-            ref={scrollRef}
-            className={`absolute inset-0 z-[2] overflow-y-auto overscroll-none transition-opacity duration-700 ease-in-out [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
-              showScroll ? "opacity-100" : "opacity-0"
-            }`}
-            aria-hidden={!showScroll}
-          >
-            <MediaImage
-              mediaId={v.desktopMediaId}
-              imageUrl={v.desktopImageUrl}
-              alt=""
-              className="block h-auto w-full max-w-none"
-            />
-          </div>
-        ) : null}
-
-        <div className="pointer-events-none absolute inset-0 z-[3] bg-black/10 transition-opacity duration-700 ease-in-out group-hover:opacity-0" />
+        <div
+          className={`pointer-events-none absolute inset-0 z-[3] bg-black/10 transition-opacity duration-700 ease-in-out ${
+            showScroll ? "opacity-0" : "opacity-100"
+          }`}
+        />
       </div>
 
       <div className="mt-5 md:mt-6">

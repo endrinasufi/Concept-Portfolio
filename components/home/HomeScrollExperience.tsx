@@ -330,7 +330,7 @@ export function HomeScrollExperience({
           });
           webEls.forEach((el, i) => {
             const pose = grid[i];
-            if (pose) applyPose(el, { ...pose, scale: 1.26 }, 1);
+            if (pose) applyPose(el, pose, 0);
           });
         }
         if (textCardRef.current) {
@@ -763,11 +763,6 @@ export function HomeScrollExperience({
       });
 
       const poseGroups = [brandingEls, socialEls, webEls];
-      const webScale = mobile ? 1.18 : 1.26;
-      function scaledPose(group: HTMLDivElement[], p: CardPose): CardPose {
-        if (group !== webEls) return p;
-        return { ...p, scale: webScale };
-      }
       function tweenPoses(
         poses: CardPose[],
         start: number,
@@ -779,15 +774,14 @@ export function HomeScrollExperience({
           group.forEach((el, i) => {
             const p = poses[i];
             if (!p) return;
-            const pose = scaledPose(group, p);
             scrollTl.to(
               el,
               {
-                x: pose.x,
-                y: pose.y,
-                rotation: pose.rotate,
-                scale: pose.scale,
-                zIndex: pose.zIndex,
+                x: p.x,
+                y: p.y,
+                rotation: p.rotate,
+                scale: p.scale,
+                zIndex: p.zIndex,
                 duration,
                 ease,
               },
@@ -922,13 +916,13 @@ export function HomeScrollExperience({
             x: p.x,
             y: p.y + 48,
             rotation: p.rotate,
-            scale: 1.26 * 0.94,
+            scale: p.scale * 0.94,
             zIndex: p.zIndex,
           },
           {
             autoAlpha: 1,
             y: p.y,
-            scale: 1.26,
+            scale: p.scale,
             duration: 0.24,
             ease: "power3.out",
           },
@@ -1031,7 +1025,6 @@ export function HomeScrollExperience({
   const cardW = cardWidth(vw);
   const cardH = cardHeight(vw);
   const mobile = isMobileHome(vw);
-  const brandingH = mobile ? cardW : cardH;
 
   const heroHeadline = (
     <h1
@@ -1127,7 +1120,7 @@ export function HomeScrollExperience({
                     }}
                     card={card}
                     width={cardW}
-                    height={brandingH}
+                    height={cardH}
                     showInlineTitle={mobile}
                   />
                 ))}

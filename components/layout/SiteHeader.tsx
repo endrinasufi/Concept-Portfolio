@@ -23,7 +23,6 @@ const navLinks = [
   { href: "/web-design", label: "Web Design" },
   { href: "/video-production", label: "Video" },
   { href: "/photoshooting", label: "Photoshooting" },
-  { href: "/kontakt", label: "Contact" },
 ] as const;
 
 const PILL_STROKE: CSSProperties = {
@@ -184,7 +183,20 @@ export function SiteHeader() {
           </nav>
         </div>
 
-        <div className="ml-auto flex shrink-0 items-center justify-end gap-3 md:gap-4">
+        <div className="ml-auto flex shrink-0 items-center justify-end gap-2 md:gap-3">
+          <Link
+            href="/kontakt"
+            className="hidden items-center rounded-full px-4 py-[7px] text-[14px] font-medium transition md:inline-flex"
+            style={{
+              ...stroke,
+              height: "auto",
+              background: isLightPage ? "rgba(255,255,255,0.72)" : "transparent",
+              color: "inherit",
+            }}
+          >
+            Contact
+          </Link>
+
           <a
             href={SITE}
             target="_blank"
@@ -271,13 +283,25 @@ export function SiteHeader() {
           </nav>
 
           <div
-            className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5"
+            className="flex flex-col gap-3 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5"
             style={{
               borderTop: isLightPage
                 ? "0.5px solid rgba(0,0,0,0.1)"
                 : "0.5px solid rgba(255,255,255,0.1)",
             }}
           >
+            <Link
+              href="/kontakt"
+              className="flex w-full items-center justify-center rounded-full px-5 py-3.5 text-[14px] font-medium"
+              style={{
+                ...stroke,
+                background: isLightPage ? "rgba(255,255,255,0.72)" : "transparent",
+                color: "inherit",
+              }}
+              onClick={() => setMenuOpen(false)}
+            >
+              Contact
+            </Link>
             <a
               href={SITE}
               target="_blank"
