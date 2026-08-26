@@ -2,31 +2,27 @@
 
 import type { WebDesignProject } from "@/types/web-design";
 
-function pad(n: number) {
-  return String(n).padStart(2, "0");
+function titleLines(title: string) {
+  const words = title.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= 2) return [words.join(" ")];
+  const mid = Math.ceil(words.length / 2);
+  return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
 }
 
 export function WebDesignProjectInfo({
   project,
-  index,
-  total,
 }: {
   project: WebDesignProject;
-  index: number;
-  total: number;
 }) {
+  const lines = titleLines(project.title);
+
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-col justify-between">
       <div>
-        <p className="text-[13px] font-normal text-white/55">
-          {pad(index)}
-          <span className="mx-1.5 text-white/30">|</span>
-          {pad(total)}
-          <span className="ml-2.5 text-white/55">{project.serviceLabel}</span>
-        </p>
-
-        <h1 className="font-page-title mt-3 text-[clamp(2.25rem,4vw,3.85rem)] text-white">
-          {project.title}
+        <h1 className="font-page-title flex max-w-full flex-col gap-[0.12em] break-words text-[clamp(3.5rem,7.2vw,6.75rem)] leading-none text-white [text-wrap:balance]">
+          {lines.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
         </h1>
       </div>
 

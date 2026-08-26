@@ -1,5 +1,5 @@
-import { AdminFooterView } from "@/components/admin/AdminFooterView";
+import { redirect } from "next/navigation";
 
 export default function AdminFooterPage() {
-  return <AdminFooterView />;
+  redirect("/admin/settings?tab=footer");
 }

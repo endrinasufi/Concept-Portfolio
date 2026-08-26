@@ -219,6 +219,7 @@ export function SiteFooter() {
               <p className="mt-4 text-[15px] md:text-base">{footer.location}</p>
             </motion.div>
 
+            {socials.length > 0 ? (
             <motion.div
               initial={reduce ? false : { opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -248,7 +249,9 @@ export function SiteFooter() {
                 ))}
               </ul>
             </motion.div>
+            ) : null}
 
+            {footer.exploreLinks.length > 0 ? (
             <motion.div
               initial={reduce ? false : { opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -275,6 +278,7 @@ export function SiteFooter() {
                 ))}
               </ul>
             </motion.div>
+            ) : null}
           </div>
         </div>
 

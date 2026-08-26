@@ -161,7 +161,7 @@ function ReelCard({
           <MediaImage
             mediaId={reel.thumbnailMediaId}
             {...youtubeReelThumbProps(reel)}
-            alt={reel.title ?? "Reel"}
+            alt=""
             fit="cover"
           />
         ) : null}
@@ -175,7 +175,7 @@ function ReelCard({
               mute: true,
               enableJsApi: true,
             })}
-            title={reel.title ?? "Reel"}
+            title="Reel"
             width={1280}
             height={720}
             tabIndex={-1}

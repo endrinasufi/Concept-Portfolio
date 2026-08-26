@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminFooterView } from "@/components/admin/AdminFooterView";
 import { AdminSubNav } from "@/components/admin/AdminSubNav";
 import { ContactInfoSettingsEditor } from "@/components/admin/ContactInfoSettingsEditor";
@@ -32,6 +32,13 @@ const TABS: { id: SettingsTab; label: string }[] = [
 export function AdminSettingsView() {
   const [tab, setTab] = useState<SettingsTab>("logo");
 
+  useEffect(() => {
+    const next = new URLSearchParams(window.location.search).get("tab");
+    if (next && TABS.some((item) => item.id === next)) {
+      setTab(next as SettingsTab);
+    }
+  }, []);
+
   return (
     <div className="space-y-5">
       <div>
@@ -53,7 +60,12 @@ export function AdminSettingsView() {
           {tab === "logo" ? <SiteLogoSettings /> : null}
           {tab === "contact" ? <ContactInfoSettingsEditor /> : null}
           {tab === "mail" ? <MailSettingsEditor /> : null}
-          {tab === "footer" ? <AdminFooterView /> : null}
+          {tab === "footer" ? (
+            <AdminFooterView
+              embedded
+              onEditContact={() => setTab("contact")}
+            />
+          ) : null}
           {tab === "seo" ? (
             <>
               <OpenAiSettingsEditor />

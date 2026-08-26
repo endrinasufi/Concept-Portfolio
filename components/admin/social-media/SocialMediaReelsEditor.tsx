@@ -29,7 +29,6 @@ export function SocialMediaReelsEditor({
       ...ordered,
       {
         id: createId(),
-        title: `Reel ${ordered.length + 1}`,
         order: ordered.length,
       },
     ]);
@@ -148,17 +147,11 @@ export function SocialMediaReelsEditor({
                   <MediaImage
                     mediaId={reel.thumbnailMediaId}
                     {...youtubeReelThumbProps(reel)}
-                    alt={reel.title ?? ""}
+                    alt=""
                     fit="cover"
                   />
                 </div>
                 <div className="min-w-0 flex-1 space-y-2">
-                  <input
-                    value={reel.title ?? ""}
-                    onChange={(e) => update(reel.id, { title: e.target.value })}
-                    placeholder="Title"
-                    className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm"
-                  />
                   <div className="grid gap-2 sm:grid-cols-2">
                     <AdminUploadDropzone
                       label="Thumbnail"

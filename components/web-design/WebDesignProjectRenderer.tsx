@@ -11,13 +11,9 @@ import { WebDesignLightbox } from "./WebDesignLightbox";
 
 export function WebDesignProjectRenderer({
   project,
-  index,
-  total,
   isPreview = false,
 }: {
   project: WebDesignProject;
-  index: number;
-  total: number;
   isPreview?: boolean;
 }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -49,11 +45,7 @@ export function WebDesignProjectRenderer({
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="min-h-0 self-stretch"
           >
-            <WebDesignProjectInfo
-              project={project}
-              index={index}
-              total={total}
-            />
+            <WebDesignProjectInfo project={project} />
           </motion.div>
 
           <motion.div

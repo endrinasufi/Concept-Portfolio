@@ -78,11 +78,8 @@ export function PhotoshootingListClient({
       <div className="relative z-[1] mx-auto max-w-7xl px-5 pb-24 pt-[var(--header-offset)] md:px-8">
         <FadeIn>
           <div className="max-w-3xl border-b border-white/[0.08] pb-12 md:pb-16">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">
+            <h1 className="font-page-title text-6xl md:text-7xl lg:text-8xl">
               Photoshooting
-            </p>
-            <h1 className="font-display mt-4 text-5xl leading-[0.92] tracking-tight md:text-6xl lg:text-7xl">
-              Projects
             </h1>
           </div>
         </FadeIn>

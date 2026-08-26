@@ -68,7 +68,7 @@ export function BrandingBentoIntro({ project }: { project: BrandingProject }) {
               >
                 Industry
               </p>
-              <p className="mt-2 text-lg">{project.industry}</p>
+              <p className="mt-2 text-sm leading-relaxed opacity-90">{project.industry}</p>
             </div>
             <div
               className="rounded-[var(--radius-lg)] p-5"

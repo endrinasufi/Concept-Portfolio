@@ -19,7 +19,6 @@ import {
   ArrowLeft,
   LogOut,
   Mail,
-  FileEdit,
 } from "lucide-react";
 
 const nav = [
@@ -27,7 +26,6 @@ const nav = [
   { href: "/admin/homepage", label: "Homepage", icon: Home },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/contact", label: "Contact", icon: Mail },
-  { href: "/admin/footer", label: "Footer", icon: FileEdit },
   { href: "/admin/branding", label: "Branding", icon: Palette },
   { href: "/admin/social-media", label: "Social Media", icon: Share2 },
   { href: "/admin/web-design", label: "Web Design", icon: Monitor },

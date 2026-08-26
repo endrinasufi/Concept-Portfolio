@@ -30,7 +30,7 @@ export function ClientLogosBand({ logos }: { logos: ClientLogo[] }) {
                 mediaId={logo.mediaId}
                 alt="Logo klienti"
                 fit="contain"
-                className="max-h-10 max-w-[85%] opacity-70 md:max-h-12"
+                className="max-h-10 max-w-[85%] brightness-0 invert opacity-70 md:max-h-12"
               />
             </div>
           ))}

@@ -15,13 +15,12 @@ export function WebDesignProjectPageClient({
   initialProject?: import("@/types/web-design").WebDesignProject | null;
   initialPublished?: import("@/types/web-design").WebDesignProject[];
 }) {
-  const { project, loading, error, notFound, totalPublished, publishedIndex } =
-    useWebDesignProjectBySlug(
-      slug,
-      isPreview,
-      initialProject,
-      initialPublished,
-    );
+  const { project, loading, error, notFound } = useWebDesignProjectBySlug(
+    slug,
+    isPreview,
+    initialProject,
+    initialPublished,
+  );
 
   if (loading) {
     return (
@@ -60,15 +59,7 @@ export function WebDesignProjectPageClient({
     );
   }
 
-  const index = project.projectNumber ?? publishedIndex;
-  const total = Math.max(totalPublished, index);
-
   return (
-    <WebDesignProjectRenderer
-      project={project}
-      index={index}
-      total={total}
-      isPreview={isPreview}
-    />
+    <WebDesignProjectRenderer project={project} isPreview={isPreview} />
   );
 }

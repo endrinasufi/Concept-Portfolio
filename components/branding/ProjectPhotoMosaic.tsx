@@ -33,7 +33,7 @@ function EmphasisHeadline({ text }: { text: string }) {
   }
 
   return (
-    <h2 className="w-full line-clamp-2 text-xl font-extralight leading-[1.25] tracking-tight text-foreground/80 md:text-2xl md:leading-[1.3] lg:text-[1.75rem]">
+    <h2 className="w-full line-clamp-2 text-justify text-xl font-extralight leading-[1.25] tracking-tight text-foreground/80 md:text-2xl md:leading-[1.3] lg:text-[1.75rem]">
       {parts.map((part, i) =>
         part.bold ? (
           <span key={i} className="font-medium text-foreground/95">
@@ -111,7 +111,7 @@ export function ProjectPhotoMosaic({ project }: { project: BrandingProject }) {
         <EmphasisHeadline text={headline} />
 
         {project.brandAbout?.trim() ? (
-          <p className="mt-4 w-full whitespace-pre-line text-left text-[calc(0.75rem+2pt)] font-light leading-[1.65] tracking-wide text-foreground/50 md:mt-5 md:text-[calc(0.8125rem+2pt)] md:leading-[1.7]">
+          <p className="mt-4 w-full whitespace-pre-line text-justify text-[calc(0.75rem+2pt)] font-light leading-[1.65] tracking-wide text-foreground/50 md:mt-5 md:text-[calc(0.8125rem+2pt)] md:leading-[1.7]">
             {project.brandAbout.trim()}
           </p>
         ) : null}

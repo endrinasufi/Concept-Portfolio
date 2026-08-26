@@ -1,79 +1,138 @@
-import type { FooterNavLink, SiteSettings } from "@/types/settings";
+import type {
+  ContactChannel,
+  ContactChannelKind,
+  ContactLocation,
+  FooterNavLink,
+  PublicSiteSettings,
+  SiteSettings,
+} from "@/types/settings";
 import {
+  contactChannelHref,
   DEFAULT_FOOTER_BRAND_NAME,
   DEFAULT_FOOTER_CONTACT_LABEL,
   DEFAULT_FOOTER_CTA_TITLE,
   DEFAULT_FOOTER_CTA_URL,
   DEFAULT_FOOTER_EMAIL,
   DEFAULT_FOOTER_EXPLORE_LABEL,
-  DEFAULT_FOOTER_EXPLORE_LINKS,
   DEFAULT_FOOTER_LOCATION,
   DEFAULT_FOOTER_LOCATION_LABEL,
   DEFAULT_FOOTER_SOCIAL_LABEL,
-  DEFAULT_FOOTER_SOCIAL_LINKS,
+  normalizeContactChannels,
 } from "@/types/settings";
-import { sortByOrder } from "@/lib/utils/id";
+import { SITE_CATEGORIES } from "@/lib/data/categories";
+
+export const FOOTER_SOCIAL_KINDS: ContactChannelKind[] = [
+  "instagram",
+  "facebook",
+  "linkedin",
+  "website",
+  "whatsapp",
+  "other",
+];
+
+export const FOOTER_EXPLORE_OPTIONS: FooterNavLink[] = [
+  ...SITE_CATEGORIES.map((item, order) => ({
+    id: item.id,
+    label: item.label,
+    href: item.href,
+    order,
+  })),
+  {
+    id: "contact",
+    label: "Contact",
+    href: "/contact",
+    order: SITE_CATEGORIES.length,
+  },
+];
+
+export const DEFAULT_FOOTER_EXPLORE_IDS = [
+  "branding",
+  "social-media",
+  "web-design",
+  "contact",
+];
 
 /** @deprecated Use resolveFooterSettings().exploreLinks */
-export const FOOTER_EXPLORE_LINKS = DEFAULT_FOOTER_EXPLORE_LINKS;
+export const FOOTER_EXPLORE_LINKS = FOOTER_EXPLORE_OPTIONS.filter((item) =>
+  DEFAULT_FOOTER_EXPLORE_IDS.includes(item.id),
+);
+
+type FooterSource = SiteSettings | PublicSiteSettings;
 
 function filled(value: string | undefined, fallback: string) {
   const trimmed = value?.trim();
   return trimmed ? trimmed : fallback;
 }
 
-function cloneLinks(links: FooterNavLink[]): FooterNavLink[] {
-  return links.map((item) => ({ ...item }));
+export function isFooterSocialChannel(channel: ContactChannel) {
+  return FOOTER_SOCIAL_KINDS.includes(channel.kind);
 }
 
-function normalizeLinks(raw: FooterNavLink[] | undefined): FooterNavLink[] {
-  if (!raw?.length) return [];
-  return sortByOrder(raw).map((item, index) => ({
-    id: item.id || `footer-${index}`,
-    label: item.label ?? "",
-    href: item.href ?? "",
-    order: Number.isFinite(item.order) ? item.order : index,
+export function contactSocialChannels(settings: FooterSource): ContactChannel[] {
+  return normalizeContactChannels(settings.contactChannels).filter(
+    isFooterSocialChannel,
+  );
+}
+
+export function formatFooterLocation(
+  location: ContactLocation | undefined,
+  fallback: string,
+) {
+  if (!location) return fallback;
+  const cityCountry = [location.city, location.country]
+    .map((part) => part?.trim())
+    .filter(Boolean)
+    .join(", ");
+  if (cityCountry) return cityCountry;
+  return location.address.trim() || fallback;
+}
+
+function resolveEmail(settings: FooterSource) {
+  const email = normalizeContactChannels(settings.contactChannels).find(
+    (channel) => channel.kind === "email",
+  );
+  return filled(email?.value, filled(settings.footerEmail, DEFAULT_FOOTER_EMAIL));
+}
+
+function resolveSocialLinks(settings: FooterSource): FooterNavLink[] {
+  const available = contactSocialChannels(settings);
+  const byId = new Map(available.map((channel) => [channel.id, channel]));
+  const selected = settings.footerSocialChannelIds;
+  const shown =
+    selected == null
+      ? available
+      : selected
+          .map((id) => byId.get(id))
+          .filter((channel): channel is ContactChannel => Boolean(channel));
+
+  return shown.map((channel, order) => ({
+    id: channel.id,
+    label: channel.label,
+    href: contactChannelHref(channel),
+    order,
   }));
 }
 
-function resolveSocialLinks(settings: SiteSettings): FooterNavLink[] {
-  const hasOwn = Array.isArray(settings.footerSocialLinks);
-  const links = hasOwn
-    ? normalizeLinks(settings.footerSocialLinks)
-    : cloneLinks(DEFAULT_FOOTER_SOCIAL_LINKS);
-
-  if (hasOwn && links.length === 0) return [];
-
-  const anyHref = links.some((item) => item.href.trim());
-  if (anyHref) return links;
-
-  const legacy: Record<string, string> = {
-    instagram: settings.footerInstagramUrl?.trim() ?? "",
-    linkedin: settings.footerLinkedinUrl?.trim() ?? "",
-    behance: settings.footerBehanceUrl?.trim() ?? "",
-  };
-
-  return links.map((item) => ({
-    ...item,
-    href: item.href.trim() || legacy[item.id] || "",
-  }));
+function resolveExploreLinks(settings: FooterSource): FooterNavLink[] {
+  const ids = Array.isArray(settings.footerExploreIds)
+    ? settings.footerExploreIds
+    : DEFAULT_FOOTER_EXPLORE_IDS;
+  const byId = new Map(FOOTER_EXPLORE_OPTIONS.map((item) => [item.id, item]));
+  return ids
+    .map((id) => byId.get(id))
+    .filter((item): item is FooterNavLink => Boolean(item))
+    .map((item, order) => ({ ...item, order }));
 }
 
-function resolveExploreLinks(settings: SiteSettings): FooterNavLink[] {
-  if (Array.isArray(settings.footerExploreLinks)) {
-    return normalizeLinks(settings.footerExploreLinks).filter((item) =>
-      item.label.trim(),
-    );
-  }
-  return cloneLinks(DEFAULT_FOOTER_EXPLORE_LINKS);
-}
-
-export function resolveFooterSettings(settings: SiteSettings) {
+export function resolveFooterSettings(settings: FooterSource) {
   return {
     ctaTitle: filled(settings.footerCtaTitle, DEFAULT_FOOTER_CTA_TITLE),
     ctaUrl: filled(settings.footerCtaUrl, DEFAULT_FOOTER_CTA_URL),
-    email: filled(settings.footerEmail, DEFAULT_FOOTER_EMAIL),
-    location: filled(settings.footerLocation, DEFAULT_FOOTER_LOCATION),
+    email: resolveEmail(settings),
+    location: formatFooterLocation(
+      settings.contactLocation,
+      filled(settings.footerLocation, DEFAULT_FOOTER_LOCATION),
+    ),
     brandName: filled(settings.footerBrandName, DEFAULT_FOOTER_BRAND_NAME),
     contactLabel: filled(
       settings.footerContactLabel,

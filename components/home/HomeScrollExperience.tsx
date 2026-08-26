@@ -122,14 +122,12 @@ export function HomeScrollExperience({
   const heroHeadlineRef = useRef<HTMLDivElement>(null);
   const heroLine2Ref = useRef<HTMLHeadingElement>(null);
   const marketBlockRef = useRef<HTMLDivElement>(null);
-  const marketLine1Ref = useRef<HTMLParagraphElement>(null);
   const marketLine2Ref = useRef<HTMLHeadingElement>(null);
   const marketLine3Ref = useRef<HTMLParagraphElement>(null);
   const marketSupportRef = useRef<HTMLDivElement>(null);
   const wrapHeadlineRef = useRef<HTMLDivElement>(null);
   const wrapTextRef = useRef<HTMLParagraphElement>(null);
   const textCardRef = useRef<HTMLDivElement>(null);
-  const bridgeRef = useRef<HTMLDivElement>(null);
   const brandingRefs = useRef<(HTMLDivElement | null)[]>([]);
   const socialRefs = useRef<(HTMLDivElement | null)[]>([]);
   const webRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -688,7 +686,6 @@ export function HomeScrollExperience({
         filter: "blur(8px)",
       });
       gsap.set(marketBlockRef.current, { opacity: 0 });
-      gsap.set(marketLine1Ref.current, { opacity: 0.35, filter: "blur(10px)" });
       gsap.set(marketLine2Ref.current, { opacity: 0.2, y: 20, filter: "blur(12px)" });
       gsap.set(marketLine3Ref.current, { opacity: 0, filter: "blur(8px)" });
       gsap.set(marketSupportRef.current, { opacity: 0, y: 12 });
@@ -834,11 +831,6 @@ export function HomeScrollExperience({
       });
 
       scrollTl.to(marketBlockRef.current, { opacity: 1, duration: 0.1 }, 0.28);
-      scrollTl.to(
-        marketLine1Ref.current,
-        { opacity: 1, filter: "blur(0px)", duration: 0.1, ease: "power2.out" },
-        0.3,
-      );
       scrollTl.to(
         marketLine2Ref.current,
         {
@@ -1073,19 +1065,21 @@ export function HomeScrollExperience({
           >
             <p
               ref={wrapTextRef}
-              className={`max-w-5xl text-center font-sans font-semibold leading-[1.22] tracking-tight ${
+              className={`w-max max-w-full text-center font-sans font-semibold leading-[1.22] tracking-tight ${
                 mobile
-                  ? "text-[1.28rem]"
-                  : "text-[1.7rem] sm:text-4xl md:text-[2.65rem] lg:text-[3.05rem]"
+                  ? "text-[1.15rem]"
+                  : "text-[1.35rem] sm:text-2xl md:text-[1.85rem] lg:text-[2.15rem]"
               }`}
             >
-              Whether a film that needs rhythm
-              <br />
-              or a brand that needs a{" "}
-              <span className="text-[#7dccb3]">unique</span> story
-              <br />
-              <span className="text-[0.62em] font-medium text-foreground/40">
-                in video — moving image.
+              <span className="block whitespace-nowrap">
+                Whether a business that needs a strong presence
+              </span>
+              <span className="block whitespace-nowrap">
+                or a brand that needs a{" "}
+                <span className="text-foreground/40">unique</span> digital experience
+              </span>
+              <span className="mt-1 block text-[0.62em] font-medium text-foreground/40">
+                on the web — designed to stand out.
               </span>
             </p>
           </div>
@@ -1199,26 +1193,21 @@ export function HomeScrollExperience({
               className={
                 mobile
                   ? "pointer-events-none absolute inset-x-3 top-[2%] z-30 hidden"
-                  : "pointer-events-none absolute left-5 top-[22%] z-30 max-w-md px-5 md:left-8 md:top-[24%] lg:max-w-lg"
+                  : "pointer-events-none absolute left-5 top-[22%] z-30 max-w-[24rem] px-5 md:left-8 md:top-[24%] md:max-w-[26rem]"
               }
             >
-              <p
-                ref={marketLine1Ref}
-                className="text-[10px] uppercase tracking-[0.28em] text-accent sm:text-[11px] sm:tracking-[0.32em]"
-              >
-                Social Media
-              </p>
               <h2
                 ref={marketLine2Ref}
-                className="font-display mt-1.5 text-[1.2rem] leading-[1.1] tracking-tight sm:mt-3 sm:text-3xl md:text-5xl"
+                className="flex w-max max-w-full flex-col font-sans text-[1.2rem] font-semibold leading-[1.12] tracking-tight sm:text-3xl md:text-[2.65rem] lg:text-[2.85rem]"
               >
-                Show, create, and
-                <br />
-                <span className="text-foreground/55">share the stories.</span>
+                <span className="whitespace-nowrap">Show, create, and</span>
+                <span className="whitespace-nowrap text-foreground/55">
+                  share the stories.
+                </span>
               </h2>
               <p
                 ref={marketLine3Ref}
-                className="mt-2 text-[11px] leading-relaxed text-muted sm:mt-4 sm:text-sm md:text-base"
+                className="mt-2 text-[11px] leading-relaxed text-muted sm:mt-4 sm:text-sm"
               >
                 Content and strategy that grow the brand on social — for
                 communities that want to be heard.
@@ -1227,12 +1216,12 @@ export function HomeScrollExperience({
                 ref={marketSupportRef}
                 className={`mt-3 flex flex-wrap gap-2 sm:mt-5 sm:gap-3 ${mobile ? "justify-center" : ""}`}
               >
-                <span className="rounded-full bg-foreground px-4 py-1.5 text-[10px] font-medium text-background sm:px-5 sm:py-2 sm:text-xs">
+                <Link
+                  href="/social-media"
+                  className="pointer-events-auto rounded-full border border-border px-4 py-1.5 text-[10px] !text-muted transition duration-300 hover:border-[#f2efe8] hover:bg-[#f2efe8] hover:font-medium hover:!text-[#0a0a0b] sm:px-5 sm:py-2 sm:text-xs"
+                >
                   Explore projects
-                </span>
-                <span className="rounded-full border border-border px-4 py-1.5 text-[10px] text-muted sm:px-5 sm:py-2 sm:text-xs">
-                  Read more
-                </span>
+                </Link>
               </div>
             </div>
           </div>
@@ -1240,50 +1229,6 @@ export function HomeScrollExperience({
       </section>
 
       <ClientLogosBand logos={sortByOrder(settings.clientLogos ?? [])} />
-
-      {/* Bridge into rest of site */}
-      <section
-        ref={bridgeRef}
-        className="relative border-t border-border bg-background px-5 py-16 md:px-8 md:py-32"
-      >
-        <div className="mx-auto max-w-7xl">
-          <h2 className="font-display max-w-3xl text-4xl leading-tight md:text-5xl">
-            Keep exploring our projects.
-          </h2>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              href="/branding"
-              className="rounded-full bg-foreground px-7 py-3 text-sm font-medium text-background transition hover:bg-accent"
-            >
-              Branding
-            </Link>
-            <Link
-              href="/social-media"
-              className="rounded-full border border-border px-7 py-3 text-sm text-muted transition hover:border-foreground/40 hover:text-foreground"
-            >
-              Social Media
-            </Link>
-            <Link
-              href="/web-design"
-              className="rounded-full border border-border px-7 py-3 text-sm text-muted transition hover:border-foreground/40 hover:text-foreground"
-            >
-              Web Design
-            </Link>
-            <Link
-              href="/video-production"
-              className="rounded-full border border-border px-7 py-3 text-sm text-muted transition hover:border-foreground/40 hover:text-foreground"
-            >
-              Video Production
-            </Link>
-            <Link
-              href="/photoshooting"
-              className="rounded-full border border-border px-7 py-3 text-sm text-muted transition hover:border-foreground/40 hover:text-foreground"
-            >
-              Photoshooting
-            </Link>
-          </div>
-        </div>
-      </section>
     </>
   );
 }

@@ -117,6 +117,10 @@ export interface SiteSettings {
   footerBehanceUrl?: string;
   footerSocialLinks?: FooterNavLink[];
   footerExploreLinks?: FooterNavLink[];
+  /** Contact channels shown in footer Social (if omitted, all social channels) */
+  footerSocialChannelIds?: string[];
+  /** Explore pages shown in the footer */
+  footerExploreIds?: string[];
   updatedAt: string;
 }
 

@@ -65,7 +65,7 @@ export function CoverHeroPanel({
 
         {/* Bottom-left: headline */}
         <div className="col-span-2 row-span-2 row-start-3 flex flex-col justify-end pr-2">
-          <h1 className="font-page-title max-w-[14ch] text-[1.65rem] text-white md:text-4xl lg:text-[2.75rem] xl:text-5xl">
+          <h1 className="font-page-title max-w-[14ch] text-[2rem] text-white md:text-5xl lg:text-[3.35rem] xl:text-6xl">
             {headline}
           </h1>
         </div>
