@@ -299,8 +299,22 @@ export function contactChannelHref(channel: ContactChannel): string {
   }
 }
 
+export function contactMapQuery(location: ContactLocation): string {
+  return (
+    location.mapQuery?.trim() ||
+    [location.address, location.city, location.country]
+      .map((part) => part?.trim())
+      .filter(Boolean)
+      .join(", ")
+  );
+}
+
+export function contactMapsSearchUrl(query: string): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query.trim())}`;
+}
+
 export function contactMapEmbedUrl(location: ContactLocation): string {
-  const q = (location.mapQuery || location.address).trim();
+  const q = contactMapQuery(location);
   return `https://www.google.com/maps?q=${encodeURIComponent(q)}&z=15&output=embed`;
 }
 

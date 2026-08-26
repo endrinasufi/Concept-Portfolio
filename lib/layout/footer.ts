@@ -8,6 +8,8 @@ import type {
 } from "@/types/settings";
 import {
   contactChannelHref,
+  contactMapQuery,
+  contactMapsSearchUrl,
   DEFAULT_FOOTER_BRAND_NAME,
   DEFAULT_FOOTER_CONTACT_LABEL,
   DEFAULT_FOOTER_CTA_TITLE,
@@ -91,7 +93,10 @@ function resolveEmail(settings: FooterSource) {
   const email = normalizeContactChannels(settings.contactChannels).find(
     (channel) => channel.kind === "email",
   );
-  return filled(email?.value, filled(settings.footerEmail, DEFAULT_FOOTER_EMAIL));
+  return filled(email?.value, filled(settings.footerEmail, DEFAULT_FOOTER_EMAIL)).replace(
+    /^mailto:/i,
+    "",
+  );
 }
 
 function resolveSocialLinks(settings: FooterSource): FooterNavLink[] {
@@ -125,14 +130,22 @@ function resolveExploreLinks(settings: FooterSource): FooterNavLink[] {
 }
 
 export function resolveFooterSettings(settings: FooterSource) {
+  const email = resolveEmail(settings);
+  const location = formatFooterLocation(
+    settings.contactLocation,
+    filled(settings.footerLocation, DEFAULT_FOOTER_LOCATION),
+  );
+  const mapsQuery = settings.contactLocation
+    ? contactMapQuery(settings.contactLocation)
+    : location;
+
   return {
     ctaTitle: filled(settings.footerCtaTitle, DEFAULT_FOOTER_CTA_TITLE),
     ctaUrl: filled(settings.footerCtaUrl, DEFAULT_FOOTER_CTA_URL),
-    email: resolveEmail(settings),
-    location: formatFooterLocation(
-      settings.contactLocation,
-      filled(settings.footerLocation, DEFAULT_FOOTER_LOCATION),
-    ),
+    email,
+    emailHref: `mailto:${email}`,
+    location,
+    locationHref: contactMapsSearchUrl(mapsQuery),
     brandName: filled(settings.footerBrandName, DEFAULT_FOOTER_BRAND_NAME),
     contactLabel: filled(
       settings.footerContactLabel,

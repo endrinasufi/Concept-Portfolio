@@ -190,7 +190,7 @@ export function SiteFooter() {
                 {footer.contactLabel}
               </p>
               <a
-                href={`mailto:${footer.email}`}
+                href={footer.emailHref}
                 className="group/mail mt-4 inline-block max-w-full break-all text-[15px] tracking-[-0.02em] transition-opacity duration-300 hover:opacity-70 md:text-base"
               >
                 <span className="relative">
@@ -216,7 +216,20 @@ export function SiteFooter() {
               <p className="text-[11px] font-medium uppercase tracking-[0.22em] opacity-45">
                 {footer.locationLabel}
               </p>
-              <p className="mt-4 text-[15px] md:text-base">{footer.location}</p>
+              <a
+                href={footer.locationHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/loc mt-4 inline-block max-w-full text-[15px] tracking-[-0.02em] transition-opacity duration-300 hover:opacity-70 md:text-base"
+              >
+                <span className="relative">
+                  {footer.location}
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-0 -bottom-px h-px origin-left scale-x-0 bg-current transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/loc:scale-x-100"
+                  />
+                </span>
+              </a>
             </motion.div>
 
             {socials.length > 0 ? (
