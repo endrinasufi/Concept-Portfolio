@@ -8,6 +8,7 @@ import {
   SOCIAL_MEDIA_COVER_FRAME,
 } from "@/types/social-media";
 import { createId, slugify } from "@/lib/utils/id";
+import { isPlaceholderSeoTitle } from "@/lib/seo/metadata";
 import { uploadSocialMediaAsset } from "@/lib/social-media/media";
 import { SocialMediaFeedEditor } from "./SocialMediaFeedEditor";
 import { SocialMediaStoriesEditor } from "./SocialMediaStoriesEditor";
@@ -63,9 +64,8 @@ export function emptySocialMediaProjectForm(): SocialMediaProjectFormValue {
     },
     block3: { stories: [] },
     seo: {
-      metaTitle: "Project name — Social Media | Concept Marketing",
-      metaDescription:
-        "Social media management: feed, reels, and stories for this brand.",
+      metaTitle: "",
+      metaDescription: "",
     },
   };
 }
@@ -173,7 +173,15 @@ export function SocialMediaProjectEditorForm({
           <input
             className={field}
             value={value.title}
-            onChange={(e) => patch({ title: e.target.value })}
+            onChange={(e) => {
+              const title = e.target.value;
+              patch({
+                title,
+                seo: isPlaceholderSeoTitle(value.seo.metaTitle)
+                  ? { ...value.seo, metaTitle: "" }
+                  : value.seo,
+              });
+            }}
             required
           />
         </label>
@@ -190,7 +198,15 @@ export function SocialMediaProjectEditorForm({
           <input
             className={field}
             value={value.clientName}
-            onChange={(e) => patch({ clientName: e.target.value })}
+            onChange={(e) => {
+              const clientName = e.target.value;
+              patch({
+                clientName,
+                seo: isPlaceholderSeoTitle(value.seo.metaTitle)
+                  ? { ...value.seo, metaTitle: "" }
+                  : value.seo,
+              });
+            }}
             required
           />
         </label>

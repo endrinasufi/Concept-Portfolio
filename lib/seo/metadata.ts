@@ -51,6 +51,25 @@ export function serviceLabel(service: SeoService): string {
   }
 }
 
+const PLACEHOLDER_TITLES = new Set([
+  "project name",
+  "client name",
+  "emri i projektit",
+  "emri i klientit",
+]);
+
+export function isPlaceholderSeoTitle(value?: string | null): boolean {
+  const raw = value?.trim();
+  if (!raw) return true;
+  const lower = raw.toLowerCase();
+  if (PLACEHOLDER_TITLES.has(lower)) return true;
+  return (
+    lower.startsWith("project name —") ||
+    lower.startsWith("project name -") ||
+    lower.startsWith("project name |")
+  );
+}
+
 /** Title pa brand suffix — template i layout shton "| Concept Marketing Albania" */
 export function buildMetaTitle(opts: {
   title: string;
@@ -60,9 +79,11 @@ export function buildMetaTitle(opts: {
   const title = opts.title.trim();
   const client = opts.client?.trim();
   const label = opts.service ? serviceLabel(opts.service) : "";
-  if (client && label) return `${client} — ${label}`;
-  if (label && title) return `${title} — ${label}`;
-  return title || SITE_NAME;
+  const realClient = client && !isPlaceholderSeoTitle(client) ? client : "";
+  const realTitle = title && !isPlaceholderSeoTitle(title) ? title : "";
+  if (realClient && label) return `${realClient} — ${label}`;
+  if (label && realTitle) return `${realTitle} — ${label}`;
+  return realTitle || realClient || SITE_NAME;
 }
 
 export function buildMetaDescription(opts: {
@@ -104,7 +125,7 @@ export type ProjectSeoInput = {
 
 export function buildPageMetadata(input: ProjectSeoInput): Metadata {
   const title =
-    input.metaTitle?.trim() ||
+    (!isPlaceholderSeoTitle(input.metaTitle) ? input.metaTitle?.trim() : "") ||
     buildMetaTitle({
       title: input.title,
       service: input.service,

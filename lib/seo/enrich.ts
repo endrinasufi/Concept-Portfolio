@@ -1,6 +1,7 @@
 import {
   buildMetaDescription,
   buildMetaTitle,
+  isPlaceholderSeoTitle,
   type SeoService,
 } from "./metadata";
 
@@ -11,6 +12,10 @@ export type SeoFields = {
 
 function hasText(value?: string | null): boolean {
   return Boolean(value && value.trim());
+}
+
+function usableSeoTitle(value?: string | null): boolean {
+  return hasText(value) && !isPlaceholderSeoTitle(value);
 }
 
 /** Template SEO — funksionon pa OpenAI. */
@@ -110,7 +115,7 @@ export async function resolveSeoFields(opts: {
 }): Promise<SeoFields> {
   if (
     !opts.force &&
-    hasText(opts.existingTitle) &&
+    usableSeoTitle(opts.existingTitle) &&
     hasText(opts.existingDescription)
   ) {
     return {

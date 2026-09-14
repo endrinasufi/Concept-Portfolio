@@ -3,7 +3,11 @@ import { notFound } from "next/navigation";
 import { SocialMediaProjectPageClient } from "@/components/social-media/SocialMediaProjectPageClient";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { creativeWorkJsonLd } from "@/lib/seo/jsonLd";
-import { buildPageMetadata } from "@/lib/seo/metadata";
+import {
+  buildMetaTitle,
+  buildPageMetadata,
+  isPlaceholderSeoTitle,
+} from "@/lib/seo/metadata";
 import {
   absoluteUrl,
   canPreviewDrafts,
@@ -59,7 +63,13 @@ export default async function SocialMediaProjectPage({
     <>
       <JsonLd
         data={creativeWorkJsonLd({
-          title: project.seo?.metaTitle || project.title,
+          title: !isPlaceholderSeoTitle(project.seo?.metaTitle)
+            ? project.seo!.metaTitle!.trim()
+            : buildMetaTitle({
+                title: project.title,
+                service: "social-media",
+                client: project.clientName,
+              }),
           description:
             project.seo?.metaDescription ||
             project.block2?.projectChallenge ||

@@ -9,6 +9,7 @@ import {
   enrichNestedSeo,
   enrichPhotoshootingSeo,
 } from "./enrich";
+import { isPlaceholderSeoTitle } from "./metadata";
 
 export type SeoWeeklyResult = {
   scanned: number;
@@ -18,7 +19,7 @@ export type SeoWeeklyResult = {
 };
 
 function needsSeo(metaTitle?: string | null, metaDescription?: string | null) {
-  return !metaTitle?.trim() || !metaDescription?.trim();
+  return isPlaceholderSeoTitle(metaTitle) || !metaDescription?.trim();
 }
 
 /**
