@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type {
   WebDesignGalleryDisplayType,
   WebDesignGalleryItem,
@@ -16,6 +17,10 @@ function galleryType(value: string): WebDesignGalleryDisplayType {
   return value === "mobile" ? "mobile" : "desktop";
 }
 
+function previewUrl(asset: { id: string; publicUrl?: string }) {
+  return asset.publicUrl || `/api/media/${encodeURIComponent(asset.id)}`;
+}
+
 export function WebDesignGalleryEditor({
   items,
   onChange,
@@ -24,21 +29,34 @@ export function WebDesignGalleryEditor({
   onChange: (next: WebDesignGalleryItem[]) => void;
 }) {
   const ordered = [...items].sort((a, b) => a.order - b.order);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function upload(files: FileList | null) {
     if (!files?.length) return;
+    setBusy(true);
+    setError(null);
     const next = [...ordered];
-    for (const file of Array.from(files)) {
-      const asset = await uploadWebDesignAsset(file);
-      next.push({
-        id: createId(),
-        mediaId: asset.id,
-        alt: file.name,
-        order: next.length,
-        displayType: "desktop",
-      });
+    try {
+      for (const file of Array.from(files)) {
+        const asset = await uploadWebDesignAsset(file);
+        next.push({
+          id: createId(),
+          mediaId: asset.id,
+          imageUrl: previewUrl(asset),
+          alt: file.name,
+          order: next.length,
+          displayType: "desktop",
+        });
+      }
+      onChange(next.map((item, i) => ({ ...item, order: i })));
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Screenshot upload failed",
+      );
+    } finally {
+      setBusy(false);
     }
-    onChange(next.map((item, i) => ({ ...item, order: i })));
   }
 
   function remove(id: string) {
@@ -61,15 +79,25 @@ export function WebDesignGalleryEditor({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="text-sm font-medium">Additional screenshots</h3>
-          <p className="text-xs text-muted">Drag to reorder</p>
+          <p className="text-xs text-muted">
+            Drag to reorder · JPG/PNG/WebP · large files compress automatically
+          </p>
         </div>
         <AdminUploadDropzone
           variant="button"
           label="Upload photos"
           multiple
+          busy={busy}
+          form=""
           onFiles={(files) => void upload(files)}
         />
       </div>
+
+      {error ? (
+        <p className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-600">
+          {error}
+        </p>
+      ) : null}
 
       <SortableList
         ids={ordered.map((item) => item.id)}
