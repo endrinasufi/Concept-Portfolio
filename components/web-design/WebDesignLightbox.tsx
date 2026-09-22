@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useResolvedSrc } from "@/lib/hooks/useMediaUrl";
 import type { WebDesignGalleryItem } from "@/types/web-design";
@@ -18,11 +19,16 @@ export function WebDesignLightbox({
   onPrev: () => void;
   onNext: () => void;
 }) {
+  const [mounted, setMounted] = useState(false);
   const item = index === null ? null : items[index];
   const src = useResolvedSrc({
     mediaId: item?.mediaId,
     imageUrl: item?.imageUrl,
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (index === null) return;
@@ -40,11 +46,11 @@ export function WebDesignLightbox({
     };
   }, [index, onClose, onPrev, onNext]);
 
-  if (!item) return null;
+  if (!item || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/92 p-3 backdrop-blur-md sm:p-6"
+      className="fixed inset-0 z-[9000] flex items-center justify-center bg-black/92 px-3 pb-6 pt-[calc(var(--header-offset)+0.35rem)] backdrop-blur-md sm:px-6 sm:pb-8 sm:pt-[calc(var(--header-offset)+0.6rem)]"
       role="dialog"
       aria-modal="true"
       onClick={onClose}
@@ -52,7 +58,7 @@ export function WebDesignLightbox({
       <button
         type="button"
         onClick={onClose}
-        className="absolute right-4 top-4 z-20 rounded-full border border-white/15 bg-black/50 p-2 text-white/80 transition hover:text-white"
+        className="absolute right-4 top-[calc(var(--header-offset)+0.35rem)] z-20 rounded-full border border-white/15 bg-black/50 p-2 text-white/80 transition hover:text-white md:right-6"
         aria-label="Close"
       >
         <X size={18} />
@@ -86,7 +92,7 @@ export function WebDesignLightbox({
       ) : null}
 
       <div
-        className="flex max-h-[94vh] max-w-[96vw] items-center justify-center"
+        className="flex max-h-[calc(100svh-var(--header-offset)-3.25rem)] max-w-[min(92vw,72rem)] items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
         {src ? (
@@ -94,7 +100,7 @@ export function WebDesignLightbox({
           <img
             src={src}
             alt={item.alt || "Screenshot"}
-            className="max-h-[94vh] max-w-[96vw] rounded-lg object-contain shadow-[0_20px_80px_rgba(0,0,0,0.55)]"
+            className="max-h-[calc(100svh-var(--header-offset)-3.25rem)] max-w-full rounded-lg object-contain shadow-[0_20px_80px_rgba(0,0,0,0.55)]"
             style={{
               objectPosition: item.objectPosition ?? "50% 50%",
             }}
@@ -105,6 +111,7 @@ export function WebDesignLightbox({
           <div className="h-64 w-96 rounded-lg bg-white/5" aria-hidden />
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
