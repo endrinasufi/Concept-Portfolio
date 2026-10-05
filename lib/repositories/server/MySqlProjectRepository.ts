@@ -55,11 +55,13 @@ export class MySqlProjectRepository implements ProjectRepository {
     slug: string,
     options?: { includeDrafts?: boolean },
   ): Promise<Project | null> {
+    const normalized = slug.trim();
     const rows = await query<PortfolioItemRow[]>(
       `SELECT * FROM portfolio_items
-       WHERE service = :service AND slug = :slug
+       WHERE service = :service
+         AND (slug = :slug OR TRIM(slug) = :slug)
        LIMIT 1`,
-      { service: SERVICE, slug },
+      { service: SERVICE, slug: normalized },
     );
     const row = rows[0];
     if (!row) return null;

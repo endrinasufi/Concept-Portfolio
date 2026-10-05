@@ -10,6 +10,7 @@ import { WebDesignGalleryEditor } from "./WebDesignGalleryEditor";
 import { ExternalLink } from "lucide-react";
 import { uploadWebDesignAsset } from "@/lib/web-design/media";
 import { WEB_DESIGN_COVER_FRAME } from "@/types/web-design";
+import { publicProjectHref } from "@/lib/utils/projectPath";
 import { WebDesignMediaSlot } from "./WebDesignMediaSlot";
 
 export type WebDesignProjectFormValue = Omit<
@@ -85,7 +86,9 @@ export function WebDesignProjectEditorForm({
         <div className="flex flex-wrap gap-2">
           {value.slug ? (
             <Link
-              href={`/web-design/${value.slug}?preview=true`}
+              href={publicProjectHref("web-design", value.slug, {
+                preview: true,
+              })}
               target="_blank"
               className="inline-flex items-center gap-1 rounded-full border border-border px-4 py-2 text-sm"
             >

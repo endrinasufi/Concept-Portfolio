@@ -8,6 +8,7 @@ import { SortableList, SortableItem } from "@/components/admin/SortableList";
 import { useConfirm } from "@/components/admin/ConfirmDialog";
 import { MediaImage } from "@/components/branding/MediaImage";
 import { Copy, ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
+import { publicProjectHref } from "@/lib/utils/projectPath";
 
 export function SocialMediaProjectList() {
   const { projects, loading, refresh } = useSocialMediaProjects({
@@ -117,7 +118,9 @@ export function SocialMediaProjectList() {
                       <Pencil size={12} /> Edit
                     </Link>
                     <Link
-                      href={`/social-media/${project.slug}?preview=true`}
+                      href={publicProjectHref("social-media", project.slug, {
+                        preview: true,
+                      })}
                       target="_blank"
                       className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface-elevated"
                     >

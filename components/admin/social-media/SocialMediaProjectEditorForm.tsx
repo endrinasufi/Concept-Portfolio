@@ -16,6 +16,7 @@ import { SocialMediaReelsEditor } from "./SocialMediaReelsEditor";
 import { SocialMediaUsernamesEditor } from "./SocialMediaUsernamesEditor";
 import { WebDesignMediaSlot } from "@/components/admin/web-design/WebDesignMediaSlot";
 import { ExternalLink } from "lucide-react";
+import { publicProjectHref } from "@/lib/utils/projectPath";
 
 export type SocialMediaProjectFormValue = Omit<
   SocialMediaProject,
@@ -149,7 +150,9 @@ export function SocialMediaProjectEditorForm({
         <div className="flex flex-wrap gap-2">
           {value.slug ? (
             <Link
-              href={`/social-media/${value.slug}?preview=true`}
+              href={publicProjectHref("social-media", value.slug, {
+                preview: true,
+              })}
               target="_blank"
               className="inline-flex items-center gap-1 rounded-full border border-border px-4 py-2 text-sm"
             >

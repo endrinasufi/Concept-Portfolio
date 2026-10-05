@@ -11,6 +11,7 @@ import { BentoMediaEditor } from "./BentoMediaEditor";
 import { MosaicPhotosEditor } from "./MosaicPhotosEditor";
 import { ProjectVideoEditor } from "./ProjectVideoEditor";
 import { slugify } from "@/lib/utils/id";
+import { publicProjectHref } from "@/lib/utils/projectPath";
 import { flattenGalleryRows, getGalleryRows } from "@/lib/utils/galleryRows";
 import { collectProjectPhotos } from "@/lib/utils/projectPhotos";
 import { normalizeMosaicMediaIds } from "@/lib/branding/mosaicLayout";
@@ -140,7 +141,9 @@ export function ProjectEditorForm({
         <div className="flex flex-wrap gap-2">
           {form.slug ? (
             <Link
-              href={`/branding/${form.slug}?preview=true`}
+              href={publicProjectHref("branding", form.slug, {
+                preview: true,
+              })}
               target="_blank"
               className="inline-flex items-center gap-1 rounded-full border border-border px-4 py-2 text-sm"
             >

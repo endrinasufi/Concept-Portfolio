@@ -98,9 +98,13 @@ export class MySqlWebDesignProjectRepository
     slug: string,
     options?: { includeDrafts?: boolean },
   ): Promise<WebDesignProject | null> {
+    const normalized = slug.trim();
     const rows = await query<PortfolioItemRow[]>(
-      `SELECT * FROM portfolio_items WHERE service = :service AND slug = :slug LIMIT 1`,
-      { service: SERVICE, slug },
+      `SELECT * FROM portfolio_items
+       WHERE service = :service
+         AND (slug = :slug OR TRIM(slug) = :slug)
+       LIMIT 1`,
+      { service: SERVICE, slug: normalized },
     );
     const row = rows[0];
     if (!row) return null;

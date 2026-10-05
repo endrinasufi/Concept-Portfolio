@@ -8,6 +8,7 @@ import { SortableList, SortableItem } from "./SortableList";
 import { useConfirm } from "./ConfirmDialog";
 import { Copy, ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
 import { getProjectCover } from "@/lib/utils/projectCover";
+import { publicProjectHref } from "@/lib/utils/projectPath";
 import { MediaImage } from "@/components/branding/MediaImage";
 
 export function BrandingProjectList() {
@@ -120,7 +121,9 @@ export function BrandingProjectList() {
                       <Pencil size={12} /> Edit
                     </Link>
                     <Link
-                      href={`/branding/${project.slug}?preview=true`}
+                      href={publicProjectHref("branding", project.slug, {
+                        preview: true,
+                      })}
                       target="_blank"
                       className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface-elevated"
                     >

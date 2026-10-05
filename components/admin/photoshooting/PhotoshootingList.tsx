@@ -6,8 +6,9 @@ import { usePhotoshootingProjects } from "@/lib/hooks/usePhotoshooting";
 import { getPhotoshootingRepository } from "@/lib/repositories";
 import { useConfirm } from "@/components/admin/ConfirmDialog";
 import { useResolvedSrc } from "@/lib/hooks/useMediaUrl";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
 import type { PhotoshootingProject } from "@/types/photoshooting";
+import { publicProjectHref } from "@/lib/utils/projectPath";
 
 function CoverThumb({ project }: { project: PhotoshootingProject }) {
   const src = useResolvedSrc({
@@ -88,10 +89,13 @@ export function PhotoshootingList() {
             </div>
             <div className="flex flex-wrap gap-2">
               <Link
-                href={`/photoshooting/${project.slug}`}
-                className="rounded-full border border-border px-3 py-1.5 text-xs text-muted hover:text-foreground"
+                href={publicProjectHref("photoshooting", project.slug, {
+                  preview: true,
+                })}
+                target="_blank"
+                className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs text-muted hover:text-foreground"
               >
-                View
+                <ExternalLink size={12} /> Preview
               </Link>
               <button
                 type="button"

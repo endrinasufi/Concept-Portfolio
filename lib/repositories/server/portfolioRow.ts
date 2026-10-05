@@ -117,8 +117,8 @@ export function splitPortfolioEntity(entity: Record<string, unknown>): {
       id: String(entity.id),
       service,
       slug:
-        typeof entity.slug === "string" && entity.slug.length > 0
-          ? entity.slug
+        typeof entity.slug === "string" && entity.slug.trim().length > 0
+          ? entity.slug.trim()
           : null,
       title: String(entity.title ?? ""),
       client_name: clientName,

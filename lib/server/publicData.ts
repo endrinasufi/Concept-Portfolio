@@ -21,6 +21,7 @@ import {
   type PublicSiteSettings,
   type SiteSettings,
 } from "@/types/settings";
+import { normalizeRouteSlug } from "@/lib/utils/projectPath";
 
 async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
   try {
@@ -84,8 +85,10 @@ export async function loadBrandingBySlug(
   preview: boolean,
 ): Promise<BrandingProject | null> {
   const includeDrafts = await canPreviewDrafts(preview);
+  const normalized = normalizeRouteSlug(slug);
   return safe(
-    () => getServerProjectRepository().getBySlug(slug, { includeDrafts }),
+    () =>
+      getServerProjectRepository().getBySlug(normalized, { includeDrafts }),
     null,
   );
 }
@@ -95,9 +98,12 @@ export async function loadSocialBySlug(
   preview: boolean,
 ): Promise<SocialMediaProject | null> {
   const includeDrafts = await canPreviewDrafts(preview);
+  const normalized = normalizeRouteSlug(slug);
   return safe(
     () =>
-      getServerSocialMediaRepository().getBySlug(slug, { includeDrafts }),
+      getServerSocialMediaRepository().getBySlug(normalized, {
+        includeDrafts,
+      }),
     null,
   );
 }
@@ -107,8 +113,10 @@ export async function loadWebDesignBySlug(
   preview: boolean,
 ): Promise<WebDesignProject | null> {
   const includeDrafts = await canPreviewDrafts(preview);
+  const normalized = normalizeRouteSlug(slug);
   return safe(
-    () => getServerWebDesignRepository().getBySlug(slug, { includeDrafts }),
+    () =>
+      getServerWebDesignRepository().getBySlug(normalized, { includeDrafts }),
     null,
   );
 }
@@ -118,9 +126,12 @@ export async function loadPhotoshootingBySlug(
   preview: boolean,
 ): Promise<PhotoshootingProject | null> {
   const includeDrafts = await canPreviewDrafts(preview);
+  const normalized = normalizeRouteSlug(slug);
   return safe(
     () =>
-      getServerPhotoshootingRepository().getBySlug(slug, { includeDrafts }),
+      getServerPhotoshootingRepository().getBySlug(normalized, {
+        includeDrafts,
+      }),
     null,
   );
 }
